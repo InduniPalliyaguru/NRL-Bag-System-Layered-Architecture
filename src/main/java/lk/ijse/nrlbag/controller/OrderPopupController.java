@@ -1,0 +1,945 @@
+package lk.ijse.nrlbag.controller;
+
+import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Side;
+import javafx.scene.control.*;
+import lk.ijse.nrlbag.dto.*;
+import lk.ijse.nrlbag.dto.tm.MaterialUsedTM;
+import lk.ijse.nrlbag.model.*;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.util.*;
+
+public class OrderPopupController implements Initializable {
+
+    @FXML
+    private ComboBox<String> comboStatus1;
+    @FXML
+    private TextField searchField1;
+    @FXML
+    private TextField productSearchField;
+    @FXML
+    private TextField idField1;
+    @FXML
+    private TextField qtyField1;
+    @FXML
+    private TextField orderIdField1;
+    @FXML
+    private TextField unitPriceField1;
+    @FXML
+    private TextField orderDateField1;
+    @FXML
+    private TextField deadlineField1;
+    @FXML
+    private TextField costField1;
+    @FXML
+    private TextField productIdField1;
+    @FXML
+    private TextField productNameField1;
+    @FXML
+    private ComboBox<String> comboStatus;
+    @FXML
+    private TextField idField;
+    @FXML
+    private TextField orderDateField;
+    @FXML
+    private TextField deadlineField;
+    @FXML
+    private TextField costField;
+    @FXML
+    private TextField qtyField;
+    @FXML
+    private TextField unitPriceField;
+    @FXML
+    private TextField productIdField;
+    @FXML
+    private TextField productNameField;
+    @FXML
+    private TreeTableColumn<MaterialUsedTM, Integer> colMaterialID;
+    @FXML
+    private TreeTableColumn<MaterialUsedTM, String> colName;
+    @FXML
+    private TreeTableColumn<MaterialUsedTM, Integer> colOrderID;
+    @FXML
+    private TreeTableColumn<MaterialUsedTM, Double> colQty;
+    @FXML
+    private TreeTableColumn<MaterialUsedTM, String> colUnit;
+    @FXML
+    private TreeTableView<MaterialUsedTM> tblMaterialUsage;
+    @FXML
+    private TextField searchOrderIdField;
+    @FXML
+    private TextField orderIdField;
+    @FXML
+    private TextField materialIdField;
+    @FXML
+    private TextField orderQtyField;
+    @FXML
+    private TextField materialNameField;
+    @FXML
+    private TextField availableQtyField;
+
+    private final String ORDER_ID_REGEX = "^[0-9]+$";
+    private final String CUSTOMER_ID_REGEX = "^[0-9]+$";
+    private final String PRODUCT_ID_REGEX = "^[0-9]+$";
+    private final String QTY_REGEX = "^[0-9]+(\\.[0-9]+)?$";
+    private final String MATERIAL_ID_REGEX = "^[0-9]+$";
+
+    private double oldUsedQty = 0;
+    private boolean isUpdateMode = false;
+
+    private final OrderModel orderModel = new OrderModel();
+    private final ProductModel productModel = new ProductModel();
+    private final OrderDetailsModel orderDetailsModel = new OrderDetailsModel();
+    private final MaterialUsedModel materialUsedModel = new MaterialUsedModel();
+    private final MaterialModel materialModel = new MaterialModel();
+
+    private final ContextMenu materialSuggestion = new ContextMenu();
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        // in here set the values for the combo box to status
+        comboStatus.getItems().addAll("Pending", "Processing", "Completed", "Cancelled");
+        comboStatus1.getItems().addAll("Pending", "Processing", "Completed", "Cancelled");
+
+        //Autoload product details when enter the ID
+        productIdField.textProperty().addListener((a, b, c) -> loadProductDetails());
+
+        //Auto calculate the total cost when enter the qty
+        qtyField.textProperty().addListener((a, b, c) -> calculateTotalCost());
+
+        //Autoload product details when enter the ID in updates side
+        productIdField1.textProperty().addListener((a, b, c) -> loadProductDetailsForUpdates());
+
+        //Auto calculate the total cost when enter the qty in updates side
+        qtyField1.textProperty().addListener((a, b, c) -> calculateTotalCostForUpdates());
+
+        materialIdField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                materialSuggestion.hide();
+            }
+        });
+
+        //Autoload material details when enter the ID in material usage side
+        materialIdField.textProperty().addListener((obs, oldText, newText) -> {
+            loadMaterialDetails();
+            showMaterialSuggestion(newText);
+        });
+
+        //Autoload qty decreasing when enter the need qty in material usage side
+        orderQtyField.textProperty().addListener((a, b, c) -> loadDecreasingQty());
+
+        // in here get the order id and material id when click on the table row
+        tblMaterialUsage.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldSel, newSel) -> {
+                    if (newSel == null) return;
+                    MaterialUsedTM selected = newSel.getValue();
+                    // avoid the parent row click
+                    if (newSel.getParent() == tblMaterialUsage.getRoot()) return;
+                    // get the order id from the selected row
+                    int orderID = selected.getOrder_id();
+                    int materialID = selected.getMaterial_id();
+                    handleSearchMaterialUsage(orderID, materialID);
+                }
+        );
+
+        //in here set up how each column in the tree table view get the data
+        colOrderID.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().getValue().getOrder_id()));
+        colMaterialID.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().getValue().getMaterial_id()));
+        colName.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().getValue().getMaterial_name()));
+        colQty.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().getValue().getQty_used()));
+        colUnit.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().getValue().getUnit()));
+
+        tblMaterialUsage.setShowRoot(false);
+        loadMaterialUsageTreeTable();
+        setupMaterialUsageSelection();
+
+    }
+
+    private void onMaterialUsageRowSelect(MaterialUsedTM tm) {
+
+        orderIdField.setText(String.valueOf(tm.getOrder_id()));
+        materialIdField.setText(String.valueOf(tm.getMaterial_id()));
+        orderQtyField.setText(String.valueOf(tm.getQty_used()));
+
+        oldUsedQty = tm.getQty_used();
+        isUpdateMode = true;
+
+        loadMaterialDetails();
+        loadDecreasingQty();
+    }
+
+    private void setupMaterialUsageSelection() {
+
+        tblMaterialUsage.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldSel, newSel) -> {
+
+                    if (newSel == null) return;
+
+                    // Ignore parent (Order) rows
+                    if (newSel.getParent() == tblMaterialUsage.getRoot()) return;
+
+                    onMaterialUsageRowSelect(newSel.getValue());
+                });
+    }
+
+    @FXML
+    private void handleSearchOrderByOrderID() {
+
+        try {
+            // get the id from field
+            String id = searchField1.getText();
+            String productId = productSearchField.getText();
+
+            //check validity
+            if (!id.matches(ORDER_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order ID").show();
+            } else if (!productId.matches(PRODUCT_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Product ID").show();
+            } else {
+                // get the details of the order through orderDTO & OderModel
+                OrderDTO orderDto = orderModel.searchOrderByOrderID(Integer.parseInt(id));
+                // get the more details about order and product through the orderDetailsModel
+                OderDetailsDTO details = orderDetailsModel.searchProduct(Integer.parseInt(productId));
+
+                // orderDTO is not null then assign their values into the text fields
+                if (orderDto != null) {
+                    orderIdField1.setText(String.valueOf(orderDto.getId()));
+                    idField1.setText(String.valueOf(orderDto.getCustomer_id()));
+                    orderDateField1.setText(orderDto.getOrder_date());
+                    deadlineField1.setText(orderDto.getDeadline());
+                    costField1.setText(String.valueOf(orderDto.getTotal_cost()));
+                    comboStatus1.setValue(orderDto.getStatus());
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Order Not Found!").show();
+                }
+
+                if (details != null) {
+                    productIdField1.setText(String.valueOf(details.getProduct_id()));
+                    qtyField1.setText(String.valueOf(details.getQuantity()));
+                    productNameField1.setText(details.getName());
+                    unitPriceField1.setText(String.valueOf(details.getUnit_price()));
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Product Not Found!").show();
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+        }
+
+    }
+
+    @FXML
+    private void handleSaveOrder() {
+
+        try {
+
+            // get the user input details from the fields
+            String id = idField.getText().trim();
+            String orderDate = orderDateField.getText().trim();
+            String deadline = deadlineField.getText().trim();
+            String status = comboStatus.getValue().trim();
+            String cost = costField.getText().trim();
+
+            String qty = qtyField.getText().trim();
+            String productId = productIdField.getText().trim();
+            String unitPrice = unitPriceField.getText().trim();
+
+            // check they are valid or not
+            String ORDER_COST_REGEX = "^[0-9]+(\\.[0-9]{1,2})?$";
+            if (!id.matches(CUSTOMER_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid customer ID").show();
+            } else if (isValidDate(orderDate)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order Date").show();
+            } else if (isValidDate(deadline)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Deadline Date").show();
+            } else if (!cost.matches(ORDER_COST_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Cost Input").show();
+            } else if (!productId.matches(PRODUCT_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Product ID").show();
+            } else if (!qty.matches(QTY_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Quantity Input").show();
+            } else {
+
+
+                // and here order details DTO object create and insert data
+                OderDetailsDTO orderDetailsDTO = new OderDetailsDTO(Integer.parseInt(productId), Integer.parseInt(qty), Double.parseDouble(unitPrice));
+                // if valid then create a orderDTO object including that details
+                OrderDTO orderDto = new OrderDTO(Integer.parseInt(id), orderDate, deadline, status, Double.parseDouble(cost), orderDetailsDTO);
+                boolean result = orderModel.saveOrderAndOrderID(orderDto);
+
+                if (result) {
+                    new Alert(Alert.AlertType.INFORMATION, "Order Added Successfully!").show();
+                    clearFieldSaved();
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+        }
+
+    }
+
+    @FXML
+    private void handleUpdateOrder() {
+
+        try {
+
+            // get the user input details from the fields
+            String orderId = orderIdField1.getText().trim();
+            String id = idField1.getText().trim();
+            String orderDate = orderDateField1.getText().trim();
+            String deadline = deadlineField1.getText().trim();
+            String status = comboStatus1.getValue().trim();
+            String cost = costField1.getText().trim();
+
+            String productID = productIdField1.getText().trim();
+            String qty = qtyField1.getText().trim();
+            String price = unitPriceField1.getText().trim();
+
+
+            // check they are valid or not
+            if (!orderId.matches(ORDER_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order ID").show();
+            } else if (!id.matches(CUSTOMER_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid customer ID").show();
+            } else if (isValidDate(orderDate)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order Date").show();
+            } else if (isValidDate(deadline)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Deadline Date").show();
+            } else if (!productID.matches(PRODUCT_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Product ID").show();
+            } else if (!qty.matches(QTY_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Product Quantity").show();
+            } else {
+
+                // if valid then create a orderDTO object including that details
+                OrderDTO orderDto = new OrderDTO(Integer.parseInt(orderId), Integer.parseInt(id), orderDate, deadline, status, Double.parseDouble(cost));
+
+                OderDetailsDTO details = new OderDetailsDTO(Integer.parseInt(orderId), Integer.parseInt(productID), Integer.parseInt(qty), Double.parseDouble(price));
+                // after that pass that to the orderModel class for connect with database
+                boolean result = orderModel.updateOrder(orderDto);
+                boolean result1 = orderDetailsModel.updateOrderDetails(details);
+                if (result && result1) {
+                    new Alert(Alert.AlertType.INFORMATION, "Order Details Updated Successfully!").show();
+                    clearFields();
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+        }
+
+    }
+
+    @FXML
+    private void handleDeleteOrder() {
+
+        try {
+            // get the id from field
+            String id = searchField1.getText();
+            String productId = productSearchField.getText();
+
+            //check validity
+            if (!id.matches(ORDER_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order ID").show();
+            } else if (!productId.matches(PRODUCT_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Product ID").show();
+                return;
+            }
+
+            // here show confirm alert before delete
+            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmAlert.setTitle("Confirm Delete");
+            confirmAlert.setHeaderText("Are you sure to delete this Order?");
+            confirmAlert.setContentText("Order ID: " + id);
+
+            Optional<ButtonType> result = confirmAlert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+
+                boolean result1 = orderDetailsModel.deleteOrderDetails(Integer.parseInt(id), Integer.parseInt(productId));
+                boolean result2 = orderModel.deleteOrder(Integer.parseInt(id));
+
+                // result is true that mean it is deleted
+                if (result2 && result1) {
+                    new Alert(Alert.AlertType.INFORMATION, "Order Deleted Successfully!").show();
+                    clearFields();
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Order Not Found!").show();
+                }
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+        }
+
+    }
+
+    @FXML
+    private void handleClearFields() {
+        clearFields();
+    }
+
+    @FXML
+    private void handleSaveMaterialUsage() {
+        try {
+            String orderId = orderIdField.getText().trim();
+            String materialId = materialIdField.getText().trim();
+            String orderQty = orderQtyField.getText().trim();
+            String availableQty = availableQtyField.getText().trim();
+
+            if (!orderId.matches(ORDER_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order ID").show();
+            } else if (!materialId.matches(MATERIAL_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Material ID").show();
+            } else if (!orderQty.matches(QTY_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order Quantity").show();
+            } else if (!availableQty.matches(QTY_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order Quantity").show();
+            } else {
+
+                // in here set the details into the materialUsedDTO
+                MaterialUsedDTO materialUsedDTO = new MaterialUsedDTO(Integer.parseInt(orderId), Integer.parseInt(materialId), Integer.parseInt(orderQty));
+
+                // pass to the model class to insert into the database
+                boolean isSaved = materialUsedModel.saveMaterialUsage(materialUsedDTO, Double.parseDouble(availableQty));
+
+                if (isSaved) {
+                    new Alert(Alert.AlertType.INFORMATION, "Material Usage Added Successfully!").show();
+                    clearMaterialUsageFields();
+                    loadMaterialUsageTreeTable();
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+        }
+    }
+
+    @FXML
+    private void handleSearchMaterialUsage(int orderID, int materialID) {
+
+        try {
+            if (orderID == 0 || materialID == 0) {
+                new Alert(Alert.AlertType.ERROR, "Invalid ID").show();
+            } else {
+
+                // get value from the materialUsedDTO
+                MaterialUsedDTO materialUsedDTO = materialUsedModel.searchMaterialUsage(materialID);
+
+                if (materialUsedDTO != null) {
+                    MaterialDTO materialDTO = materialModel.searchMaterial(materialID);
+                    if (materialDTO != null) {
+                        orderIdField.setText(String.valueOf(materialUsedDTO.getOrder_id()));
+                        materialIdField.setText(String.valueOf(materialDTO.getMaterial_id()));
+                        orderQtyField.setText(String.valueOf(materialUsedDTO.getQty_used()));
+                        materialNameField.setText(materialDTO.getMaterial_name());
+                        availableQtyField.setText(String.valueOf(materialDTO.getQtyAvailable()));
+                    } else {
+                        new Alert(Alert.AlertType.ERROR, "Material details not found!").show();
+                    }
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Material usage details not found!").show();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleClearMaterialUsageFields() {
+        clearMaterialUsageFields();
+    }
+
+    @FXML
+    private void handleMaterialUsageSearchButton() {
+
+        try {
+            String orderID = searchOrderIdField.getText().trim();
+            boolean isHave = materialUsedModel.searchMaterialUsageByOrderID(Integer.parseInt(orderID));
+
+            if (isHave) {
+                highlightSearchOrderMaterialUsage(Integer.parseInt(orderID));
+            } else {
+                new Alert(Alert.AlertType.ERROR, "Order ID not found!").show();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            new Alert(Alert.AlertType.ERROR, "Something went wrong").show();
+        }
+    }
+
+    @FXML
+    private void handleUpdateMaterialUsage() {
+        try {
+            String orderId = orderIdField.getText().trim();
+            String materialId = materialIdField.getText().trim();
+            String orderQty = orderQtyField.getText().trim();
+            String availableQty = availableQtyField.getText().trim();
+
+            if (!orderId.matches(ORDER_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order ID").show();
+            } else if (!materialId.matches(MATERIAL_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Material ID").show();
+            } else if (!orderQty.matches(QTY_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order Quantity").show();
+            } else if (!availableQty.matches(QTY_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order Quantity").show();
+            } else {
+
+                // in here set the details into the materialUsedDTO
+                MaterialUsedDTO materialUsedDTO = new MaterialUsedDTO(Integer.parseInt(orderId), Integer.parseInt(materialId), Integer.parseInt(orderQty));
+
+                // pass to the model class to insert into the database
+                boolean isUpdated = materialUsedModel.updateMaterialUsage(materialUsedDTO);
+
+                if (isUpdated) {
+                    new Alert(Alert.AlertType.INFORMATION, "Material Usage Updated Successfully!").show();
+                    clearMaterialUsageFields();
+                    loadMaterialUsageTreeTable();
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            new Alert(Alert.AlertType.ERROR, "Something Went Wrong!").show();
+        }
+    }
+
+    @FXML
+    private void handleDeleteMaterialUsage() {
+        try {
+
+            String orderID = orderIdField.getText().trim();
+            String materialID = materialIdField.getText().trim();
+
+            if (!orderID.matches(ORDER_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Order ID").show();
+            } else if (!materialID.matches(MATERIAL_ID_REGEX)) {
+                new Alert(Alert.AlertType.ERROR, "Invalid Material ID").show();
+            } else {
+
+                // here show confirm alert before delete
+                Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmAlert.setTitle("Confirm Delete");
+                confirmAlert.setHeaderText("Are you sure to delete this Order Material Usage detail?");
+                confirmAlert.setContentText("Order ID: " + orderID + "\n Material ID: " + materialID);
+
+                Optional<ButtonType> result = confirmAlert.showAndWait();
+
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    //when deleting the material usage of the order that material qty add to the stock again.
+                    boolean isDeleted = materialUsedModel.deleteMaterialUsage(Integer.parseInt(orderID), Integer.parseInt(materialID));
+
+                    if (isDeleted) {
+                        new Alert(Alert.AlertType.INFORMATION, "Order Material Usage detail delete Successfully!").show();
+                        clearMaterialUsageFields();
+                        loadMaterialUsageTreeTable();
+                    } else {
+                        new Alert(Alert.AlertType.ERROR, "Material Usage detail Not Found!").show();
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+        }
+    }
+
+    private boolean isValidDate(String input) {
+        try {
+            LocalDate.parse(input);
+            return false;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    private void clearFields() {
+        searchField1.clear();
+        productSearchField.clear();
+        idField1.clear();
+        orderIdField1.clear();
+        orderDateField1.clear();
+        deadlineField1.clear();
+        comboStatus1.setValue("");
+        costField1.clear();
+        productNameField1.clear();
+        productIdField1.clear();
+        qtyField1.clear();
+        unitPriceField1.clear();
+    }
+
+    private void clearFieldSaved() {
+
+        idField.clear();
+        orderDateField.clear();
+        deadlineField.clear();
+        comboStatus.setValue("");
+        costField.clear();
+        productIdField.clear();
+        productNameField.clear();
+        unitPriceField.clear();
+        qtyField.clear();
+    }
+
+    private void loadProductDetails() {
+        try {
+
+            //in here get the product id and check validity
+            String productId = productIdField.getText().trim();
+
+            if (!productId.matches(PRODUCT_ID_REGEX)) {
+                productNameField.setText("");
+                unitPriceField.setText("");
+                return;
+            }
+
+            ProductDTO proDTO = productModel.searchProduct(Integer.parseInt(productId));
+
+            // after that get name and price according to the product id
+            // set to the name and price fields
+            if (proDTO != null) {
+                productNameField.setText(proDTO.getName());
+                unitPriceField.setText(String.valueOf(proDTO.getBasePrice()));
+            } else {
+                productNameField.setText("Not Found");
+                unitPriceField.setText("");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void calculateTotalCost() {
+
+        try {
+
+            // in here get the qty from the qty field and get the unit Price from the unit price field
+            String qty = qtyField.getText().trim();
+            String unitPrice = unitPriceField.getText().trim();
+
+            // then check the validity
+            if (!qty.matches(QTY_REGEX) || unitPrice.isEmpty()) {
+                costField.setText("");
+                return;
+            }
+
+            // after that convert them in to int and double value and get the total value
+            int qtyValue = Integer.parseInt(qty);
+            double unitPriceValue = Double.parseDouble(unitPrice);
+
+            double total = qtyValue * unitPriceValue;
+
+            // then set to the totalCost field
+            costField.setText(String.valueOf(total));
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    private void loadProductDetailsForUpdates() {
+        try {
+
+            //in here get the product id and check validity
+            String productId = productIdField1.getText().trim();
+
+            if (!productId.matches(PRODUCT_ID_REGEX)) {
+                productNameField1.setText("");
+                unitPriceField1.setText("");
+                return;
+            }
+
+            ProductDTO proDTO = productModel.searchProduct(Integer.parseInt(productId));
+
+            // after that get name and price according to the product id
+            // set to the name and price fields
+            if (proDTO != null) {
+                productNameField1.setText(proDTO.getName());
+                unitPriceField1.setText(String.valueOf(proDTO.getBasePrice()));
+            } else {
+                productNameField1.setText("Not Found");
+                unitPriceField1.setText("");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void calculateTotalCostForUpdates() {
+
+        try {
+
+            // in here get the qty from the qty field and get the unit Price from the unit price field
+            String qty = qtyField1.getText().trim();
+            String unitPrice = unitPriceField1.getText().trim();
+
+            // then check the validity
+            if (!qty.matches(QTY_REGEX) || unitPrice.isEmpty()) {
+                costField1.setText("");
+                return;
+            }
+
+            // after that convert them in to int and double value and get the total value
+            int qtyValue = Integer.parseInt(qty);
+            double unitPriceValue = Double.parseDouble(unitPrice);
+
+            double total = qtyValue * unitPriceValue;
+
+            // then set to the totalCost field
+            costField1.setText(String.valueOf(total));
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    // in here load data in to the material usage table
+    private void loadMaterialUsageTreeTable() {
+
+        try {
+
+            // here get data from the material usage table
+            List<MaterialUsedDTO> materialDTO = materialUsedModel.getMaterialUsage();
+
+            // next crete root node of the tree table
+            TreeItem<MaterialUsedTM> root = new TreeItem<>();
+            root.setExpanded(true);
+
+            // group by order id, map to the group child
+            Map<Integer, TreeItem<MaterialUsedTM>> orderMap = new LinkedHashMap<>();
+
+            // loop through all material usage records
+            for (MaterialUsedDTO usedDTO : materialDTO) {
+                int orderId = usedDTO.getOrder_id();
+
+                // chack if this order id already has a parent node
+                TreeItem<MaterialUsedTM> orderNode = orderMap.get(orderId);
+
+                if (orderNode == null) {
+                    // create parent node for this order id
+                    MaterialUsedTM parentTM = new MaterialUsedTM(usedDTO.getOrder_id(), null, null, "", "");
+
+                    orderNode = new TreeItem<>(parentTM);
+
+                    // save ot to the map for the later
+                    orderMap.put(orderId, orderNode);
+                    // add the parent node to the root
+                    root.getChildren().add(orderNode);
+                }
+
+                // create a child node for each material under this order
+                MaterialUsedTM childTm = new MaterialUsedTM(
+                        usedDTO.getOrder_id(),
+                        usedDTO.getMaterial_id(),
+                        usedDTO.getQty_used(),
+                        usedDTO.getMaterial_name(),
+                        usedDTO.getUnit()
+                );
+                TreeItem<MaterialUsedTM> materialNode = new TreeItem<>(childTm);
+
+                orderNode.getChildren().add(materialNode);
+            }
+
+            tblMaterialUsage.setRoot(root);
+            tblMaterialUsage.setShowRoot(false);
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    private void loadMaterialDetails() {
+        try {
+
+            //in here get the material id and check validity
+            String text = materialIdField.getText().trim();
+
+            if (text.isEmpty()) {
+                materialNameField.setText("");
+                availableQtyField.setText("");
+                return;
+            }
+            MaterialDTO materialDTO = null;
+            if (text.matches(MATERIAL_ID_REGEX)) {
+                materialDTO = materialModel.searchMaterial(Integer.parseInt(text));
+
+            }
+
+            // after that get name and available qty according to the material id
+            // set to the name and qty fields
+            if (materialDTO != null) {
+                materialNameField.setText(materialDTO.getMaterial_name());
+                availableQtyField.setText(String.valueOf(materialDTO.getQtyAvailable()));
+            } else {
+                materialNameField.setText("Not Found");
+                availableQtyField.setText("");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void loadDecreasingQty() {
+        try {
+
+            //in here get the material id and qty input by user and check validity
+            String materialId = materialIdField.getText().trim();
+            String useQty = orderQtyField.getText().trim();
+
+            if (!materialId.matches(MATERIAL_ID_REGEX)) {
+                materialNameField.setText("");
+                availableQtyField.setText("");
+                return;
+            }
+                double newUsedQty = Double.parseDouble(useQty);
+                MaterialDTO materialDTO = materialModel.searchMaterial(Integer.parseInt(materialId));
+
+            double currentStock = materialDTO.getQtyAvailable();
+
+            double previewStock;
+
+            if (isUpdateMode) {
+
+                double difference = newUsedQty - oldUsedQty;
+                previewStock = currentStock - difference;
+            } else {
+
+                previewStock = currentStock - newUsedQty;
+            }
+
+            if (previewStock < 0) {
+                availableQtyField.setText("Material Qty insufficient");
+            } else {
+                availableQtyField.setText(String.valueOf(previewStock));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void clearMaterialUsageFields() {
+        searchOrderIdField.clear();
+        orderIdField.clear();
+        materialIdField.clear();
+        orderQtyField.clear();
+        materialNameField.clear();
+        availableQtyField.clear();
+
+        oldUsedQty = 0;
+        isUpdateMode = false;
+    }
+
+    private void highlightSearchOrderMaterialUsage(int id) {
+
+        //row factory allows us to define how each row look
+        tblMaterialUsage.setRowFactory( tv -> new TreeTableRow<>() {
+            @Override
+            // this method is called for every row in the table
+            protected  void updateItem(MaterialUsedTM item, boolean empty) {
+                super.updateItem(item, empty);
+
+                // check row is empty or item is null
+                if(empty || item == null) {
+                    setStyle("");
+                    return;
+                }
+
+                // search rows id number matches to the searching order id
+                if(item.getOrder_id() == id) {
+                    // here set the colour for the search supplier row
+                    setStyle("-fx-background-color: #DB804E;");
+                } else {
+                    // if it does not match that keep default style
+                    setStyle("");
+                }
+            }
+        });
+        // after set the colour refresh table for show colour on the table
+        tblMaterialUsage.refresh();
+
+    }
+
+    private void showMaterialSuggestion(String text) {
+
+        // hide dropdown if text is too short
+        if (text == null || text.length() < 2) {
+            materialSuggestion.hide();
+            return;
+        }
+
+        try {
+            // get matching material from the database
+            List<MaterialDTO> materials = materialModel.searchMaterialByKeyword(text);
+            System.out.println("Materials found: " + materials.size());
+
+            // if empty or nothing found from material, materialSuggestion hide
+            if (materials.isEmpty()) {
+                materialSuggestion.hide();
+                return;
+            }
+            //clear ols suggestion
+            materialSuggestion.getItems().clear();
+
+            // if materials is not empty then add each into the dropdown
+            for (MaterialDTO m : materials) {
+                MenuItem item = new MenuItem(
+                        m.getMaterial_id() + " - " + m.getMaterial_name()
+                );
+                // what happen when user click an items
+                // their details set on the fields
+                item.setOnAction( e -> {
+                    materialIdField.setText(String.valueOf(m.getMaterial_id()));
+                    materialNameField.setText(m.getMaterial_name());
+                    availableQtyField.setText(String.valueOf(m.getQtyAvailable()));
+                    materialSuggestion.hide();
+                });
+                materialSuggestion.getItems().add(item);
+            }
+            materialSuggestion.hide();
+            // show dropdown belows the text field
+            Platform.runLater(() ->
+                    materialSuggestion.show(
+                            materialIdField,
+                            Side.BOTTOM,
+                            0,
+                            0
+                    ));
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
