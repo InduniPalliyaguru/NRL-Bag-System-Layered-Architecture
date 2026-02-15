@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import lk.ijse.nrlbag.dao.custom.impl.ProductDAOImpl;
 import lk.ijse.nrlbag.dto.MaterialDTO;
 import lk.ijse.nrlbag.dto.ProductDTO;
 import lk.ijse.nrlbag.model.ProductModel;
@@ -40,7 +41,7 @@ public class ProductController implements Initializable {
     @FXML
     private TextField priceField;
 
-    private final ProductModel productModel = new ProductModel();
+    private final ProductDAOImpl productDAOImpl = new ProductDAOImpl();
 
     private final ObservableList<ProductDTO> masterProductList = FXCollections.observableArrayList();
     private FilteredList<ProductDTO> filteredProductList;
@@ -82,7 +83,7 @@ public class ProductController implements Initializable {
             if (!id.matches(PRODUCT_ID_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid Material ID").show();
             } else {
-                ProductDTO proDTO = productModel.searchProduct(Integer.parseInt(id));
+                ProductDTO proDTO = productDAOImpl.searchProduct(Integer.parseInt(id));
 
                 // id are set other information to the text fields
                 if (proDTO != null) {
@@ -127,7 +128,7 @@ public class ProductController implements Initializable {
             // pass the data to the model class for save to the database
             try {
                 ProductDTO productDTO = new ProductDTO(name,size,Double.parseDouble(price));
-                boolean rs = productModel.saveProduct(productDTO);
+                boolean rs = productDAOImpl.saveProduct(productDTO);
 
                 if (rs) {
                     new Alert(Alert.AlertType.INFORMATION, "Product save successfully!").show();
@@ -171,7 +172,7 @@ public class ProductController implements Initializable {
                 // pass the data to the model class for update the database
 
                 ProductDTO productDTO = new ProductDTO(Integer.parseInt(id),name,size,Double.parseDouble(price));
-                boolean result = productModel.updateProduct(productDTO);
+                boolean result = productDAOImpl.updateProduct(productDTO);
 
                 // if result is true that mean there had an update.
                 if (result) {
@@ -214,7 +215,7 @@ public class ProductController implements Initializable {
             if (result.isPresent() && result.get() == ButtonType.OK) {
 
                 // after the validation pass the id to product model for delete
-                boolean result1 = productModel.deleteProduct(Integer.parseInt(id));
+                boolean result1 = productDAOImpl.deleteProduct(Integer.parseInt(id));
 
                 if (result1) {
                     new Alert(Alert.AlertType.INFORMATION, "Product Deleted Successfully").show();
@@ -242,7 +243,7 @@ public class ProductController implements Initializable {
     private void loadProductTable() {
         try {
 
-            List<ProductDTO> proDTO =  productModel.getProductTable();
+            List<ProductDTO> proDTO =  productDAOImpl.getProductTable();
 
             masterProductList.clear();
             masterProductList.addAll(proDTO);
@@ -305,7 +306,7 @@ public class ProductController implements Initializable {
             if (!id.matches(PRODUCT_ID_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid Material ID").show();
             } else {
-                ProductDTO proDTO = productModel.searchProduct(Integer.parseInt(id));
+                ProductDTO proDTO = productDAOImpl.searchProduct(Integer.parseInt(id));
 
                 // id are set other information to the text fields
                 if (proDTO != null) {

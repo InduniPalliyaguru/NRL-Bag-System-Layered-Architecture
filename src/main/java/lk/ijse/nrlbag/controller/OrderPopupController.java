@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import lk.ijse.nrlbag.dao.custom.impl.ProductDAOImpl;
 import lk.ijse.nrlbag.dto.*;
 import lk.ijse.nrlbag.dto.tm.MaterialUsedTM;
 import lk.ijse.nrlbag.model.*;
@@ -94,7 +95,7 @@ public class OrderPopupController implements Initializable {
     private boolean isUpdateMode = false;
 
     private final OrderModel orderModel = new OrderModel();
-    private final ProductModel productModel = new ProductModel();
+    private final ProductDAOImpl productDAOImple = new ProductDAOImpl();
     private final OrderDetailsModel orderDetailsModel = new OrderDetailsModel();
     private final MaterialUsedModel materialUsedModel = new MaterialUsedModel();
     private final MaterialModel materialModel = new MaterialModel();
@@ -619,7 +620,7 @@ public class OrderPopupController implements Initializable {
                 return;
             }
 
-            ProductDTO proDTO = productModel.searchProduct(Integer.parseInt(productId));
+            ProductDTO proDTO = productDAOImple.searchProduct(Integer.parseInt(productId));
 
             // after that get name and price according to the product id
             // set to the name and price fields
@@ -677,7 +678,7 @@ public class OrderPopupController implements Initializable {
                 return;
             }
 
-            ProductDTO proDTO = productModel.searchProduct(Integer.parseInt(productId));
+            ProductDTO proDTO = productDAOImple.searchProduct(Integer.parseInt(productId));
 
             // after that get name and price according to the product id
             // set to the name and price fields
