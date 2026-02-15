@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.nrlbag.dao.custom.impl.SupplierDAOImpl;
 import lk.ijse.nrlbag.dto.SupplierDTO;
 import lk.ijse.nrlbag.model.SupplierModel;
 
@@ -48,7 +49,7 @@ public class SupplierController implements Initializable {
     @FXML
     private TextField contactField;
 
-    private final SupplierModel supplierModel = new SupplierModel();
+    private final SupplierDAOImpl supplierDAOImpl = new SupplierDAOImpl();
 
     private final String SUPPLIER_ID_REGEX = "^[0-9]+$";
 
@@ -81,7 +82,7 @@ public class SupplierController implements Initializable {
 
         try {
 
-            List<SupplierDTO> supplierList = supplierModel.getSuppliers();
+            List<SupplierDTO> supplierList = supplierDAOImpl.getSuppliers();
 
             // TableView always requires and ObservableList it automatically update that details
             ObservableList<SupplierDTO> obList = FXCollections.observableArrayList();
@@ -112,7 +113,7 @@ public class SupplierController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Supplier ID!").show();
             } else {
 
-                SupplierDTO supDTO = supplierModel.searchSupplier(Integer.parseInt(id));
+                SupplierDTO supDTO = supplierDAOImpl.searchSupplier(Integer.parseInt(id));
 
                 if (supDTO != null) {
                     supIdField.setText(String.valueOf(supDTO.getId()));
@@ -208,7 +209,7 @@ public class SupplierController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Supplier ID!").show();
             } else {
 
-                SupplierDTO supDTO = supplierModel.searchSupplier(Integer.parseInt(id));
+                SupplierDTO supDTO = supplierDAOImpl.searchSupplier(Integer.parseInt(id));
 
                 if (supDTO != null) {
                     supIdField.setText(String.valueOf(supDTO.getId()));

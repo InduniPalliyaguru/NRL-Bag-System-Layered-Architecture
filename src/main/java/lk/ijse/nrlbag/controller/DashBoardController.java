@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.nrlbag.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.nrlbag.dto.UserDTO;
 import lk.ijse.nrlbag.model.*;
 import lk.ijse.nrlbag.util.SetBackground;
@@ -52,7 +53,7 @@ public class DashBoardController {
 
         /* here get the total customer count from the CustomerModel class, it assigns into the
             label total customers that have in dashboard. */
-        lblTotalCustomer.setText(String.valueOf(CustomerModel.totalCustomerCount()));
+        lblTotalCustomer.setText(String.valueOf(CustomerDAOImpl.totalCustomerCount()));
 
         /* here get the total order count from the OrderModel class, it assigns into the
             label total orders that have in dashboard. */

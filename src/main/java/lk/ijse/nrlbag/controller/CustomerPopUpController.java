@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import lk.ijse.nrlbag.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.nrlbag.dto.CustomerDTO;
 import lk.ijse.nrlbag.model.CustomerModel;
 
@@ -30,7 +31,7 @@ public class CustomerPopUpController {
     @FXML
     private TextField contactField;
 
-    private final CustomerModel customerModel = new CustomerModel();
+    private final CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
 
     private final String CUSTOMER_ID_REGEX = "^[0-9]+$";
     private final String CUSTOMER_NAME_REGEX = "^[A-Za-z]{3,}\\s[A-Za-z]{3,}$";
@@ -61,7 +62,7 @@ public class CustomerPopUpController {
             // pass the data to the model class for save to the database
             try {
                 CustomerDTO customerDTO = new CustomerDTO(name, address, contact);
-                String result = customerModel.saveCustomer(customerDTO);
+                String result = customerDAOImpl.saveCustomer(customerDTO);
 
                 // if result is not empty that mean there has an error
                 if (!result.isEmpty()) {
@@ -91,7 +92,7 @@ public class CustomerPopUpController {
             if (!contact.matches(CUSTOMER_CONTACT_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid customer contact number").show();
             } else {
-                CustomerDTO customerDTO = customerModel.searchCustomer(contact);
+                CustomerDTO customerDTO = customerDAOImpl.searchCustomer(contact);
 
                 // when contact are set other information to the text fields
                 if (customerDTO != null) {
@@ -141,7 +142,7 @@ public class CustomerPopUpController {
                 // pass the data to the model class for update the database
 
                 CustomerDTO customerDTO = new CustomerDTO(Integer.parseInt(id), name, address, contact);
-                boolean result = customerModel.updateCustomer(customerDTO);
+                boolean result = customerDAOImpl.updateCustomer(customerDTO);
 
                 // if result is true that mean there had an update.
                 if (result) {
@@ -182,7 +183,7 @@ public class CustomerPopUpController {
             if (result.isPresent() && result.get() == ButtonType.OK) {
 
                 // after the validation pass the id to customer model for delete
-                boolean result1 = customerModel.deleteCustomer(id);
+                boolean result1 = customerDAOImpl.deleteCustomer(id);
 
                 if (result1) {
                     new Alert(Alert.AlertType.INFORMATION, "Customer Deleted Successfully").show();

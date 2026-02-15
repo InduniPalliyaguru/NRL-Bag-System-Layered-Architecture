@@ -11,11 +11,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.nrlbag.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.nrlbag.dto.CustomerDTO;
-import lk.ijse.nrlbag.model.CustomerModel;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,7 +51,7 @@ public class CustomerController implements Initializable {
 
     private final String CUSTOMER_CONTACT_REGEX = "^[0-9]{10}$";
 
-    private final CustomerModel customerModel = new CustomerModel();
+    private final CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
     private final ObservableList<CustomerDTO> customerList = FXCollections.observableArrayList();
     private FilteredList<CustomerDTO> filteredCustomerList;
 
@@ -92,7 +91,7 @@ public class CustomerController implements Initializable {
             if (!contact.matches(CUSTOMER_CONTACT_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid customer contact number").show();
             } else {
-                CustomerDTO customerDTO = customerModel.searchCustomer(contact);
+                CustomerDTO customerDTO = customerDAOImpl.searchCustomer(contact);
 
                 // when contact are set other information to the text fields
                 if (customerDTO != null) {
@@ -124,7 +123,7 @@ public class CustomerController implements Initializable {
     private void loadCustomerTable() {
         try {
 
-            List<CustomerDTO> cusDTO =  customerModel.getCustomer();
+            List<CustomerDTO> cusDTO =  customerDAOImpl.getCustomer();
 
             customerList.clear();
             customerList.addAll(cusDTO);
@@ -209,7 +208,7 @@ public class CustomerController implements Initializable {
             if (!contact.matches(CUSTOMER_CONTACT_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid customer contact number").show();
             } else {
-                CustomerDTO customerDTO = customerModel.searchCustomer(contact);
+                CustomerDTO customerDTO = customerDAOImpl.searchCustomer(contact);
 
                 // when contact are set other information to the text fields
                 if (customerDTO != null) {
