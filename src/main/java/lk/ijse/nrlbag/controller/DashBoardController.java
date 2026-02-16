@@ -10,7 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import lk.ijse.nrlbag.dao.custom.impl.CustomerDAOImpl;
+import lk.ijse.nrlbag.dao.custom.impl.*;
 import lk.ijse.nrlbag.dto.UserDTO;
 import lk.ijse.nrlbag.model.*;
 import lk.ijse.nrlbag.util.SetBackground;
@@ -43,7 +43,7 @@ public class DashBoardController {
     @FXML
     private Pane rootPane;
 
-    private final UserModel userModel = new UserModel();
+    private final UserDAOImpl userDAOImpl = new UserDAOImpl();
 
     public void initialize() throws SQLException {
 
@@ -57,19 +57,19 @@ public class DashBoardController {
 
         /* here get the total order count from the OrderModel class, it assigns into the
             label total orders that have in dashboard. */
-        lblTotalOrders.setText(String.valueOf(OrderModel.totalOrderCount()));
+        lblTotalOrders.setText(String.valueOf(OrdersDAOImpl.totalOrderCount()));
 
         /* here get the total low stock count from the MaterialModel class, it assigns into the
             label total low stock count that have in dashboard. */
-        lblLowStockCount.setText(String.valueOf(MaterialModel.totalLowMaterialCount()));
+        lblLowStockCount.setText(String.valueOf(MaterialDAOImpl.totalLowMaterialCount()));
 
         /* here get the total pending payments count from the PaymentModel class, it assigns into the
             label total pending payments that have in dashboard. */
-        lblPendingCount.setText(String.valueOf(PaymentModel.totalPendingPaymentsCount()));
+        lblPendingCount.setText(String.valueOf(PaymentDAOImpl.totalPendingPaymentsCount()));
 
         /* here get the total order count where deadline is overdue from the OrderModel class, it assigns into the
             label overdue that have in dashboard. */
-        lblOverdue.setText(String.valueOf(OrderModel.getOverdueOrderCount()));
+        lblOverdue.setText(String.valueOf(OrdersDAOImpl.getOverdueOrderCount()));
 
         /* here get the name from userModel class, it assigns into the
             text lblGreeting that have in dashboard. */
@@ -92,7 +92,7 @@ public class DashBoardController {
         try {
 
             for (int i = 1; i<=12; i++) {
-                int count = OrderModel.getOrderByMonths(i);
+                int count = OrdersDAOImpl.getOrderByMonths(i);
                 series.getData().add(new XYChart.Data<>(months[i-1],count));
             }
 
@@ -114,7 +114,7 @@ public class DashBoardController {
         double[] monthlyIncome = new double[12];
 
         try {
-            ResultSet rs = OrderModel.getMonthlyIncome();
+            ResultSet rs = OrdersDAOImpl.getMonthlyIncome();
 
             while(rs.next()) {
                 int monthIndex = rs.getInt("month")-1;
@@ -155,7 +155,7 @@ public class DashBoardController {
 
     private String getName() {
         try {
-            UserDTO user = userModel.getUserDetails();
+            UserDTO user = userDAOImpl.getUserDetails();
             return user.getName();
         } catch (Exception e) {
             System.out.println(e.getMessage());

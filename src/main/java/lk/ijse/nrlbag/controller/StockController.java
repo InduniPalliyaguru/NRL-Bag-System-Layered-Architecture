@@ -13,13 +13,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.nrlbag.dao.custom.impl.MaterialDAOImpl;
 import lk.ijse.nrlbag.dto.MaterialDTO;
 import lk.ijse.nrlbag.model.MaterialModel;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class StockController implements Initializable {
@@ -49,7 +49,7 @@ public class StockController implements Initializable {
     @FXML
     private TableColumn<MaterialDTO, Integer> colSupId;
 
-    final static MaterialModel materialModel = new MaterialModel();
+    final static MaterialDAOImpl materialDAOImpl = new MaterialDAOImpl();
     private final ObservableList<MaterialDTO> masterMaterialList = FXCollections.observableArrayList();
     private FilteredList<MaterialDTO> filteredMaterialList;
 
@@ -91,7 +91,7 @@ public class StockController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Material ID").show();
             } else {
                 // get the details of the material through MaterialDTO & MaterialModal
-                MaterialDTO materialDTO = materialModel.searchMaterial(Integer.parseInt(id));
+                MaterialDTO materialDTO = materialDAOImpl.searchMaterial(Integer.parseInt(id));
 
                 // materialDTO is not null then assign their values into the text fields
                 if(materialDTO!= null) {
@@ -133,7 +133,7 @@ public class StockController implements Initializable {
     private void loadMaterialTable() {
         try {
 
-            List<MaterialDTO> matDTO  =  materialModel.getMaterial();
+            List<MaterialDTO> matDTO  =  materialDAOImpl.getMaterial();
 
             masterMaterialList.clear();
             masterMaterialList.addAll(matDTO);
@@ -255,7 +255,7 @@ public class StockController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Material ID").show();
             } else {
                 // get the details of the material through MaterialDTO & MaterialModal
-                MaterialDTO materialDTO = materialModel.searchMaterial(Integer.parseInt(id));
+                MaterialDTO materialDTO = materialDAOImpl.searchMaterial(Integer.parseInt(id));
 
                 // materialDTO is not null then assign their values into the text fields
                 if(materialDTO!= null) {

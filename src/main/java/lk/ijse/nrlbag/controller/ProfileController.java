@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import lk.ijse.nrlbag.dao.custom.impl.UserDAOImpl;
 import lk.ijse.nrlbag.dto.UserDTO;
 import lk.ijse.nrlbag.model.UserModel;
 
@@ -21,7 +22,7 @@ public class ProfileController implements Initializable {
     @FXML
     private TextField userNameField;
 
-    private final UserModel userModel = new UserModel();
+    private final UserDAOImpl userDAOImpl = new UserDAOImpl();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -69,7 +70,7 @@ public class ProfileController implements Initializable {
             } else {
 
                 UserDTO userDTO = new UserDTO(userName, fullName, role, email);
-                boolean isUpdated = userModel.updateUserDetails(userDTO);
+                boolean isUpdated = userDAOImpl.updateUserDetails(userDTO);
 
                 if (isUpdated) {
                     new Alert(Alert.AlertType.INFORMATION, "User Details Updates Successfully!").show();
@@ -89,7 +90,7 @@ public class ProfileController implements Initializable {
         try {
 
             // get the details from database through model class and set to the text fields
-            UserDTO userDetails = userModel.getUserDetails();
+            UserDTO userDetails = userDAOImpl.getUserDetails();
 
             userNameField.setText(userDetails.getUserName());
             fullNameField.setText(userDetails.getName());

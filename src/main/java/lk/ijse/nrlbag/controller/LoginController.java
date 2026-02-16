@@ -6,6 +6,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import lk.ijse.nrlbag.App;
+import lk.ijse.nrlbag.dao.custom.impl.UserDAOImpl;
 import lk.ijse.nrlbag.dto.UserDTO;
 import lk.ijse.nrlbag.model.UserModel;
 import lk.ijse.nrlbag.util.EmailService;
@@ -16,7 +17,7 @@ import java.util.Optional;
 public class LoginController {
 
 
-    private final UserModel userModel = new UserModel();
+    private final UserDAOImpl userDAOImpl = new UserDAOImpl();
 
     @FXML
     private TextField usernameField;
@@ -33,7 +34,7 @@ public class LoginController {
             String name = usernameField.getText();
             String password = passwordField.getText();
 
-            UserDTO user = userModel.validLogin(name);
+            UserDTO user = userDAOImpl.validLogin(name);
 
             if(user != null) {
                 if(user.getUserPassword().equals(password)) {
@@ -94,12 +95,10 @@ public class LoginController {
                     "Email cannot be empty");
             return;
         }
-        // create UserModel obj for to access the database methods
-        UserModel userModel1 = new UserModel();
 
         try {
             // get the user password using the enter email
-            String actualPassword = userModel1.getPasswordByEmail(email);
+            String actualPassword = userDAOImpl.getPasswordByEmail(email);
             // if email have in the system
             if (actualPassword != null) {
                 // send the recovery email

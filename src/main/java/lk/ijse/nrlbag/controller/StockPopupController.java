@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import lk.ijse.nrlbag.dao.custom.impl.MaterialDAOImpl;
 import lk.ijse.nrlbag.dto.MaterialDTO;
 import lk.ijse.nrlbag.model.MaterialModel;
 
@@ -36,7 +37,7 @@ public class StockPopupController implements Initializable {
     @FXML
     private TextField qtyField1;
 
-    private final MaterialModel materialModel = new MaterialModel();
+    private final MaterialDAOImpl materialDAOImpl = new MaterialDAOImpl();
 
     private final String MATERIAL_ID_REGEX = "^[0-9]+$";
     private final String SUPPLIER_ID_REGEX = "^[0-9]+$";
@@ -64,7 +65,7 @@ public class StockPopupController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Material ID").show();
             } else {
                 // get the details of the material through MaterialDTO & MaterialModal
-                MaterialDTO materialDTO = materialModel.searchMaterial(Integer.parseInt(id));
+                MaterialDTO materialDTO = materialDAOImpl.searchMaterial(Integer.parseInt(id));
 
                 // materialDTO is not null then assign their values into the text fields
                 if(materialDTO!= null) {
@@ -109,7 +110,7 @@ public class StockPopupController implements Initializable {
             // pass the data to the model class for save to the database
             try {
                 MaterialDTO materialDTO = new MaterialDTO(Integer.parseInt(supID),name,unit,Double.parseDouble(qty));
-                boolean result = materialModel.saveMaterial(materialDTO);
+                boolean result = materialDAOImpl.saveMaterial(materialDTO);
 
                 if (result) {
                     new Alert(Alert.AlertType.INFORMATION, "Material added successfully!").show();
@@ -152,7 +153,7 @@ public class StockPopupController implements Initializable {
                 MaterialDTO mtDTO = new MaterialDTO(Integer.parseInt(materialId),Integer.parseInt(supId),name,unit,Double.parseDouble(qty));
 
                 // after that pass that to the orderModel class for connect with database
-                boolean result = materialModel.updateMaterial(mtDTO);
+                boolean result = materialDAOImpl.updateMaterial(mtDTO);
                 if(result) {
                     new Alert(Alert.AlertType.INFORMATION, "Material Details Updated Successfully!").show();
                     clearFields();
@@ -189,7 +190,7 @@ public class StockPopupController implements Initializable {
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
 
-                boolean result1 = materialModel.deleteMaterial(Integer.parseInt(id));
+                boolean result1 = materialDAOImpl.deleteMaterial(Integer.parseInt(id));
 
                 // result is true that mean it is deleted
                 if(result1) {

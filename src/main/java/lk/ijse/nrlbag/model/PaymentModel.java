@@ -1,5 +1,7 @@
 package lk.ijse.nrlbag.model;
 
+import lk.ijse.nrlbag.dao.custom.impl.OrdersDAOImpl;
+import lk.ijse.nrlbag.dao.custom.impl.PaymentDAOImpl;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
@@ -17,63 +19,64 @@ import java.util.Map;
 
 public class PaymentModel {
 
-    private final OrderModel orderModel = new OrderModel();
+    private final OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
+    private final PaymentDAOImpl paymentDAO = new PaymentDAOImpl();
 
-    public static int totalPendingPaymentsCount() throws SQLException {
+//    public static int totalPendingPaymentsCount() throws SQLException {
+//
+//        // in here get the number of orders from customer table
+//        ResultSet result = CrudUtil.execute("SELECT COUNT(*) AS Total_Pending_Payment FROM Payment WHERE status='Pending';");
+//        int paymentCount = 0;
+//
+//        // get the int value from the execution
+//        if (result.next()) {
+//            paymentCount = result.getInt("Total_Pending_Payment");
+//        }
+//
+//        return paymentCount;
+//
+//    }
 
-        // in here get the number of orders from customer table
-        ResultSet result = CrudUtil.execute("SELECT COUNT(*) AS Total_Pending_Payment FROM Payment WHERE status='Pending';");
-        int paymentCount = 0;
+//    // get the all details in payment table
+//    public List<PaymentDTO> getPayments() throws SQLException {
+//        ResultSet rs = CrudUtil.execute("SELECT * FROM Payment");
+//
+//        List<PaymentDTO> paymentList = new ArrayList<>();
+//
+//        // get rows one by one and add into payment list
+//        while (rs.next()) {
+//            PaymentDTO paymentDTO = new PaymentDTO(
+//                    rs.getInt("payment_id"),
+//                    rs.getInt("orders_id"),
+//                    rs.getDouble("amount"),
+//                    rs.getString("payment_date"),
+//                    rs.getString("type"),
+//                    rs.getString("status")
+//            );
+//            paymentList.add(paymentDTO);
+//        }
+//        return paymentList;
+//
+//    }
 
-        // get the int value from the execution
-        if (result.next()) {
-            paymentCount = result.getInt("Total_Pending_Payment");
-        }
-
-        return paymentCount;
-
-    }
-
-    // get the all details in payment table
-    public List<PaymentDTO> getPayments() throws SQLException {
-        ResultSet rs = CrudUtil.execute("SELECT * FROM Payment");
-
-        List<PaymentDTO> paymentList = new ArrayList<>();
-
-        // get rows one by one and add into payment list
-        while (rs.next()) {
-            PaymentDTO paymentDTO = new PaymentDTO(
-                    rs.getInt("payment_id"),
-                    rs.getInt("orders_id"),
-                    rs.getDouble("amount"),
-                    rs.getString("payment_date"),
-                    rs.getString("type"),
-                    rs.getString("status")
-            );
-            paymentList.add(paymentDTO);
-        }
-        return paymentList;
-
-    }
-
-    public PaymentDTO searchPayment(int id) throws SQLException {
-
-        // get the payments details from the database
-        ResultSet rs = CrudUtil.execute("SELECT * FROM Payment WHERE payment_id=?",id);
-
-        if (rs.next()) {
-            return new PaymentDTO(
-                    rs.getInt("payment_id"),
-                    rs.getInt("orders_id"),
-                    rs.getDouble("amount"),
-                    rs.getString("payment_date"),
-                    rs.getString("type"),
-                    rs.getString("status")
-            );
-        }
-        return null;
-
-    }
+//    public PaymentDTO searchPayment(int id) throws SQLException {
+//
+//        // get the payments details from the database
+//        ResultSet rs = CrudUtil.execute("SELECT * FROM Payment WHERE payment_id=?",id);
+//
+//        if (rs.next()) {
+//            return new PaymentDTO(
+//                    rs.getInt("payment_id"),
+//                    rs.getInt("orders_id"),
+//                    rs.getDouble("amount"),
+//                    rs.getString("payment_date"),
+//                    rs.getString("type"),
+//                    rs.getString("status")
+//            );
+//        }
+//        return null;
+//
+//    }
 
 
     public boolean savePaymentWithOrderUpdate(PaymentDTO paymentDTO) throws SQLException, JRException {
@@ -85,15 +88,7 @@ public class PaymentModel {
             conn.setAutoCommit(false);
 
             // next save the payment in database in temporary
-            boolean paymentSaved = CrudUtil.execute(
-                    conn,
-                    "INSERT INTO Payment (amount, payment_date, type, status, orders_id) VALUES (?,?,?,?,?)",
-                    paymentDTO.getAmount(),
-                    paymentDTO.getPayment_date(),
-                    paymentDTO.getType(),
-                    paymentDTO.getStatus(),
-                    paymentDTO.getOrder_id()
-            );
+            boolean paymentSaved = paymentDAO.savePayment(paymentDTO);
 
             if (!paymentSaved) {
                 conn.rollback();
@@ -101,7 +96,7 @@ public class PaymentModel {
             }
 
             // here get the total order cost from order table through orderModel
-            ResultSet orderTotal = orderModel.getOrderCost(conn, paymentDTO.getOrder_id());
+            ResultSet orderTotal = ordersDAOImpl.getOrderCost(conn, paymentDTO.getOrder_id());
 
             if (!orderTotal.next()) {
                 conn.rollback();
@@ -110,15 +105,11 @@ public class PaymentModel {
 
             double totalCost = orderTotal.getDouble("total_cost");
 
-            // here get the total paid amount
-            ResultSet rsPaid = CrudUtil.execute(
-                    conn,
-                    "SELECT COALESCE(SUM(amount),0) AS paid FROM Payment WHERE orders_id = ?",
-                    paymentDTO.getOrder_id()
-            );
 
-            rsPaid.next();
-            double totalPaid = rsPaid.getDouble("paid");
+            double totalPaid = paymentDAO.getTotalPaidAmount(paymentDTO);
+            if (totalPaid == 0) {
+                return false;
+            }
 
             // next calculate the remaining payment
             double remaining = totalCost - totalPaid;
@@ -129,7 +120,7 @@ public class PaymentModel {
             }
 
             // update the order table
-            boolean orderUpdate = orderModel.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
+            boolean orderUpdate = ordersDAOImpl.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
 
             if (!orderUpdate) {
                 conn.rollback();
@@ -159,23 +150,25 @@ public class PaymentModel {
             conn.setAutoCommit(false);
 
             // next update the payment in database
-            boolean paymentUpdate = CrudUtil.execute(
-                    conn,
-                    "UPDATE Payment SET amount=?, payment_date=?, type=?, status=?, orders_id=? WHERE payment_id=?",
-                    paymentDTO.getAmount(),
-                    paymentDTO.getPayment_date(),
-                    paymentDTO.getType(),
-                    paymentDTO.getStatus(),
-                    paymentDTO.getOrder_id(),
-                    paymentDTO.getId()
-            );
+//            boolean paymentUpdate = CrudUtil.execute(
+//                    conn,
+//                    "UPDATE Payment SET amount=?, payment_date=?, type=?, status=?, orders_id=? WHERE payment_id=?",
+//                    paymentDTO.getAmount(),
+//                    paymentDTO.getPayment_date(),
+//                    paymentDTO.getType(),
+//                    paymentDTO.getStatus(),
+//                    paymentDTO.getOrder_id(),
+//                    paymentDTO.getId()
+//            );
+
+            boolean paymentUpdate = paymentDAO.updatePayment(paymentDTO);
             if (!paymentUpdate) {
                 conn.rollback();
                 return false;
             }
 
             // here get the total order cost
-            ResultSet orderTotal = orderModel.getOrderCost(conn, paymentDTO.getOrder_id());
+            ResultSet orderTotal = ordersDAOImpl.getOrderCost(conn, paymentDTO.getOrder_id());
             if (!orderTotal.next()) {
                 conn.rollback();
                 return false;
@@ -184,14 +177,19 @@ public class PaymentModel {
             double totalCost = orderTotal.getDouble("total_cost");
 
             // here get the total paid amount
-            ResultSet rsPaid = CrudUtil.execute(
-                    conn,
-                    "SELECT COALESCE(SUM(amount),0) AS paid FROM Payment WHERE orders_id = ?",
-                    paymentDTO.getOrder_id()
-            );
+//            ResultSet rsPaid = CrudUtil.execute(
+//                    conn,
+//                    "SELECT COALESCE(SUM(amount),0) AS paid FROM Payment WHERE orders_id = ?",
+//                    paymentDTO.getOrder_id()
+//            );
+//
+//            rsPaid.next();
+//            double totalPaid = rsPaid.getDouble("paid");
 
-            rsPaid.next();
-            double totalPaid = rsPaid.getDouble("paid");
+            double totalPaid = paymentDAO.getTotalPaidAmount(paymentDTO);
+            if (totalPaid == 0) {
+                return false;
+            }
 
             // next calculate the remaining payment
             double remaining = totalCost - totalPaid;
@@ -202,7 +200,7 @@ public class PaymentModel {
             }
 
             // update the order table
-            boolean orderUpdate = orderModel.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
+            boolean orderUpdate = ordersDAOImpl.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
 
             if (!orderUpdate) {
                 conn.rollback();
@@ -228,18 +226,20 @@ public class PaymentModel {
             conn.setAutoCommit(false);
 
             // next delete the payment in database
-            boolean paymentUpdate = CrudUtil.execute(
-                    conn,
-                    "DELETE FROM Payment WHERE payment_id=?",
-                    payID
-            );
+//            boolean paymentUpdate = CrudUtil.execute(
+//                    conn,
+//                    "DELETE FROM Payment WHERE payment_id=?",
+//                    payID
+//            );
+
+            boolean paymentUpdate = paymentDAO.deletePayment(payID);
             if (!paymentUpdate) {
                 conn.rollback();
                 return false;
             }
 
             // here get the total order cost
-            ResultSet orderTotal = orderModel.getOrderCost(conn, orderID);
+            ResultSet orderTotal = ordersDAOImpl.getOrderCost(conn, orderID);
             if (!orderTotal.next()) {
                 conn.rollback();
                 return false;
@@ -251,7 +251,7 @@ public class PaymentModel {
             double remaining = totalCost;
 
             // update the order table
-            boolean orderUpdate = orderModel.updateOrderRemainingPayment(conn, remaining, orderID);
+            boolean orderUpdate = ordersDAOImpl.updateOrderRemainingPayment(conn, remaining, orderID);
 
             if (!orderUpdate) {
                 conn.rollback();

@@ -3,6 +3,7 @@ package lk.ijse.nrlbag.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import lk.ijse.nrlbag.dao.custom.impl.OrdersDAOImpl;
 import lk.ijse.nrlbag.model.*;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class ReportsController {
     private TextField payReportIdField;
 
     private final String ORDER_ID_REGEX = "^[0-9]+$";
-    private final OrderModel orderModel = new OrderModel();
+    private final OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
     private final PaymentModel paymentModel = new PaymentModel();
     private final MaterialModel materialModel = new MaterialModel();
     private final ProductModel productModel = new ProductModel();
@@ -60,7 +61,7 @@ public class ReportsController {
             } else if (checkOrderIdHaving(Integer.parseInt(orderId))) {
                 new Alert(Alert.AlertType.ERROR, "Cannot find order ID").show();
             } else {
-                orderModel.printOrderConfirmation(Integer.parseInt(orderId));
+                ordersDAOImpl.printOrderConfirmation(Integer.parseInt(orderId));
                 ocOrderIdField.clear();
             }
         } catch (Exception e) {
@@ -98,7 +99,7 @@ public class ReportsController {
     private boolean checkOrderIdHaving(int id) {
         // in here get the all order id and check the input id is contains their
         try {
-            List<Integer> idList = orderModel.getAllOrdersID();
+            List<Integer> idList = ordersDAOImpl.getAllOrdersID();
             // in here return the result opposite value
             return !idList.contains(id);
 

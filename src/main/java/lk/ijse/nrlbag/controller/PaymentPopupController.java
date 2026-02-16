@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import lk.ijse.nrlbag.dao.custom.impl.PaymentDAOImpl;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 import lk.ijse.nrlbag.model.PaymentModel;
 
@@ -41,6 +42,7 @@ public class PaymentPopupController implements Initializable {
     @FXML
     private ComboBox<String> comboStatus1;
 
+    private final PaymentDAOImpl paymentDAOImpl = new PaymentDAOImpl();
     private final PaymentModel paymentModel = new PaymentModel();
 
     private final String ORDER_ID_REGEX = "^[0-9]+$";
@@ -71,7 +73,7 @@ public class PaymentPopupController implements Initializable {
             if (!id.matches(PAYMENT_ID_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid Payment ID").show();
             } else {
-                PaymentDTO paymentDTO = paymentModel.searchPayment(Integer.parseInt(id));
+                PaymentDTO paymentDTO = paymentDAOImpl.searchPayment(Integer.parseInt(id));
 
                 // when id are set, other information to the text fields
                 if (paymentDTO != null) {
@@ -124,6 +126,8 @@ public class PaymentPopupController implements Initializable {
             // pass the data to the model class for save to the database
             try {
                 PaymentDTO payDTO = new PaymentDTO(Integer.parseInt(ordersID),Double.parseDouble(amount),date,type,status);
+
+                //Change to the business class
                 boolean result = paymentModel.savePaymentWithOrderUpdate(payDTO);
 
                 if (result) {
@@ -170,6 +174,8 @@ public class PaymentPopupController implements Initializable {
             // pass the data to the model class for save to the database
             try {
                 PaymentDTO payDTO = new PaymentDTO(Integer.parseInt(paymentID),Integer.parseInt(ordersID),Double.parseDouble(amount),date,type,status);
+
+                // Change to the business class
                 boolean result = paymentModel.updatePaymentWithOrderUpdate(payDTO);
 
                 if (result) {
@@ -209,6 +215,8 @@ public class PaymentPopupController implements Initializable {
             if (result.isPresent() && result.get() == ButtonType.OK) {
 
                 // after the validation pass the id to customer model for delete
+
+                //change to the business class
                 boolean result1 = paymentModel.deletePaymentWithOrderUpdate(Integer.parseInt(id), Integer.parseInt(orderId));
 
                 if (result1) {

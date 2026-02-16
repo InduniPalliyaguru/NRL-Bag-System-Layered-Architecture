@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.nrlbag.dao.custom.impl.PaymentDAOImpl;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 import lk.ijse.nrlbag.model.PaymentModel;
 
@@ -50,7 +51,7 @@ public class PaymentController implements Initializable {
     @FXML
     private ComboBox<String> comboStatus;
 
-    private final PaymentModel paymentModel = new PaymentModel();
+    private final PaymentDAOImpl paymentDAOImpl = new PaymentDAOImpl();
 
     private final String PAYMENT_ID_REGEX = "^[0-9]+$";
 
@@ -90,7 +91,7 @@ public class PaymentController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Payment ID!").show();
             } else {
 
-                PaymentDTO payDTO = paymentModel.searchPayment(Integer.parseInt(id));
+                PaymentDTO payDTO = paymentDAOImpl.searchPayment(Integer.parseInt(id));
 
                 if (payDTO != null) {
                     payIdField.setText(String.valueOf(payDTO.getId()));
@@ -122,7 +123,7 @@ public class PaymentController implements Initializable {
 
         try {
 
-            List<PaymentDTO> paymentDTO = paymentModel.getPayments();
+            List<PaymentDTO> paymentDTO = paymentDAOImpl.getPayments();
 
             // TableView always requires and ObservableList it automatically update that details
             ObservableList<PaymentDTO> obList = FXCollections.observableArrayList();
@@ -210,7 +211,7 @@ public class PaymentController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Payment ID!").show();
             } else {
 
-                PaymentDTO payDTO = paymentModel.searchPayment(Integer.parseInt(id));
+                PaymentDTO payDTO = paymentDAOImpl.searchPayment(Integer.parseInt(id));
 
                 if (payDTO != null) {
                     payIdField.setText(String.valueOf(payDTO.getId()));
