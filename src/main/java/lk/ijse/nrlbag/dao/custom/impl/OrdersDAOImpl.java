@@ -1,5 +1,6 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
+import lk.ijse.nrlbag.dao.custom.OrdersDAO;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.OrderDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OrdersDAOImpl {
+public class OrdersDAOImpl implements OrdersDAO {
 
     // get the all details in orders table join with customer details also
     public List<OrderDTO> getOrders() throws SQLException {
@@ -59,7 +60,7 @@ public class OrdersDAOImpl {
 
     }
 
-    public static int totalOrderCount() throws SQLException {
+    public int totalOrderCount() throws SQLException {
 
         // in here get the number of orders from customer table
         ResultSet result = CrudUtil.execute("SELECT COUNT(*) AS Total_orders FROM Orders");
@@ -203,7 +204,7 @@ public class OrdersDAOImpl {
 
     }
 
-    public static int getOrderByMonths(int month) throws SQLException {
+    public int getOrderByMonths(int month) throws SQLException {
         ResultSet rs = CrudUtil.execute("SELECT COUNT(*) FROM Orders WHERE MONTH(order_date)=?",month);
 
         if(rs.next()) {
@@ -212,7 +213,7 @@ public class OrdersDAOImpl {
         return 0;
     }
 
-    public static ResultSet getMonthlyIncome() throws SQLException {
+    public ResultSet getMonthlyIncome() throws SQLException {
 
         ResultSet resultSet = CrudUtil.execute("SELECT MONTH(payment_date) AS month, SUM(amount) AS income " +
                 "FROM Payment WHERE status IN ('Partial','Completed') " +
@@ -221,18 +222,18 @@ public class OrdersDAOImpl {
         return resultSet;
     }
 
-    public ResultSet getOrderCost(Connection conn, int id) throws SQLException {
-
-        // here get the total order cost
-        ResultSet orderTotal = CrudUtil.execute(
-                conn,
-                "SELECT total_cost FROM Orders WHERE orders_id = ?",
-                id
-        );
-
-        return orderTotal;
-
-    }
+//    public ResultSet getOrderCost(Connection conn, int id) throws SQLException {
+//
+//        // here get the total order cost
+//        ResultSet orderTotal = CrudUtil.execute(
+//                conn,
+//                "SELECT total_cost FROM Orders WHERE orders_id = ?",
+//                id
+//        );
+//
+//        return orderTotal;
+//
+//    }
 
     public boolean updateOrderRemainingPayment(Connection conn, double remaining, int id) throws SQLException {
 
@@ -248,17 +249,17 @@ public class OrdersDAOImpl {
 
     }
 
-    public List<Integer> getAllOrdersID() throws SQLException {
-        ResultSet rs = CrudUtil.execute("SELECT orders_id FROM Orders");
-        List<Integer> orderIdList = new ArrayList<>();
-        while (rs.next()) {
-            int id = rs.getInt("orders_id");
-            orderIdList.add(id);
-        }
-        return orderIdList;
-    }
+//    public List<Integer> getAllOrdersID() throws SQLException {
+//        ResultSet rs = CrudUtil.execute("SELECT orders_id FROM Orders");
+//        List<Integer> orderIdList = new ArrayList<>();
+//        while (rs.next()) {
+//            int id = rs.getInt("orders_id");
+//            orderIdList.add(id);
+//        }
+//        return orderIdList;
+//    }
 
-    public static int getOverdueOrderCount() throws SQLException {
+    public int getOverdueOrderCount() throws SQLException {
         ResultSet rs = CrudUtil.execute("SELECT COUNT(*) FROM Orders WHERE deadline < CURDATE() AND status NOT IN ('Completed','Cancelled')");
 
         if (rs.next()) {

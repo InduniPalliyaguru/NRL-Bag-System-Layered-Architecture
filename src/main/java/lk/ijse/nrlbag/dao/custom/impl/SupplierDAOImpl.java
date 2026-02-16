@@ -1,5 +1,6 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
+import lk.ijse.nrlbag.dao.custom.SupplierDAO;
 import lk.ijse.nrlbag.dto.SupplierDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
 
@@ -8,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SupplierDAOImpl {
+public class SupplierDAOImpl implements SupplierDAO {
 
     // get the all details in supplier table join with material details also
     public List<SupplierDTO> getSuppliers() throws SQLException {

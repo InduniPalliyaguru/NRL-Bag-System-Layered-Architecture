@@ -1,5 +1,6 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
+import lk.ijse.nrlbag.dao.custom.CustomerDAO;
 import lk.ijse.nrlbag.dto.CustomerDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
 
@@ -8,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerDAOImpl {
+public class CustomerDAOImpl implements CustomerDAO {
 
     public String saveCustomer(CustomerDTO customerDTO) throws SQLException {
 
@@ -80,7 +81,7 @@ public class CustomerDAOImpl {
         return customerList;
     }
 
-    public static int totalCustomerCount() throws SQLException {
+    public int totalCustomerCount() throws SQLException {
 
         // in here get the number of the customers from customer table
         ResultSet result = CrudUtil.execute("SELECT COUNT(*) AS Total_customer FROM Customer");

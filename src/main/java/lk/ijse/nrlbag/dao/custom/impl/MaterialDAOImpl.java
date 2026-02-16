@@ -1,5 +1,6 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
+import lk.ijse.nrlbag.dao.custom.MaterialDAO;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.MaterialDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaterialDAOImpl {
+public class MaterialDAOImpl implements MaterialDAO {
 
     public MaterialDTO searchMaterial(int id) throws SQLException {
         ResultSet rs = CrudUtil.execute("SELECT * FROM Material WHERE material_id=?", id);
@@ -56,7 +57,7 @@ public class MaterialDAOImpl {
         return result;
     }
 
-    public static int totalLowMaterialCount() throws SQLException {
+    public int totalLowMaterialCount() throws SQLException {
 
         // in here get the number of material below 10 from Material table
         ResultSet result = CrudUtil.execute("SELECT COUNT(*) AS Total_Low_material FROM Material WHERE qty_available<50;");

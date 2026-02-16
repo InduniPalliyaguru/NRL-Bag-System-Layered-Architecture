@@ -53,23 +53,23 @@ public class DashBoardController {
 
         /* here get the total customer count from the CustomerModel class, it assigns into the
             label total customers that have in dashboard. */
-        lblTotalCustomer.setText(String.valueOf(CustomerDAOImpl.totalCustomerCount()));
+        lblTotalCustomer.setText(String.valueOf(new CustomerDAOImpl().totalCustomerCount()));
 
         /* here get the total order count from the OrderModel class, it assigns into the
             label total orders that have in dashboard. */
-        lblTotalOrders.setText(String.valueOf(OrdersDAOImpl.totalOrderCount()));
+        lblTotalOrders.setText(String.valueOf(new OrdersDAOImpl().totalOrderCount()));
 
         /* here get the total low stock count from the MaterialModel class, it assigns into the
             label total low stock count that have in dashboard. */
-        lblLowStockCount.setText(String.valueOf(MaterialDAOImpl.totalLowMaterialCount()));
+        lblLowStockCount.setText(String.valueOf(new MaterialDAOImpl().totalLowMaterialCount()));
 
         /* here get the total pending payments count from the PaymentModel class, it assigns into the
             label total pending payments that have in dashboard. */
-        lblPendingCount.setText(String.valueOf(PaymentDAOImpl.totalPendingPaymentsCount()));
+        lblPendingCount.setText(String.valueOf(new PaymentDAOImpl().totalPendingPaymentsCount()));
 
         /* here get the total order count where deadline is overdue from the OrderModel class, it assigns into the
             label overdue that have in dashboard. */
-        lblOverdue.setText(String.valueOf(OrdersDAOImpl.getOverdueOrderCount()));
+        lblOverdue.setText(String.valueOf(new OrdersDAOImpl().getOverdueOrderCount()));
 
         /* here get the name from userModel class, it assigns into the
             text lblGreeting that have in dashboard. */
@@ -92,7 +92,7 @@ public class DashBoardController {
         try {
 
             for (int i = 1; i<=12; i++) {
-                int count = OrdersDAOImpl.getOrderByMonths(i);
+                int count = new OrdersDAOImpl().getOrderByMonths(i);
                 series.getData().add(new XYChart.Data<>(months[i-1],count));
             }
 
@@ -114,7 +114,7 @@ public class DashBoardController {
         double[] monthlyIncome = new double[12];
 
         try {
-            ResultSet rs = OrdersDAOImpl.getMonthlyIncome();
+            ResultSet rs = new OrdersDAOImpl().getMonthlyIncome();
 
             while(rs.next()) {
                 int monthIndex = rs.getInt("month")-1;

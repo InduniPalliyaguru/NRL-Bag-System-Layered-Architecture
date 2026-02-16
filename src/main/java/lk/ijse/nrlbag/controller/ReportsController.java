@@ -4,8 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import lk.ijse.nrlbag.dao.custom.impl.OrdersDAOImpl;
+import lk.ijse.nrlbag.dto.OrderDTO;
 import lk.ijse.nrlbag.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReportsController {
@@ -99,7 +101,16 @@ public class ReportsController {
     private boolean checkOrderIdHaving(int id) {
         // in here get the all order id and check the input id is contains their
         try {
-            List<Integer> idList = ordersDAOImpl.getAllOrdersID();
+//            List<Integer> idList = ordersDAOImpl.getAllOrdersID();
+
+            List<OrderDTO> orderList = ordersDAOImpl.getOrders();
+
+            List<Integer> idList = new ArrayList<>();
+
+            for (OrderDTO orderDTO : orderList) {
+                int orderID = orderDTO.getId();
+                idList.add(orderID);
+            }
             // in here return the result opposite value
             return !idList.contains(id);
 

@@ -1,12 +1,13 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
+import lk.ijse.nrlbag.dao.custom.OrderDetailDAO;
 import lk.ijse.nrlbag.dto.OderDetailsDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class OrderDetailDAOImpl {
+public class OrderDetailDAOImpl implements OrderDetailDAO {
 
     public boolean saveOrderDetails(OderDetailsDTO orderDTO, int orderID) throws SQLException {
 

@@ -1,12 +1,13 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
+import lk.ijse.nrlbag.dao.custom.UserDAO;
 import lk.ijse.nrlbag.dto.UserDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDAOImpl {
+public class UserDAOImpl implements UserDAO {
 
     public UserDTO validLogin(String name) throws SQLException {
 

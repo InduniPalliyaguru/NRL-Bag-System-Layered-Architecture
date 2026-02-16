@@ -1,5 +1,6 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
+import lk.ijse.nrlbag.dao.custom.MaterialUsedDAO;
 import lk.ijse.nrlbag.dto.MaterialDTO;
 import lk.ijse.nrlbag.dto.MaterialUsedDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaterialUsedDAOImpl {
+public class MaterialUsedDAOImpl implements MaterialUsedDAO {
 
     public List<MaterialUsedDTO> getMaterialUsage() throws SQLException {
         ResultSet rs = CrudUtil.execute(

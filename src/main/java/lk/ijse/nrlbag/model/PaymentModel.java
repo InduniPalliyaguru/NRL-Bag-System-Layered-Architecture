@@ -3,6 +3,7 @@ package lk.ijse.nrlbag.model;
 import lk.ijse.nrlbag.dao.custom.impl.OrdersDAOImpl;
 import lk.ijse.nrlbag.dao.custom.impl.PaymentDAOImpl;
 import lk.ijse.nrlbag.db.DBConnection;
+import lk.ijse.nrlbag.dto.OrderDTO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
 import net.sf.jasperreports.engine.*;
@@ -96,14 +97,15 @@ public class PaymentModel {
             }
 
             // here get the total order cost from order table through orderModel
-            ResultSet orderTotal = ordersDAOImpl.getOrderCost(conn, paymentDTO.getOrder_id());
+//            ResultSet orderTotal = ordersDAOImpl.getOrderCost(conn, paymentDTO.getOrder_id());
+            //            if (!orderTotal.next()) {
+//                conn.rollback();
+//                return false;
+//            }
 
-            if (!orderTotal.next()) {
-                conn.rollback();
-                return false;
-            }
+            OrderDTO orderDetail = ordersDAOImpl.searchOrderByOrderID(paymentDTO.getOrder_id());
 
-            double totalCost = orderTotal.getDouble("total_cost");
+            double totalCost = orderDetail.getTotal_cost();
 
 
             double totalPaid = paymentDAO.getTotalPaidAmount(paymentDTO);
@@ -168,13 +170,17 @@ public class PaymentModel {
             }
 
             // here get the total order cost
-            ResultSet orderTotal = ordersDAOImpl.getOrderCost(conn, paymentDTO.getOrder_id());
-            if (!orderTotal.next()) {
-                conn.rollback();
-                return false;
-            }
+//            ResultSet orderTotal = ordersDAOImpl.getOrderCost(conn, paymentDTO.getOrder_id());
+//            if (!orderTotal.next()) {
+//                conn.rollback();
+//                return false;
+//            }
 
-            double totalCost = orderTotal.getDouble("total_cost");
+//            double totalCost = orderTotal.getDouble("total_cost");
+
+            OrderDTO orderDetail = ordersDAOImpl.searchOrderByOrderID(paymentDTO.getOrder_id());
+
+            double totalCost = orderDetail.getTotal_cost();
 
             // here get the total paid amount
 //            ResultSet rsPaid = CrudUtil.execute(
@@ -239,13 +245,17 @@ public class PaymentModel {
             }
 
             // here get the total order cost
-            ResultSet orderTotal = ordersDAOImpl.getOrderCost(conn, orderID);
-            if (!orderTotal.next()) {
-                conn.rollback();
-                return false;
-            }
+//            ResultSet orderTotal = ordersDAOImpl.getOrderCost(conn, orderID);
+//            if (!orderTotal.next()) {
+//                conn.rollback();
+//                return false;
+//            }
+//
+//            double totalCost = orderTotal.getDouble("total_cost");
 
-            double totalCost = orderTotal.getDouble("total_cost");
+            OrderDTO orderDetail = ordersDAOImpl.searchOrderByOrderID(orderID);
+
+            double totalCost = orderDetail.getTotal_cost();
 
             // when payment is deleted , the remaining is equal to totalCost
             double remaining = totalCost;

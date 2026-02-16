@@ -1,5 +1,6 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
+import lk.ijse.nrlbag.dao.custom.PaymentDAO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 import lk.ijse.nrlbag.util.CrudUtil;
 
@@ -9,9 +10,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaymentDAOImpl {
+public class PaymentDAOImpl implements PaymentDAO {
 
-    public static int totalPendingPaymentsCount() throws SQLException {
+    public int totalPendingPaymentsCount() throws SQLException {
 
         // in here get the number of orders from customer table
         ResultSet result = CrudUtil.execute("SELECT COUNT(*) AS Total_Pending_Payment FROM Payment WHERE status='Pending';");
