@@ -1,9 +1,7 @@
 package lk.ijse.nrlbag.dao.custom;
 
 import lk.ijse.nrlbag.dto.OderDetailsDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public interface OrderDetailDAO {

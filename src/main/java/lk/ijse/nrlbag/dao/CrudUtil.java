@@ -1,4 +1,4 @@
-package lk.ijse.nrlbag.util;
+package lk.ijse.nrlbag.dao;
 
 import lk.ijse.nrlbag.db.DBConnection;
 

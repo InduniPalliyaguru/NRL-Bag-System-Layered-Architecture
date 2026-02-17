@@ -5,13 +5,9 @@ import lk.ijse.nrlbag.dao.custom.impl.MaterialUsedDAOImpl;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.MaterialDTO;
 import lk.ijse.nrlbag.dto.MaterialUsedDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MaterialUsedModel {
 

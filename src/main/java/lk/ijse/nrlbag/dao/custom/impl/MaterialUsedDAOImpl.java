@@ -1,9 +1,8 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.custom.MaterialUsedDAO;
-import lk.ijse.nrlbag.dto.MaterialDTO;
 import lk.ijse.nrlbag.dto.MaterialUsedDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
+import lk.ijse.nrlbag.dao.CrudUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

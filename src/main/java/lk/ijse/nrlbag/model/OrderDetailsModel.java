@@ -1,11 +1,5 @@
 package lk.ijse.nrlbag.model;
 
-import lk.ijse.nrlbag.dto.OderDetailsDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class OrderDetailsModel {
 
 //    public boolean saveOrderDetails(OderDetailsDTO orderDTO, int orderID) throws SQLException {

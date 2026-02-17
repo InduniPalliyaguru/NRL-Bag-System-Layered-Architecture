@@ -1,11 +1,5 @@
 package lk.ijse.nrlbag.model;
 
-import lk.ijse.nrlbag.dto.UserDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class UserModel {
 
 //    public UserDTO validLogin(String name) throws SQLException {

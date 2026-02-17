@@ -1,17 +1,12 @@
 package lk.ijse.nrlbag.model;
 
 import lk.ijse.nrlbag.db.DBConnection;
-import lk.ijse.nrlbag.dto.CustomerDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CustomerModel {
 

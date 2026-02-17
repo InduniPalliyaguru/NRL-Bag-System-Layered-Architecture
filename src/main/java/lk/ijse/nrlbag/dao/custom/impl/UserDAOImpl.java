@@ -2,7 +2,7 @@ package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.custom.UserDAO;
 import lk.ijse.nrlbag.dto.UserDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
+import lk.ijse.nrlbag.dao.CrudUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

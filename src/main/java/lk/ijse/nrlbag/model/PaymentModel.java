@@ -5,17 +5,13 @@ import lk.ijse.nrlbag.dao.custom.impl.PaymentDAOImpl;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.OrderDTO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PaymentModel {

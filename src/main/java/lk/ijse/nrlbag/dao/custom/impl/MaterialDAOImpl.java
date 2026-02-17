@@ -3,7 +3,7 @@ package lk.ijse.nrlbag.dao.custom.impl;
 import lk.ijse.nrlbag.dao.custom.MaterialDAO;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.MaterialDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
+import lk.ijse.nrlbag.dao.CrudUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

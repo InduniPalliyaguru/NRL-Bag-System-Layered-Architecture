@@ -1,13 +1,5 @@
 package lk.ijse.nrlbag.model;
 
-import lk.ijse.nrlbag.dto.SupplierDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 public class SupplierModel {
 
     // get the all details in supplier table join with material details also

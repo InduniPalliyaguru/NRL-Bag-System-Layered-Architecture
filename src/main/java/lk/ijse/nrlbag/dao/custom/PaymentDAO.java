@@ -1,11 +1,8 @@
 package lk.ijse.nrlbag.dao.custom;
 
 import lk.ijse.nrlbag.dto.PaymentDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface PaymentDAO {

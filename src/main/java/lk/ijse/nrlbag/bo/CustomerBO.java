@@ -1,7 +1,0 @@
-package lk.ijse.nrlbag.bo;
-
-public class CustomerBO {
-    public void searchCustomer() {}
-    public void deleteCustomer() {}
-    public void updateCustomer() {}
-}

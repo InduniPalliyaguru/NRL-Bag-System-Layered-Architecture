@@ -3,7 +3,7 @@ package lk.ijse.nrlbag.dao.custom.impl;
 import lk.ijse.nrlbag.dao.custom.OrdersDAO;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.OrderDTO;
-import lk.ijse.nrlbag.util.CrudUtil;
+import lk.ijse.nrlbag.dao.CrudUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
 
