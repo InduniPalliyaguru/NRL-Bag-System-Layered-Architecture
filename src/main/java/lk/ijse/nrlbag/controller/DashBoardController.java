@@ -10,9 +10,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.nrlbag.bo.BOFactory;
+import lk.ijse.nrlbag.bo.custom.DashBoardBO;
 import lk.ijse.nrlbag.dao.custom.impl.*;
 import lk.ijse.nrlbag.dto.UserDTO;
-import lk.ijse.nrlbag.model.*;
 import lk.ijse.nrlbag.util.SetBackground;
 
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class DashBoardController {
     @FXML
     private Pane rootPane;
 
-    private final UserDAOImpl userDAOImpl = new UserDAOImpl();
+    private final DashBoardBO dashBoardBO = (DashBoardBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.DASHBOARD);
 
     public void initialize() throws SQLException {
 
@@ -53,23 +54,23 @@ public class DashBoardController {
 
         /* here get the total customer count from the CustomerModel class, it assigns into the
             label total customers that have in dashboard. */
-        lblTotalCustomer.setText(String.valueOf(new CustomerDAOImpl().totalCustomerCount()));
+        lblTotalCustomer.setText(String.valueOf(dashBoardBO.totalCustomerCount()));
 
         /* here get the total order count from the OrderModel class, it assigns into the
             label total orders that have in dashboard. */
-        lblTotalOrders.setText(String.valueOf(new OrdersDAOImpl().totalOrderCount()));
+        lblTotalOrders.setText(String.valueOf(dashBoardBO.totalOrderCount()));
 
         /* here get the total low stock count from the MaterialModel class, it assigns into the
             label total low stock count that have in dashboard. */
-        lblLowStockCount.setText(String.valueOf(new MaterialDAOImpl().totalLowMaterialCount()));
+        lblLowStockCount.setText(String.valueOf(dashBoardBO.totalLowMaterialCount()));
 
         /* here get the total pending payments count from the PaymentModel class, it assigns into the
             label total pending payments that have in dashboard. */
-        lblPendingCount.setText(String.valueOf(new PaymentDAOImpl().totalPendingPaymentsCount()));
+        lblPendingCount.setText(String.valueOf(dashBoardBO.totalPendingPaymentsCount()));
 
         /* here get the total order count where deadline is overdue from the OrderModel class, it assigns into the
             label overdue that have in dashboard. */
-        lblOverdue.setText(String.valueOf(new OrdersDAOImpl().getOverdueOrderCount()));
+        lblOverdue.setText(String.valueOf(dashBoardBO.getOverdueOrderCount()));
 
         /* here get the name from userModel class, it assigns into the
             text lblGreeting that have in dashboard. */
@@ -92,7 +93,7 @@ public class DashBoardController {
         try {
 
             for (int i = 1; i<=12; i++) {
-                int count = new OrdersDAOImpl().getOrderByMonths(i);
+                int count = dashBoardBO.getOrderByMonths(i);
                 series.getData().add(new XYChart.Data<>(months[i-1],count));
             }
 
@@ -114,7 +115,7 @@ public class DashBoardController {
         double[] monthlyIncome = new double[12];
 
         try {
-            ResultSet rs = new OrdersDAOImpl().getMonthlyIncome();
+            ResultSet rs = dashBoardBO.getMonthlyIncome();
 
             while(rs.next()) {
                 int monthIndex = rs.getInt("month")-1;
@@ -155,7 +156,7 @@ public class DashBoardController {
 
     private String getName() {
         try {
-            UserDTO user = userDAOImpl.getUserDetails();
+            UserDTO user = dashBoardBO.getUserDetails();
             return user.getName();
         } catch (Exception e) {
             System.out.println(e.getMessage());

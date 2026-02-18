@@ -13,9 +13,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.nrlbag.bo.BOFactory;
+import lk.ijse.nrlbag.bo.custom.OrdersBO;
 import lk.ijse.nrlbag.dao.custom.impl.OrdersDAOImpl;
 import lk.ijse.nrlbag.dto.OrderDTO;
-import lk.ijse.nrlbag.model.OrderModel;
 
 import java.io.IOException;
 import java.net.URL;
@@ -87,7 +88,7 @@ public class OrderController implements Initializable {
 
     private final String ORDER_ID_REGEX = "^[0-9]+$";
 
-    private final OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
+    private final OrdersBO ordersBO = (OrdersBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.ORDERS);
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -128,19 +129,19 @@ public class OrderController implements Initializable {
         try {
             /* here get the total complete order count from the OrderModel class, it assigns into the
             label total complete order that have in order Management. */
-            lblComplete.setText(String.valueOf(ordersDAOImpl.completeOrderCount()));
+            lblComplete.setText(String.valueOf(ordersBO.completeOrderCount()));
 
         /* here get the total pending order count from the OrderModel class, it assigns into the
             label total pending order that have in order Management. */
-            lblPending.setText(String.valueOf(ordersDAOImpl.pendingOrderCount()));
+            lblPending.setText(String.valueOf(ordersBO.pendingOrderCount()));
 
         /* here get the total processing order count from the OrderModel class, it assigns into the
             label total processing order that have in order Management. */
-            lblProcessing.setText(String.valueOf(ordersDAOImpl.processingOrderCount()));
+            lblProcessing.setText(String.valueOf(ordersBO.processingOrderCount()));
 
         /* here get the total cancelled order count from the OrderModel class, it assigns into the
             label total cancelled order that have in order Management. */
-            lblCancel.setText(String.valueOf(ordersDAOImpl.cancelledOrderCount()));
+            lblCancel.setText(String.valueOf(ordersBO.cancelledOrderCount()));
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
@@ -151,7 +152,7 @@ public class OrderController implements Initializable {
 
         try {
 
-            List<OrderDTO> orderDTO = ordersDAOImpl.getOrders();
+            List<OrderDTO> orderDTO = ordersBO.getOrders();
 
             // TableView always requires and ObservableList it automatically update that details
             ObservableList<OrderDTO> obList = FXCollections.observableArrayList();
@@ -182,7 +183,7 @@ public class OrderController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Order ID").show();
             } else {
                 // get the details of the order through orderDTO & OderModel
-                OrderDTO orderDto = ordersDAOImpl.searchOrderByOrderID(Integer.parseInt(id));
+                OrderDTO orderDto = ordersBO.searchOrderByOrderID(Integer.parseInt(id));
 
                 // orderDTO is not null then assign their values into the text fields
                 if(orderDto!= null) {
@@ -218,7 +219,7 @@ public class OrderController implements Initializable {
             if(!id.matches(ORDER_ID_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid Customer ID").show();
             } else {
-                OrderDTO orderDto = ordersDAOImpl.searchOrderByCustomerID(Integer.parseInt(id));
+                OrderDTO orderDto = ordersBO.searchOrderByCustomerID(Integer.parseInt(id));
 
                 // get the details is had or not id not null then call the highlight orders method
                 if(orderDto!= null) {
@@ -341,7 +342,7 @@ public class OrderController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Order ID").show();
             } else {
                 // get the details of the order through orderDTO & OderModel
-                OrderDTO orderDto = ordersDAOImpl.searchOrderByOrderID(Integer.parseInt(id));
+                OrderDTO orderDto = ordersBO.searchOrderByOrderID(Integer.parseInt(id));
 
                 // orderDTO is not null then assign their values into the text fields
                 if(orderDto!= null) {

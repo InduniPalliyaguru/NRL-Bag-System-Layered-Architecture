@@ -44,13 +44,6 @@ public class MaterialUsedModel {
         try {
             // in here start the transaction and give a msg to stop the auto commit.
             conn.setAutoCommit(false);
-//            boolean isSaved = CrudUtil.execute(
-//                    conn,
-//                    "INSERT INTO Material_Used (orders_id, material_id, used_qty) VALUES (?,?,?)",
-//                    materialUsedDTO.getOrder_id(),
-//                    materialUsedDTO.getMaterial_id(),
-//                    materialUsedDTO.getQty_used()
-//            );
 
             boolean isSaved = materialUsedDAO.saveMaterialUsed(materialUsedDTO);
             if (!isSaved) {

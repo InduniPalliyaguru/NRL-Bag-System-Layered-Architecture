@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import lk.ijse.nrlbag.bo.BOFactory;
+import lk.ijse.nrlbag.bo.custom.OrderPopUpBO;
 import lk.ijse.nrlbag.dao.custom.impl.*;
 import lk.ijse.nrlbag.dto.*;
 import lk.ijse.nrlbag.dto.tm.MaterialUsedTM;
@@ -94,13 +96,14 @@ public class OrderPopupController implements Initializable {
     private double oldUsedQty = 0;
     private boolean isUpdateMode = false;
 
-    private final OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
-    private final ProductDAOImpl productDAOImpl = new ProductDAOImpl();
-    private final OrderDetailDAOImpl orderDetailDAOImpl = new OrderDetailDAOImpl();
-    private final MaterialUsedDAOImpl materialUsedDAOImpl = new MaterialUsedDAOImpl();
-    private final MaterialDAOImpl materialDAOImpl = new MaterialDAOImpl();
-    private final MaterialUsedModel materialUsedModel = new MaterialUsedModel();
+//    private final OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
+//    private final ProductDAOImpl productDAOImpl = new ProductDAOImpl();
+//    private final OrderDetailDAOImpl orderDetailDAOImpl = new OrderDetailDAOImpl();
+//    private final MaterialUsedDAOImpl materialUsedDAOImpl = new MaterialUsedDAOImpl();
+//    private final MaterialDAOImpl materialDAOImpl = new MaterialDAOImpl();
+//    private final MaterialUsedModel materialUsedModel = new MaterialUsedModel();
 
+    private final OrderPopUpBO orderPopUpBO = (OrderPopUpBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.ORDER_POP);
     private final ContextMenu materialSuggestion = new ContextMenu();
 
     @Override
@@ -207,9 +210,9 @@ public class OrderPopupController implements Initializable {
                 new Alert(Alert.AlertType.ERROR, "Invalid Product ID").show();
             } else {
                 // get the details of the order through orderDTO & OderModel
-                OrderDTO orderDto = ordersDAOImpl.searchOrderByOrderID(Integer.parseInt(id));
+                OrderDTO orderDto = orderPopUpBO.searchOrderByOrderID(Integer.parseInt(id));
                 // get the more details about order and product through the orderDetailsModel
-                OderDetailsDTO details = orderDetailDAOImpl.searchProduct(Integer.parseInt(productId));
+                OderDetailsDTO details = orderPopUpBO.searchProduct(Integer.parseInt(productId));
 
                 // orderDTO is not null then assign their values into the text fields
                 if (orderDto != null) {
@@ -335,8 +338,8 @@ public class OrderPopupController implements Initializable {
 
                 OderDetailsDTO details = new OderDetailsDTO(Integer.parseInt(orderId), Integer.parseInt(productID), Integer.parseInt(qty), Double.parseDouble(price));
                 // after that pass that to the orderModel class for connect with database
-                boolean result = ordersDAOImpl.updateOrder(orderDto);
-                boolean result1 = orderDetailDAOImpl.updateOrderDetails(details);
+                boolean result = orderPopUpBO.updateOrder(orderDto);
+                boolean result1 = orderPopUpBO.updateOrderDetails(details);
                 if (result && result1) {
                     new Alert(Alert.AlertType.INFORMATION, "Order Details Updated Successfully!").show();
                     clearFields();
@@ -377,8 +380,8 @@ public class OrderPopupController implements Initializable {
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
 
-                boolean result1 = orderDetailDAOImpl.deleteOrderDetails(Integer.parseInt(id), Integer.parseInt(productId));
-                boolean result2 = ordersDAOImpl.deleteOrder(Integer.parseInt(id));
+                boolean result1 = orderPopUpBO.deleteOrderDetails(Integer.parseInt(id), Integer.parseInt(productId));
+                boolean result2 = orderPopUpBO.deleteOrder(Integer.parseInt(id));
 
                 // result is true that mean it is deleted
                 if (result2 && result1) {
