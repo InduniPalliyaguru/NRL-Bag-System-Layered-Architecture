@@ -13,6 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.nrlbag.bo.BOFactory;
+import lk.ijse.nrlbag.bo.custom.CustomerBO;
 import lk.ijse.nrlbag.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.nrlbag.dto.CustomerDTO;
 
@@ -51,7 +53,7 @@ public class CustomerController implements Initializable {
 
     private final String CUSTOMER_CONTACT_REGEX = "^[0-9]{10}$";
 
-    private final CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
+    private final CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.CUSTOMER);
     private final ObservableList<CustomerDTO> customerList = FXCollections.observableArrayList();
     private FilteredList<CustomerDTO> filteredCustomerList;
 
@@ -91,7 +93,7 @@ public class CustomerController implements Initializable {
             if (!contact.matches(CUSTOMER_CONTACT_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid customer contact number").show();
             } else {
-                CustomerDTO customerDTO = customerDAOImpl.searchCustomer(contact);
+                CustomerDTO customerDTO = customerBO.searchCustomer(contact);
 
                 // when contact are set other information to the text fields
                 if (customerDTO != null) {
@@ -123,7 +125,7 @@ public class CustomerController implements Initializable {
     private void loadCustomerTable() {
         try {
 
-            List<CustomerDTO> cusDTO =  customerDAOImpl.getCustomer();
+            List<CustomerDTO> cusDTO =  customerBO.getCustomer();
 
             customerList.clear();
             customerList.addAll(cusDTO);
@@ -195,6 +197,7 @@ public class CustomerController implements Initializable {
             loadCustomerTable();
 
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }
@@ -208,7 +211,7 @@ public class CustomerController implements Initializable {
             if (!contact.matches(CUSTOMER_CONTACT_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid customer contact number").show();
             } else {
-                CustomerDTO customerDTO = customerDAOImpl.searchCustomer(contact);
+                CustomerDTO customerDTO = customerBO.searchCustomer(contact);
 
                 // when contact are set other information to the text fields
                 if (customerDTO != null) {

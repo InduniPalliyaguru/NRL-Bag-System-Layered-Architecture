@@ -1,10 +1,11 @@
 package lk.ijse.nrlbag.dao.custom;
 
+import lk.ijse.nrlbag.dao.SuperDAO;
 import lk.ijse.nrlbag.dto.OderDetailsDTO;
 
 import java.sql.SQLException;
 
-public interface OrderDetailDAO {
+public interface OrderDetailDAO extends SuperDAO {
 
     public boolean saveOrderDetails(OderDetailsDTO orderDTO, int orderID) throws SQLException;
 

@@ -1,11 +1,12 @@
 package lk.ijse.nrlbag.dao.custom;
 
+import lk.ijse.nrlbag.dao.SuperDAO;
 import lk.ijse.nrlbag.dto.SupplierDTO;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface SupplierDAO {
+public interface SupplierDAO extends SuperDAO {
 
     // get the all details in supplier table join with material details also
     public List<SupplierDTO> getSuppliers() throws SQLException;

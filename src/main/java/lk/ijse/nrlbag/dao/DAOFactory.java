@@ -1,6 +1,6 @@
 package lk.ijse.nrlbag.dao;
 
-import lk.ijse.nrlbag.dao.custom.impl.CustomerDAOImpl;
+import lk.ijse.nrlbag.dao.custom.impl.*;
 
 public class DAOFactory {
 
@@ -15,7 +15,7 @@ public class DAOFactory {
     }
 
     public enum DAOType {
-        CUSTOMER
+        CUSTOMER, MATERIAL, MATERIAL_USED, ORDER_DETAIL, ORDERS, PAYMENT, PRODUCT, SUPPLIER, USER
     }
 
     public SuperDAO getDAO(DAOType daoType) {
@@ -23,6 +23,22 @@ public class DAOFactory {
         switch (daoType) {
             case CUSTOMER:
                 return new CustomerDAOImpl();
+            case MATERIAL:
+                return new MaterialDAOImpl();
+            case MATERIAL_USED:
+                return new MaterialUsedDAOImpl();
+            case ORDER_DETAIL:
+                return new OrderDetailDAOImpl();
+            case ORDERS:
+                return new OrdersDAOImpl();
+            case PAYMENT:
+                return new PaymentDAOImpl();
+            case PRODUCT:
+                return new ProductDAOImpl();
+            case SUPPLIER:
+                return new SupplierDAOImpl();
+            case USER:
+                return new UserDAOImpl();
             default:
                 return null;
         }

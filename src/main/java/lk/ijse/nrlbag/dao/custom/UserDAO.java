@@ -1,10 +1,11 @@
 package lk.ijse.nrlbag.dao.custom;
 
+import lk.ijse.nrlbag.dao.SuperDAO;
 import lk.ijse.nrlbag.dto.UserDTO;
 
 import java.sql.SQLException;
 
-public interface UserDAO {
+public interface UserDAO extends SuperDAO {
 
     public UserDTO validLogin(String name) throws SQLException;
 

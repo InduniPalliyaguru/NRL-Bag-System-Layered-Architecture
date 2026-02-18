@@ -1,11 +1,12 @@
 package lk.ijse.nrlbag.dao.custom;
 
+import lk.ijse.nrlbag.dao.SuperDAO;
 import lk.ijse.nrlbag.dto.ProductDTO;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface ProductDAO {
+public interface ProductDAO extends SuperDAO {
 
     public List<ProductDTO> getProductTable() throws SQLException;
 

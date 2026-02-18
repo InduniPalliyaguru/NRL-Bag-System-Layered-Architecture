@@ -1,7 +1,9 @@
 package lk.ijse.nrlbag.bo;
 
 import lk.ijse.nrlbag.bo.custom.SuperBO;
+import lk.ijse.nrlbag.bo.custom.impl.ChangePasswordBOImpl;
 import lk.ijse.nrlbag.bo.custom.impl.CustomerBOImpl;
+import lk.ijse.nrlbag.bo.custom.impl.CustomerPopUpBOImpl;
 
 public class BOFactory {
 
@@ -16,13 +18,18 @@ public class BOFactory {
     }
 
     public enum BOTypy {
-        CUSTOMER
+        CUSTOMER , CUSTOMER_POP, CHANGE_PASSWORD
     }
 
     public SuperBO getBO(BOTypy boTypy) {
         switch(boTypy) {
             case CUSTOMER:
                 return new CustomerBOImpl();
+
+            case CUSTOMER_POP:
+                return new CustomerPopUpBOImpl();
+            case CHANGE_PASSWORD:
+                return new ChangePasswordBOImpl();
             default:
                 return null;
         }

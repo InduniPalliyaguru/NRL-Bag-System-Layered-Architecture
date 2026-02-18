@@ -1,11 +1,12 @@
 package lk.ijse.nrlbag.dao.custom;
 
+import lk.ijse.nrlbag.dao.SuperDAO;
 import lk.ijse.nrlbag.dto.MaterialUsedDTO;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface MaterialUsedDAO {
+public interface MaterialUsedDAO extends SuperDAO {
 
     public List<MaterialUsedDTO> getMaterialUsage() throws SQLException;
 

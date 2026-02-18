@@ -1,12 +1,13 @@
 package lk.ijse.nrlbag.dao.custom;
 
+import lk.ijse.nrlbag.dao.SuperDAO;
 import lk.ijse.nrlbag.dto.MaterialDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface MaterialDAO {
+public interface MaterialDAO extends SuperDAO {
 
     public MaterialDTO searchMaterial(int id) throws SQLException;
 

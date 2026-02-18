@@ -1,5 +1,6 @@
 package lk.ijse.nrlbag.dao.custom;
 
+import lk.ijse.nrlbag.dao.SuperDAO;
 import lk.ijse.nrlbag.dto.OrderDTO;
 import net.sf.jasperreports.engine.*;
 
@@ -8,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface OrdersDAO {
+public interface OrdersDAO extends SuperDAO {
 
     // get the all details in orders table join with customer details also
     public List<OrderDTO> getOrders() throws SQLException;

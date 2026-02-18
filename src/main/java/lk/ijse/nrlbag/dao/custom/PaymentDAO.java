@@ -1,11 +1,12 @@
 package lk.ijse.nrlbag.dao.custom;
 
+import lk.ijse.nrlbag.dao.SuperDAO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface PaymentDAO {
+public interface PaymentDAO extends SuperDAO {
 
     public int totalPendingPaymentsCount() throws SQLException;
 
