@@ -6,12 +6,14 @@ import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.CustomerDAO;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.CustomerDTO;
+import lk.ijse.nrlbag.entity.Customer;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerBOImpl implements CustomerBO {
@@ -20,12 +22,33 @@ public class CustomerBOImpl implements CustomerBO {
 
     @Override
     public CustomerDTO searchCustomer(String contact) throws SQLException {
-        return customerDAO.search(contact);
+        Customer cus = customerDAO.search(contact);
+        return new CustomerDTO(
+                cus.getCustomer_id(),
+                cus.getName(),
+                cus.getAddress(),
+                cus.getContact(),
+                cus.getCreate_date()
+        );
     }
 
     @Override
     public List<CustomerDTO> getCustomer() throws SQLException {
-        return customerDAO.get();
+        List<Customer> cus = customerDAO.get();
+        List<CustomerDTO> cusDTO = new ArrayList<>();
+
+        for (Customer customer : cus) {
+            CustomerDTO customerDTO = new CustomerDTO(
+                    customer.getCustomer_id(),
+                    customer.getName(),
+                    customer.getAddress(),
+                    customer.getContact(),
+                    customer.getCreate_date()
+            );
+
+            cusDTO.add(customerDTO);
+        }
+        return cusDTO;
     }
 
     @Override

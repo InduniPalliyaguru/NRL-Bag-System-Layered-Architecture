@@ -2,11 +2,12 @@ package lk.ijse.nrlbag.dao.custom;
 
 import lk.ijse.nrlbag.dao.CrudDAO;
 import lk.ijse.nrlbag.dto.CustomerDTO;
+import lk.ijse.nrlbag.entity.Customer;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface CustomerDAO extends CrudDAO<CustomerDTO> {
+public interface CustomerDAO extends CrudDAO<Customer> {
 
 //    public String saveCustomer(CustomerDTO customerDTO) throws SQLException;
 //

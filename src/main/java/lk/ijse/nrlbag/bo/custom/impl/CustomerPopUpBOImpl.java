@@ -4,6 +4,7 @@ import lk.ijse.nrlbag.bo.custom.CustomerPopUpBO;
 import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.CustomerDAO;
 import lk.ijse.nrlbag.dto.CustomerDTO;
+import lk.ijse.nrlbag.entity.Customer;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,12 +15,12 @@ public class CustomerPopUpBOImpl implements CustomerPopUpBO {
 
     @Override
     public String saveCustomer(CustomerDTO customerDTO) throws SQLException {
-        return customerDAO.save(customerDTO);
+        return customerDAO.save(new Customer(customerDTO.getName(), customerDTO.getAddress(), customerDTO.getContact()));
     }
 
     @Override
     public boolean updateCustomer(CustomerDTO customerDTO) throws SQLException {
-        return customerDAO.update(customerDTO);
+        return customerDAO.update(new Customer(customerDTO.getId(), customerDTO.getName(), customerDTO.getAddress(), customerDTO.getContact()));
     }
 
     @Override
@@ -29,7 +30,14 @@ public class CustomerPopUpBOImpl implements CustomerPopUpBO {
 
     @Override
     public CustomerDTO searchCustomer(String contact) throws SQLException {
-        return customerDAO.search(contact);
+        Customer customer = customerDAO.search(contact);
+
+        return new CustomerDTO(
+                customer.getCustomer_id(),
+                customer.getName(),
+                customer.getAddress(),
+                customer.getContact(),
+                customer.getCreate_date());
     }
 
 }
