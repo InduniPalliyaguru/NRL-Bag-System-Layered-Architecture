@@ -31,7 +31,7 @@ public class CustomerPopUpController {
     @FXML
     private TextField contactField;
 
-    private final CustomerPopUpBO customerPupUpBO = (CustomerPopUpBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.CUSTOMER_POP);
+    private final CustomerPopUpBO customerPupUpBO = (CustomerPopUpBO) BOFactory.getInstance().getBO(BOFactory.BOType.CUSTOMER_POP);
 
     private final String CUSTOMER_ID_REGEX = "^[0-9]+$";
     private final String CUSTOMER_NAME_REGEX = "^[A-Za-z]{3,}\\s[A-Za-z]{3,}$";

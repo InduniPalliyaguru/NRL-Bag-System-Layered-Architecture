@@ -9,7 +9,6 @@ import javafx.scene.control.TextField;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.PaymentBO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
-import lk.ijse.nrlbag.model.PaymentModel;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -43,7 +42,7 @@ public class PaymentPopupController implements Initializable {
     @FXML
     private ComboBox<String> comboStatus1;
 
-    private final PaymentBO paymentBO = (PaymentBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.PAYMENT);
+    private final PaymentBO paymentBO = (PaymentBO) BOFactory.getInstance().getBO(BOFactory.BOType.PAYMENT);
 
     private final String ORDER_ID_REGEX = "^[0-9]+$";
     private final String PAYMENT_ID_REGEX = "^[0-9]+$";

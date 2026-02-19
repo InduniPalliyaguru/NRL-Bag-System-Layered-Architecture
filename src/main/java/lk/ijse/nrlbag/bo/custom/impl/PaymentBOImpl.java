@@ -35,26 +35,6 @@ public class PaymentBOImpl implements PaymentBO {
     }
 
     @Override
-    public boolean savePayment(PaymentDTO paymentDTO) throws SQLException {
-        return paymentBO.savePayment(paymentDTO);
-    }
-
-    @Override
-    public double getTotalPaidAmount(PaymentDTO paymentDTO) throws SQLException {
-        return paymentBO.getTotalPaidAmount(paymentDTO);
-    }
-
-    @Override
-    public boolean updatePayment(PaymentDTO paymentDTO) throws SQLException {
-        return paymentBO.updatePayment(paymentDTO);
-    }
-
-    @Override
-    public boolean deletePayment(int payID) throws SQLException {
-        return paymentBO.deletePayment(payID);
-    }
-
-    @Override
     public boolean savePaymentWithOrderUpdate(PaymentDTO paymentDTO) throws SQLException, JRException {
         Connection conn = DBConnection.getInstance().getConnection();
 

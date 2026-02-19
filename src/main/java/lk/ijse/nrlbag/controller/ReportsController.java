@@ -4,10 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import lk.ijse.nrlbag.bo.BOFactory;
-import lk.ijse.nrlbag.bo.custom.PaymentBO;
-import lk.ijse.nrlbag.dao.custom.impl.OrdersDAOImpl;
+import lk.ijse.nrlbag.bo.custom.*;
 import lk.ijse.nrlbag.dto.OrderDTO;
-import lk.ijse.nrlbag.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +19,17 @@ public class ReportsController {
     private TextField payReportIdField;
 
     private final String ORDER_ID_REGEX = "^[0-9]+$";
-    private final OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
-    private final PaymentBO paymentBO = (PaymentBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.PAYMENT);
-    private final MaterialModel materialModel = new MaterialModel();
-    private final ProductModel productModel = new ProductModel();
-    private final CustomerModel customerModel = new CustomerModel();
+    private final OrderPopUpBO orderPupBO = (OrderPopUpBO) BOFactory.getInstance().getBO(BOFactory.BOType.ORDER_POP);
+    private final PaymentBO paymentBO = (PaymentBO) BOFactory.getInstance().getBO(BOFactory.BOType.PAYMENT);
+    private final MaterialBO materialBO = (MaterialBO) BOFactory.getInstance().getBO(BOFactory.BOType.MATERIAL);
+    private final ProductBO productModel = (ProductBO) BOFactory.getInstance().getBO(BOFactory.BOType.PRODUCT);
+    private final CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOType.CUSTOMER);
+    private final OrdersBO orderBO = (OrdersBO) BOFactory.getInstance().getBO(BOFactory.BOType.ORDERS);
 
     @FXML
     private void handleCustomerList() {
         try {
-            customerModel.printCustomerList();
+            customerBO.printCustomerList();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -39,7 +38,7 @@ public class ReportsController {
     @FXML
     private void handleLowStockReport() {
         try {
-            materialModel.printLowMaterialStockReport();
+            materialBO.printLowMaterialStockReport();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -48,7 +47,7 @@ public class ReportsController {
     @FXML
     private void handleMaterialStockReport() {
         try {
-            materialModel.printMaterialStockReport();
+            materialBO.printMaterialStockReport();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -65,7 +64,7 @@ public class ReportsController {
             } else if (checkOrderIdHaving(Integer.parseInt(orderId))) {
                 new Alert(Alert.AlertType.ERROR, "Cannot find order ID").show();
             } else {
-                ordersDAOImpl.printOrderConfirmation(Integer.parseInt(orderId));
+                orderPupBO.printOrderConfirmation(Integer.parseInt(orderId));
                 ocOrderIdField.clear();
             }
         } catch (Exception e) {
@@ -105,7 +104,7 @@ public class ReportsController {
         try {
 //            List<Integer> idList = ordersDAOImpl.getAllOrdersID();
 
-            List<OrderDTO> orderList = ordersDAOImpl.getOrders();
+            List<OrderDTO> orderList = orderBO.getOrders();
 
             List<Integer> idList = new ArrayList<>();
 

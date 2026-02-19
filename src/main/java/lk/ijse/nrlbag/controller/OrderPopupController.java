@@ -9,7 +9,6 @@ import javafx.geometry.Side;
 import javafx.scene.control.*;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.OrderPopUpBO;
-import lk.ijse.nrlbag.dao.custom.impl.*;
 import lk.ijse.nrlbag.dto.*;
 import lk.ijse.nrlbag.dto.tm.MaterialUsedTM;
 import lk.ijse.nrlbag.model.*;
@@ -103,7 +102,7 @@ public class OrderPopupController implements Initializable {
 //    private final MaterialDAOImpl materialDAOImpl = new MaterialDAOImpl();
 //    private final MaterialUsedModel materialUsedModel = new MaterialUsedModel();
 
-    private final OrderPopUpBO orderPopUpBO = (OrderPopUpBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.ORDER_POP);
+    private final OrderPopUpBO orderPopUpBO = (OrderPopUpBO) BOFactory.getInstance().getBO(BOFactory.BOType.ORDER_POP);
     private final ContextMenu materialSuggestion = new ContextMenu();
 
     @Override

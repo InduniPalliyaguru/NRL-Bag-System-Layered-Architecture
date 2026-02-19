@@ -12,7 +12,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.DashBoardBO;
-import lk.ijse.nrlbag.dao.custom.impl.*;
 import lk.ijse.nrlbag.dto.UserDTO;
 import lk.ijse.nrlbag.util.SetBackground;
 
@@ -44,7 +43,7 @@ public class DashBoardController {
     @FXML
     private Pane rootPane;
 
-    private final DashBoardBO dashBoardBO = (DashBoardBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.DASHBOARD);
+    private final DashBoardBO dashBoardBO = (DashBoardBO) BOFactory.getInstance().getBO(BOFactory.BOType.DASHBOARD);
 
     public void initialize() throws SQLException {
 

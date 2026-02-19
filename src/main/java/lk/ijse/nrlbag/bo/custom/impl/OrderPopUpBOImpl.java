@@ -5,10 +5,15 @@ import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.*;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.*;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.view.JasperViewer;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderPopUpBOImpl implements OrderPopUpBO {
 
@@ -235,7 +240,7 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
                 if (result) {
                     // print invoice
 
-                    ordersDAO.printOrderConfirmation(lastOrderId);
+                    printOrderConfirmation(lastOrderId);
                 } else {
                     throw new Exception("Something went wrong when print document");
                 }
@@ -253,5 +258,21 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
         } finally {
             conn.setAutoCommit(true);
         }
+    }
+
+    @Override
+    public void printOrderConfirmation(int orderID) throws SQLException, JRException {
+        Connection conn = DBConnection.getInstance().getConnection();
+
+        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/orderConfirmation.jrxml");
+
+        JasperReport jr = JasperCompileManager.compileReport(reportObj);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ORDER_ID", orderID);
+
+        JasperPrint jp = JasperFillManager.fillReport(jr, params, conn);
+
+        JasperViewer.viewReport(jp, false);
     }
 }

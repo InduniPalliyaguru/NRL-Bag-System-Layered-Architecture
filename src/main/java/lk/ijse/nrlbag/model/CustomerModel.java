@@ -94,19 +94,18 @@ public class CustomerModel {
 //        return customerCount;
 //
 //    }
-
-    public void printCustomerList() throws SQLException, JRException {
-
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/customerList.jrxml");
-
-        JasperReport jr = JasperCompileManager.compileReport(reportObj);
-
-        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
-
-        JasperViewer.viewReport(jp, false);
-
-    }
+//    public void printCustomerList() throws SQLException, JRException {
+//
+//        Connection conn = DBConnection.getInstance().getConnection();
+//
+//        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/customerList.jrxml");
+//
+//        JasperReport jr = JasperCompileManager.compileReport(reportObj);
+//
+//        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
+//
+//        JasperViewer.viewReport(jp, false);
+//
+//    }
 
 }

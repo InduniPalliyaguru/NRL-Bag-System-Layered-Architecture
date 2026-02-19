@@ -7,8 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import lk.ijse.nrlbag.App;
 import lk.ijse.nrlbag.bo.BOFactory;
-import lk.ijse.nrlbag.bo.custom.LoginBO;
-import lk.ijse.nrlbag.dao.custom.impl.UserDAOImpl;
+import lk.ijse.nrlbag.bo.custom.UserBO;
 import lk.ijse.nrlbag.dto.UserDTO;
 import lk.ijse.nrlbag.util.EmailService;
 
@@ -18,7 +17,7 @@ import java.util.Optional;
 public class LoginController {
 
 
-    private final LoginBO loginBO = (LoginBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.LOGIN);
+    private final UserBO userBO = (UserBO) BOFactory.getInstance().getBO(BOFactory.BOType.USER);
 
     @FXML
     private TextField usernameField;
@@ -35,7 +34,7 @@ public class LoginController {
             String name = usernameField.getText();
             String password = passwordField.getText();
 
-            UserDTO user = loginBO.validLogin(name);
+            UserDTO user = userBO.validLogin(name);
 
             if(user != null) {
                 if(user.getUserPassword().equals(password)) {
@@ -99,7 +98,7 @@ public class LoginController {
 
         try {
             // get the user password using the enter email
-            String actualPassword = loginBO.getPasswordByEmail(email);
+            String actualPassword = userBO.getPasswordByEmail(email);
             // if email have in the system
             if (actualPassword != null) {
                 // send the recovery email

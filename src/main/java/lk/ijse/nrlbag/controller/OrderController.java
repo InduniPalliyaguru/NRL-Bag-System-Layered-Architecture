@@ -15,7 +15,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.OrdersBO;
-import lk.ijse.nrlbag.dao.custom.impl.OrdersDAOImpl;
 import lk.ijse.nrlbag.dto.OrderDTO;
 
 import java.io.IOException;
@@ -88,7 +87,7 @@ public class OrderController implements Initializable {
 
     private final String ORDER_ID_REGEX = "^[0-9]+$";
 
-    private final OrdersBO ordersBO = (OrdersBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.ORDERS);
+    private final OrdersBO ordersBO = (OrdersBO) BOFactory.getInstance().getBO(BOFactory.BOType.ORDERS);
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

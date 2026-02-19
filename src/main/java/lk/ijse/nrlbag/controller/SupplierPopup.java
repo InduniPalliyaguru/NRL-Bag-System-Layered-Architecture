@@ -4,9 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import lk.ijse.nrlbag.dao.custom.impl.SupplierDAOImpl;
+import lk.ijse.nrlbag.bo.BOFactory;
+import lk.ijse.nrlbag.bo.custom.SupplierBO;
 import lk.ijse.nrlbag.dto.SupplierDTO;
-import lk.ijse.nrlbag.model.SupplierModel;
 
 import java.util.Optional;
 
@@ -29,7 +29,7 @@ public class SupplierPopup {
     @FXML
     private TextField contactField1;
 
-    private final SupplierDAOImpl supplierDAOImpl = new SupplierDAOImpl();
+    private final SupplierBO supplierBO = (SupplierBO) BOFactory.getInstance().getBO(BOFactory.BOType.SUPPLIER);
 
     private final String SUPPLIER_ID_REGEX = "^[0-9]+$";
     private final String SUPPLIER_NAME_REGEX = "^[A-Za-z]{3,}\\s[A-Za-z]{3,}$";
@@ -59,7 +59,7 @@ public class SupplierPopup {
                 SupplierDTO supplierDTO = new SupplierDTO(name, address, contact);
 
                 // after that pass it to Supplier model to save in database
-                String rs = supplierDAOImpl.saveSupplier(supplierDTO);
+                String rs = supplierBO.saveSupplier(supplierDTO);
 
                 if (rs.isEmpty()) {
                     // rs == null mean it is saved and there has no errors
@@ -92,7 +92,7 @@ public class SupplierPopup {
                 new Alert(Alert.AlertType.ERROR, "Invalid Supplier ID!").show();
             } else {
 
-                SupplierDTO supDTO = supplierDAOImpl.searchSupplier(Integer.parseInt(id));
+                SupplierDTO supDTO = supplierBO.searchSupplier(Integer.parseInt(id));
 
                 if (supDTO != null) {
                     supIdField1.setText(String.valueOf(supDTO.getId()));
@@ -140,7 +140,7 @@ public class SupplierPopup {
                 // pass the data to the model class for update the database
 
                 SupplierDTO supplierDTO = new SupplierDTO(Integer.parseInt(id), name, address, contact);
-                boolean result = supplierDAOImpl.updateSupplier(supplierDTO);
+                boolean result = supplierBO.updateSupplier(supplierDTO);
 
                 // if result is true that mean there had an update.
                 if (result) {
@@ -179,7 +179,7 @@ public class SupplierPopup {
             if (result.isPresent() && result.get() == ButtonType.OK) {
 
                 // after the validation pass the id to supplier model for delete
-                boolean result1 = supplierDAOImpl.deleteSupplier(Integer.parseInt(id));
+                boolean result1 = supplierBO.deleteSupplier(Integer.parseInt(id));
 
                 if(result1) {
                     new Alert(Alert.AlertType.INFORMATION, "Supplier Deleted Successfully").show();

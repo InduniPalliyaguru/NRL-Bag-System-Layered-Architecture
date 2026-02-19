@@ -98,35 +98,33 @@ public class MaterialModel {
 //        );
 //        return result;
 //    }
-
-    public void printMaterialStockReport() throws SQLException, JRException {
-
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/materialStockReport.jrxml");
-
-        JasperReport jr = JasperCompileManager.compileReport(reportObj);
-
-        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
-
-        JasperViewer.viewReport(jp, false);
-
-    }
-
-    public void printLowMaterialStockReport() throws SQLException, JRException {
-
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/lowStockMaterial.jrxml");
-
-        JasperReport jr = JasperCompileManager.compileReport(reportObj);
-
-        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
-
-        JasperViewer.viewReport(jp, false);
-
-    }
-
+//    public void printMaterialStockReport() throws SQLException, JRException {
+//
+//        Connection conn = DBConnection.getInstance().getConnection();
+//
+//        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/materialStockReport.jrxml");
+//
+//        JasperReport jr = JasperCompileManager.compileReport(reportObj);
+//
+//        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
+//
+//        JasperViewer.viewReport(jp, false);
+//
+//    }
+//
+//    public void printLowMaterialStockReport() throws SQLException, JRException {
+//
+//        Connection conn = DBConnection.getInstance().getConnection();
+//
+//        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/lowStockMaterial.jrxml");
+//
+//        JasperReport jr = JasperCompileManager.compileReport(reportObj);
+//
+//        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
+//
+//        JasperViewer.viewReport(jp, false);
+//
+//    }
 //    public List<MaterialDTO> searchMaterialByKeyword(String keyword) throws SQLException {
 //
 //        // here, get the all the material details to the list using MaterialDTO
@@ -154,5 +152,4 @@ public class MaterialModel {
 //        }
 //        return materialList;
 //    }
-
 }

@@ -6,8 +6,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import lk.ijse.nrlbag.bo.BOFactory;
-import lk.ijse.nrlbag.bo.custom.ChangePasswordBO;
-import lk.ijse.nrlbag.dao.custom.impl.UserDAOImpl;
+import lk.ijse.nrlbag.bo.custom.UserBO;
 import lk.ijse.nrlbag.dto.UserDTO;
 
 public class ChangePasswordController {
@@ -21,7 +20,7 @@ public class ChangePasswordController {
     @FXML
     private PasswordField newPasswordField;
 
-    private final ChangePasswordBO changePasswordBO = (ChangePasswordBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.CHANGE_PASSWORD);
+    private final UserBO userBO = (UserBO) BOFactory.getInstance().getBO(BOFactory.BOType.USER);
 
     private final String normal = "-fx-background-color: transparent; -fx-border-width: 0 0 1 0; -fx-border-color: linear-gradient(to right, #003D99, #001433);";
     private final String error  = "-fx-background-color: transparent; -fx-border-width: 0 0 1 0; -fx-border-color: linear-gradient(to right, #CC1F1F, #9e0404);";
@@ -48,7 +47,7 @@ public class ChangePasswordController {
                 confirmPasswordField.setStyle(error);
                 confirmPasswordField.clear();
             } else {
-                boolean isChanged = changePasswordBO.updateLoginPassword(newPassword);
+                boolean isChanged = userBO.updateLoginPassword(newPassword);
 
                 if (isChanged) {
                     new Alert(Alert.AlertType.INFORMATION, "Password Change Successfully!").show();
@@ -70,7 +69,7 @@ public class ChangePasswordController {
         try {
             if (event.getCode() == KeyCode.ENTER) {
                 String currentPassword = currentPasswordField.getText();
-                UserDTO userDTO = changePasswordBO.getUserDetails();
+                UserDTO userDTO = userBO.getUserDetails();
 
                 // get the input password and compare the validity
                 if (currentPassword.equals(userDTO.getUserPassword())) {

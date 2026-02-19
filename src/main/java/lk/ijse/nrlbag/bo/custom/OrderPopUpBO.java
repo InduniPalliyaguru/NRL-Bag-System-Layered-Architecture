@@ -2,6 +2,7 @@ package lk.ijse.nrlbag.bo.custom;
 
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.*;
+import net.sf.jasperreports.engine.JRException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -40,4 +41,6 @@ public interface OrderPopUpBO extends SuperBO{
     public List<MaterialDTO> searchMaterialByKeyword(String keyword) throws SQLException;
 
     public boolean saveOrderAndOrderID(OrderDTO orderDto) throws Exception;
+
+    public void printOrderConfirmation(int orderID) throws SQLException, JRException;
 }

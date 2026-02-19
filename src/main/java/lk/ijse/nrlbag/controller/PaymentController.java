@@ -51,7 +51,7 @@ public class PaymentController implements Initializable {
     @FXML
     private ComboBox<String> comboStatus;
 
-    private final PaymentBO paymentBO = (PaymentBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.PAYMENT);
+    private final PaymentBO paymentBO = (PaymentBO) BOFactory.getInstance().getBO(BOFactory.BOType.PAYMENT);
 
     private final String PAYMENT_ID_REGEX = "^[0-9]+$";
 

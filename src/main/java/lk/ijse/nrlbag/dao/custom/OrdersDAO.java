@@ -40,8 +40,6 @@ public interface OrdersDAO extends SuperDAO {
 
     public int getOverdueOrderCount() throws SQLException;
 
-    public void printOrderConfirmation(int orderID) throws SQLException, JRException;
-
     public int saveOrder(OrderDTO orderDto) throws SQLException;
 
 }

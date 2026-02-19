@@ -15,28 +15,32 @@ public class BOFactory {
         return boFactory == null ? new BOFactory() : boFactory;
     }
 
-    public enum BOTypy {
-        CUSTOMER , CUSTOMER_POP, CHANGE_PASSWORD, DASHBOARD, LOGIN, ORDERS, ORDER_POP, PAYMENT
+    public enum BOType {
+        CUSTOMER , CUSTOMER_POP, USER, DASHBOARD, ORDERS, ORDER_POP, PAYMENT, PRODUCT, MATERIAL, SUPPLIER
     }
 
-    public SuperBO getBO(BOTypy boTypy) {
-        switch(boTypy) {
+    public SuperBO getBO(BOType boType) {
+        switch(boType) {
             case CUSTOMER:
                 return new CustomerBOImpl();
             case CUSTOMER_POP:
                 return new CustomerPopUpBOImpl();
-            case CHANGE_PASSWORD:
-                return new ChangePasswordBOImpl();
+            case USER:
+                return new UserBOImpl();
             case DASHBOARD:
                 return new DashBoardBOImpl();
-            case LOGIN:
-                return new LoginBOImpl();
             case ORDERS:
                 return new OrdersBOImpl();
             case ORDER_POP:
                 return new OrderPopUpBOImpl();
             case PAYMENT:
                 return new PaymentBOImpl();
+            case PRODUCT:
+                return new ProductBOImpl();
+            case MATERIAL:
+                return new MaterialBOImpl();
+            case SUPPLIER:
+                return new SupplierBOImpl();
             default:
                 return null;
         }

@@ -16,14 +16,6 @@ public interface PaymentBO extends SuperBO{
 
     public PaymentDTO searchPayment(int id) throws SQLException;
 
-    public boolean savePayment(PaymentDTO paymentDTO) throws SQLException;
-
-    public double getTotalPaidAmount(PaymentDTO paymentDTO) throws SQLException;
-
-    public boolean updatePayment(PaymentDTO paymentDTO) throws SQLException;
-
-    public boolean deletePayment(int payID) throws SQLException;
-
     public boolean savePaymentWithOrderUpdate(PaymentDTO paymentDTO) throws SQLException, JRException;
 
     public boolean updatePaymentWithOrderUpdate(PaymentDTO paymentDTO) throws SQLException;

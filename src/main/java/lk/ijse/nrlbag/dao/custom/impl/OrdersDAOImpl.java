@@ -268,23 +268,6 @@ public class OrdersDAOImpl implements OrdersDAO {
         return 0;
     }
 
-    public void printOrderConfirmation(int orderID) throws SQLException, JRException {
-
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/orderConfirmation.jrxml");
-
-        JasperReport jr = JasperCompileManager.compileReport(reportObj);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("ORDER_ID", orderID);
-
-        JasperPrint jp = JasperFillManager.fillReport(jr, params, conn);
-
-        JasperViewer.viewReport(jp, false);
-
-    }
-
     public int saveOrder(OrderDTO orderDto) throws SQLException {
 
         return CrudUtil.executeAndReturnGeneratedKey("INSERT INTO Orders (customer_id, order_date, deadline, status, total_cost, remaining_payment) VALUES (?,?,?,?,?,?)",

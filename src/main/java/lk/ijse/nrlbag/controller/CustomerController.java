@@ -15,7 +15,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.CustomerBO;
-import lk.ijse.nrlbag.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.nrlbag.dto.CustomerDTO;
 
 import java.io.IOException;
@@ -53,7 +52,7 @@ public class CustomerController implements Initializable {
 
     private final String CUSTOMER_CONTACT_REGEX = "^[0-9]{10}$";
 
-    private final CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.CUSTOMER);
+    private final CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOType.CUSTOMER);
     private final ObservableList<CustomerDTO> customerList = FXCollections.observableArrayList();
     private FilteredList<CustomerDTO> filteredCustomerList;
 
