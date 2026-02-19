@@ -9,8 +9,8 @@ import java.sql.Connection;
 
 public class OrderModel {
 
-    private final OrderDetailDAOImpl orderDetailDAOImpl = new OrderDetailDAOImpl();
-    OrdersDAOImpl ordersDAO = new OrdersDAOImpl();
+//    private final OrderDetailDAOImpl orderDetailDAOImpl = new OrderDetailDAOImpl();
+//    OrdersDAOImpl ordersDAO = new OrdersDAOImpl();
 
     // get the all details in orders table join with customer details also
 //    public List< OrderDTO> getOrders() throws SQLException {
@@ -70,43 +70,43 @@ public class OrderModel {
 //    }
 
     // Transaction part
-    public boolean saveOrderAndOrderID(OrderDTO orderDto) throws Exception {
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        try {
-
-            conn.setAutoCommit(false);
-
-            // pass the query for save to the database
-            int lastOrderId = ordersDAO.saveOrder(orderDto);
-
-            if (lastOrderId != 0) {
-                boolean result = orderDetailDAOImpl.saveOrderDetails(orderDto.getOrderDetails(), lastOrderId);
-
-                if (result) {
-                    // print invoice
-
-                    ordersDAO.printOrderConfirmation(lastOrderId);
-                } else {
-                    throw new Exception("Something went wrong when print document");
-                }
-            } else {
-                throw new Exception("Something went wrong when get order item id");
-            }
-
-            conn.commit();
-            return true;
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.setAutoCommit(true);
-        }
-
-
-    }
+//    public boolean saveOrderAndOrderID(OrderDTO orderDto) throws Exception {
+//        Connection conn = DBConnection.getInstance().getConnection();
+//
+//        try {
+//
+//            conn.setAutoCommit(false);
+//
+//            // pass the query for save to the database
+//            int lastOrderId = ordersDAO.saveOrder(orderDto);
+//
+//            if (lastOrderId != 0) {
+//                boolean result = orderDetailDAOImpl.saveOrderDetails(orderDto.getOrderDetails(), lastOrderId);
+//
+//                if (result) {
+//                    // print invoice
+//
+//                    ordersDAO.printOrderConfirmation(lastOrderId);
+//                } else {
+//                    throw new Exception("Something went wrong when print document");
+//                }
+//            } else {
+//                throw new Exception("Something went wrong when get order item id");
+//            }
+//
+//            conn.commit();
+//            return true;
+//
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            conn.rollback();
+//            throw e;
+//        } finally {
+//            conn.setAutoCommit(true);
+//        }
+//
+//
+//    }
 
 //    public OrderDTO searchOrderByOrderID(int id) throws SQLException {
 //

@@ -11,9 +11,8 @@ import java.sql.SQLException;
 
 public class MaterialUsedModel {
 
-    private final MaterialDAOImpl materialDAOImpl = new MaterialDAOImpl();
-    private final MaterialUsedDAOImpl materialUsedDAO = new MaterialUsedDAOImpl();
-
+//    private final MaterialDAOImpl materialDAOImpl = new MaterialDAOImpl();
+//    private final MaterialUsedDAOImpl materialUsedDAO = new MaterialUsedDAOImpl();
 //    public List<MaterialUsedDTO> getMaterialUsage() throws SQLException {
 //        ResultSet rs = CrudUtil.execute(
 //                "SELECT mu.orders_id, mu.material_id, mu.used_qty, m.name, m.unit " +
@@ -36,39 +35,37 @@ public class MaterialUsedModel {
 //        return materialUsedList;
 //
 //    }
-
-    public boolean saveMaterialUsage(MaterialUsedDTO materialUsedDTO, double newAvailableQty) throws SQLException{
-
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        try {
-            // in here start the transaction and give a msg to stop the auto commit.
-            conn.setAutoCommit(false);
-
-            boolean isSaved = materialUsedDAO.saveMaterialUsed(materialUsedDTO);
-            if (!isSaved) {
-                conn.rollback();
-                return false;
-            }
-            // in here send qty available for database update
-            boolean isUpdated = materialDAOImpl.updateMaterialQtyAvailable(conn, newAvailableQty, materialUsedDTO.getMaterial_id());
-
-            if (!isUpdated) {
-                conn.rollback();
-                return false;
-            }
-            conn.commit();
-            return true;
-
-        } catch (Exception e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.setAutoCommit(true);
-        }
-
-    }
-
+//    public boolean saveMaterialUsage(MaterialUsedDTO materialUsedDTO, double newAvailableQty) throws SQLException{
+//
+//        Connection conn = DBConnection.getInstance().getConnection();
+//
+//        try {
+//            // in here start the transaction and give a msg to stop the auto commit.
+//            conn.setAutoCommit(false);
+//
+//            boolean isSaved = materialUsedDAO.saveMaterialUsed(materialUsedDTO);
+//            if (!isSaved) {
+//                conn.rollback();
+//                return false;
+//            }
+//            // in here send qty available for database update
+//            boolean isUpdated = materialDAOImpl.updateMaterialQtyAvailable(conn, newAvailableQty, materialUsedDTO.getMaterial_id());
+//
+//            if (!isUpdated) {
+//                conn.rollback();
+//                return false;
+//            }
+//            conn.commit();
+//            return true;
+//
+//        } catch (Exception e) {
+//            conn.rollback();
+//            throw e;
+//        } finally {
+//            conn.setAutoCommit(true);
+//        }
+//
+//    }
 //    public MaterialUsedDTO searchMaterialUsage(int materialID) throws SQLException {
 //
 //        ResultSet rs = CrudUtil.execute("SELECT * FROM Material_Used WHERE material_id=?", materialID);
@@ -82,127 +79,118 @@ public class MaterialUsedModel {
 //        }
 //        return null;
 //    }
-
 //    public boolean searchMaterialUsageByOrderID(int orderID) throws SQLException {
 //
 //        ResultSet rs = CrudUtil.execute("SELECT * FROM Material_Used WHERE orders_id=?", orderID);
 //
 //        return rs.next();
 //    }
-
-    public boolean updateMaterialUsage(MaterialUsedDTO dto) throws SQLException {
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        try {
-            conn.setAutoCommit(false);
-
-            // get the old used qty
-            double oldUsedQty = materialUsedDAO.getOldUsedQty(dto.getOrder_id(), dto.getMaterial_id());
-
-            // get the current stock
-            MaterialDTO materialDTO = materialDAOImpl.searchMaterial(dto.getMaterial_id());
-
-            if (materialDTO == null) {
-                conn.rollback();
-                return false;
-            }
-
-            double currentStock = materialDTO.getQtyAvailable();
-
-            // calculate the differences
-            double differences = dto.getQty_used() - oldUsedQty;
-            double newStock = currentStock - differences;
-
-            // then update the material used
-//            boolean isUpdated = CrudUtil.execute(
+//    public boolean updateMaterialUsage(MaterialUsedDTO dto) throws SQLException {
+//        Connection conn = DBConnection.getInstance().getConnection();
+//
+//        try {
+//            conn.setAutoCommit(false);
+//
+//            // get the old used qty
+//            double oldUsedQty = materialUsedDAO.getOldUsedQty(dto.getOrder_id(), dto.getMaterial_id());
+//
+//            // get the current stock
+//            MaterialDTO materialDTO = materialDAOImpl.searchMaterial(dto.getMaterial_id());
+//
+//            if (materialDTO == null) {
+//                conn.rollback();
+//                return false;
+//            }
+//
+//            double currentStock = materialDTO.getQtyAvailable();
+//
+//            // calculate the differences
+//            double differences = dto.getQty_used() - oldUsedQty;
+//            double newStock = currentStock - differences;
+//
+//            // then update the material used
+//
+//            boolean isUpdated = materialUsedDAO.updateMaterialUsage(dto);
+//            if (!isUpdated) {
+//                conn.rollback();
+//                return false;
+//            }
+//
+//            boolean isStockUpdated = materialDAOImpl.updateMaterialQtyAvailable(
 //                    conn,
-//                    "UPDATE Material_Used SET used_qty=? WHERE orders_id=? AND material_id=?",
-//                    dto.getQty_used(),
-//                    dto.getOrder_id(),
+//                    newStock,
 //                    dto.getMaterial_id()
 //            );
-
-            boolean isUpdated = materialUsedDAO.updateMaterialUsage(dto);
-            if (!isUpdated) {
-                conn.rollback();
-                return false;
-            }
-
-            boolean isStockUpdated = materialDAOImpl.updateMaterialQtyAvailable(
-                    conn,
-                    newStock,
-                    dto.getMaterial_id()
-            );
-            if (!isStockUpdated) {
-                conn.rollback();
-                return false;
-            }
-
-            conn.commit();
-            return true;
-        } catch (Exception e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.setAutoCommit(true);
-        }
-    }
-
-    public boolean deleteMaterialUsage(int orderID, int materialID) throws SQLException {
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        try {
-            conn.setAutoCommit(false);
-
-            // get the old used qty
-            double oldUsedQty = materialUsedDAO.getOldUsedQty(orderID, materialID);
-
-            // get the current stock
-            MaterialDTO materialDTO = materialDAOImpl.searchMaterial(materialID);
-
-            if (materialDTO == null) {
-                conn.rollback();
-                return false;
-            }
-
-            double currentStock = materialDTO.getQtyAvailable();
-
-            // when deleting the material usage of the order that material qty add to the stock again.
-            double newStock = currentStock + oldUsedQty;
-
-            // then update the material used
+//            if (!isStockUpdated) {
+//                conn.rollback();
+//                return false;
+//            }
+//
+//            conn.commit();
+//            return true;
+//        } catch (Exception e) {
+//            conn.rollback();
+//            throw e;
+//        } finally {
+//            conn.setAutoCommit(true);
+//        }
+//    }
+//
+//    public boolean deleteMaterialUsage(int orderID, int materialID) throws SQLException {
+//        Connection conn = DBConnection.getInstance().getConnection();
+//
+//        try {
+//            conn.setAutoCommit(false);
+//
+//            // get the old used qty
+//            double oldUsedQty = materialUsedDAO.getOldUsedQty(orderID, materialID);
+//
+//            // get the current stock
+//            MaterialDTO materialDTO = materialDAOImpl.searchMaterial(materialID);
+//
+//            if (materialDTO == null) {
+//                conn.rollback();
+//                return false;
+//            }
+//
+//            double currentStock = materialDTO.getQtyAvailable();
+//
+//            // when deleting the material usage of the order that material qty add to the stock again.
+//            double newStock = currentStock + oldUsedQty;
+//
+//            // then update the material used
 //            boolean isDeleted = CrudUtil.execute(
 //                    conn,
 //                    "DELETE FROM Material_Used WHERE orders_id=? AND material_id=?",
 //                    orderID,
 //                    materialID
 //            );
-
-            boolean isDeleted = materialUsedDAO.deleteMaterialUsage(orderID, materialID);
-            if (!isDeleted) {
-                conn.rollback();
-                return false;
-            }
-
-            boolean isStockUpdated = materialDAOImpl.updateMaterialQtyAvailable(
-                    conn,
-                    newStock,
-                    materialID
-            );
-            if (!isStockUpdated) {
-                conn.rollback();
-                return false;
-            }
-
-            conn.commit();
-            return true;
-        } catch (Exception e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.setAutoCommit(true);
-        }
-    }
+//
+//            boolean isDeleted = materialUsedDAO.deleteMaterialUsage(orderID, materialID);
+//            if (!isDeleted) {
+//                conn.rollback();
+//                return false;
+//            }
+//
+//            boolean isStockUpdated = materialDAOImpl.updateMaterialQtyAvailable(
+//                    conn,
+//                    newStock,
+//                    materialID
+//            );
+//            if (!isStockUpdated) {
+//                conn.rollback();
+//                return false;
+//            }
+//
+//            conn.commit();
+//            return true;
+//        } catch (Exception e) {
+//            conn.rollback();
+//            throw e;
+//        } finally {
+//            conn.setAutoCommit(true);
+//        }
+//    }
 
 //    public double getOldUsedQty(int orderID, int materialID) throws SQLException {
 //        ResultSet rs = CrudUtil.execute(

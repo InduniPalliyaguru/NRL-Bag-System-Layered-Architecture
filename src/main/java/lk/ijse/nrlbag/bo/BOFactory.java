@@ -16,7 +16,7 @@ public class BOFactory {
     }
 
     public enum BOTypy {
-        CUSTOMER , CUSTOMER_POP, CHANGE_PASSWORD, DASHBOARD, LOGIN, ORDERS, ORDER_POP
+        CUSTOMER , CUSTOMER_POP, CHANGE_PASSWORD, DASHBOARD, LOGIN, ORDERS, ORDER_POP, PAYMENT
     }
 
     public SuperBO getBO(BOTypy boTypy) {
@@ -35,6 +35,8 @@ public class BOFactory {
                 return new OrdersBOImpl();
             case ORDER_POP:
                 return new OrderPopUpBOImpl();
+            case PAYMENT:
+                return new PaymentBOImpl();
             default:
                 return null;
         }

@@ -6,7 +6,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import lk.ijse.nrlbag.dao.custom.impl.PaymentDAOImpl;
+import lk.ijse.nrlbag.bo.BOFactory;
+import lk.ijse.nrlbag.bo.custom.PaymentBO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 import lk.ijse.nrlbag.model.PaymentModel;
 
@@ -42,8 +43,7 @@ public class PaymentPopupController implements Initializable {
     @FXML
     private ComboBox<String> comboStatus1;
 
-    private final PaymentDAOImpl paymentDAOImpl = new PaymentDAOImpl();
-    private final PaymentModel paymentModel = new PaymentModel();
+    private final PaymentBO paymentBO = (PaymentBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.PAYMENT);
 
     private final String ORDER_ID_REGEX = "^[0-9]+$";
     private final String PAYMENT_ID_REGEX = "^[0-9]+$";
@@ -73,7 +73,7 @@ public class PaymentPopupController implements Initializable {
             if (!id.matches(PAYMENT_ID_REGEX)) {
                 new Alert(Alert.AlertType.ERROR, "Invalid Payment ID").show();
             } else {
-                PaymentDTO paymentDTO = paymentDAOImpl.searchPayment(Integer.parseInt(id));
+                PaymentDTO paymentDTO = paymentBO.searchPayment(Integer.parseInt(id));
 
                 // when id are set, other information to the text fields
                 if (paymentDTO != null) {
@@ -128,7 +128,7 @@ public class PaymentPopupController implements Initializable {
                 PaymentDTO payDTO = new PaymentDTO(Integer.parseInt(ordersID),Double.parseDouble(amount),date,type,status);
 
                 //Change to the business class
-                boolean result = paymentModel.savePaymentWithOrderUpdate(payDTO);
+                boolean result = paymentBO.savePaymentWithOrderUpdate(payDTO);
 
                 if (result) {
                     new Alert(Alert.AlertType.INFORMATION, "Payment added successfully!").show();
@@ -176,7 +176,7 @@ public class PaymentPopupController implements Initializable {
                 PaymentDTO payDTO = new PaymentDTO(Integer.parseInt(paymentID),Integer.parseInt(ordersID),Double.parseDouble(amount),date,type,status);
 
                 // Change to the business class
-                boolean result = paymentModel.updatePaymentWithOrderUpdate(payDTO);
+                boolean result = paymentBO.updatePaymentWithOrderUpdate(payDTO);
 
                 if (result) {
                     new Alert(Alert.AlertType.INFORMATION, "Payment update successfully!").show();
@@ -217,7 +217,7 @@ public class PaymentPopupController implements Initializable {
                 // after the validation pass the id to customer model for delete
 
                 //change to the business class
-                boolean result1 = paymentModel.deletePaymentWithOrderUpdate(Integer.parseInt(id), Integer.parseInt(orderId));
+                boolean result1 = paymentBO.deletePaymentWithOrderUpdate(Integer.parseInt(id), Integer.parseInt(orderId));
 
                 if (result1) {
                     new Alert(Alert.AlertType.INFORMATION, "Payment Deleted Successfully").show();

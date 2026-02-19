@@ -283,7 +283,7 @@ public class OrderPopupController implements Initializable {
 
                 // Change later to Business layer
                 OrderModel orderModel = new OrderModel();
-                boolean result = orderModel.saveOrderAndOrderID(orderDto);
+                boolean result = orderPopUpBO.saveOrderAndOrderID(orderDto);
 
                 if (result) {
                     new Alert(Alert.AlertType.INFORMATION, "Order Added Successfully!").show();
@@ -427,7 +427,7 @@ public class OrderPopupController implements Initializable {
                 MaterialUsedDTO materialUsedDTO = new MaterialUsedDTO(Integer.parseInt(orderId), Integer.parseInt(materialId), Integer.parseInt(orderQty));
 
                 // pass to the model class to insert into the database
-                boolean isSaved = materialUsedModel.saveMaterialUsage(materialUsedDTO, Double.parseDouble(availableQty));
+                boolean isSaved = orderPopUpBO.saveMaterialUsage(materialUsedDTO, Double.parseDouble(availableQty));
 
                 if (isSaved) {
                     new Alert(Alert.AlertType.INFORMATION, "Material Usage Added Successfully!").show();
@@ -453,10 +453,10 @@ public class OrderPopupController implements Initializable {
             } else {
 
                 // get value from the materialUsedDTO
-                MaterialUsedDTO materialUsedDTO = materialUsedDAOImpl.searchMaterialUsage(materialID);
+                MaterialUsedDTO materialUsedDTO = orderPopUpBO.searchMaterialUsage(materialID);
 
                 if (materialUsedDTO != null) {
-                    MaterialDTO materialDTO = materialDAOImpl.searchMaterial(materialID);
+                    MaterialDTO materialDTO = orderPopUpBO.searchMaterial(materialID);
                     if (materialDTO != null) {
                         orderIdField.setText(String.valueOf(materialUsedDTO.getOrder_id()));
                         materialIdField.setText(String.valueOf(materialDTO.getMaterial_id()));
@@ -485,7 +485,7 @@ public class OrderPopupController implements Initializable {
 
         try {
             String orderID = searchOrderIdField.getText().trim();
-            boolean isHave = materialUsedDAOImpl.searchMaterialUsageByOrderID(Integer.parseInt(orderID));
+            boolean isHave = orderPopUpBO.searchMaterialUsageByOrderID(Integer.parseInt(orderID));
 
             if (isHave) {
                 highlightSearchOrderMaterialUsage(Integer.parseInt(orderID));
@@ -520,7 +520,7 @@ public class OrderPopupController implements Initializable {
                 MaterialUsedDTO materialUsedDTO = new MaterialUsedDTO(Integer.parseInt(orderId), Integer.parseInt(materialId), Integer.parseInt(orderQty));
 
                 // pass to the model class to insert into the database
-                boolean isUpdated = materialUsedModel.updateMaterialUsage(materialUsedDTO);
+                boolean isUpdated = orderPopUpBO.updateMaterialUsage(materialUsedDTO);
 
                 if (isUpdated) {
                     new Alert(Alert.AlertType.INFORMATION, "Material Usage Updated Successfully!").show();
@@ -560,7 +560,7 @@ public class OrderPopupController implements Initializable {
 
                 if (result.isPresent() && result.get() == ButtonType.OK) {
                     //when deleting the material usage of the order that material qty add to the stock again.
-                    boolean isDeleted = materialUsedModel.deleteMaterialUsage(Integer.parseInt(orderID), Integer.parseInt(materialID));
+                    boolean isDeleted = orderPopUpBO.deleteMaterialUsage(Integer.parseInt(orderID), Integer.parseInt(materialID));
 
                     if (isDeleted) {
                         new Alert(Alert.AlertType.INFORMATION, "Order Material Usage detail delete Successfully!").show();
@@ -627,7 +627,7 @@ public class OrderPopupController implements Initializable {
                 return;
             }
 
-            ProductDTO proDTO = productDAOImpl.searchProduct(Integer.parseInt(productId));
+            ProductDTO proDTO = orderPopUpBO.searchProducts(Integer.parseInt(productId));
 
             // after that get name and price according to the product id
             // set to the name and price fields
@@ -685,7 +685,7 @@ public class OrderPopupController implements Initializable {
                 return;
             }
 
-            ProductDTO proDTO = productDAOImpl.searchProduct(Integer.parseInt(productId));
+            ProductDTO proDTO = orderPopUpBO.searchProducts(Integer.parseInt(productId));
 
             // after that get name and price according to the product id
             // set to the name and price fields
@@ -737,7 +737,7 @@ public class OrderPopupController implements Initializable {
         try {
 
             // here get data from the material usage table
-            List<MaterialUsedDTO> materialDTO = materialUsedDAOImpl.getMaterialUsage();
+            List<MaterialUsedDTO> materialDTO = orderPopUpBO.getMaterialUsage();
 
             // next crete root node of the tree table
             TreeItem<MaterialUsedTM> root = new TreeItem<>();
@@ -801,7 +801,7 @@ public class OrderPopupController implements Initializable {
             }
             MaterialDTO materialDTO = null;
             if (text.matches(MATERIAL_ID_REGEX)) {
-                materialDTO = materialDAOImpl.searchMaterial(Integer.parseInt(text));
+                materialDTO = orderPopUpBO.searchMaterial(Integer.parseInt(text));
 
             }
 
@@ -833,7 +833,7 @@ public class OrderPopupController implements Initializable {
                 return;
             }
                 double newUsedQty = Double.parseDouble(useQty);
-                MaterialDTO materialDTO = materialDAOImpl.searchMaterial(Integer.parseInt(materialId));
+                MaterialDTO materialDTO = orderPopUpBO.searchMaterial(Integer.parseInt(materialId));
 
             double currentStock = materialDTO.getQtyAvailable();
 
@@ -910,7 +910,7 @@ public class OrderPopupController implements Initializable {
 
         try {
             // get matching material from the database
-            List<MaterialDTO> materials = materialDAOImpl.searchMaterialByKeyword(text);
+            List<MaterialDTO> materials = orderPopUpBO.searchMaterialByKeyword(text);
             System.out.println("Materials found: " + materials.size());
 
             // if empty or nothing found from material, materialSuggestion hide

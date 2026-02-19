@@ -3,6 +3,8 @@ package lk.ijse.nrlbag.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import lk.ijse.nrlbag.bo.BOFactory;
+import lk.ijse.nrlbag.bo.custom.PaymentBO;
 import lk.ijse.nrlbag.dao.custom.impl.OrdersDAOImpl;
 import lk.ijse.nrlbag.dto.OrderDTO;
 import lk.ijse.nrlbag.model.*;
@@ -20,7 +22,7 @@ public class ReportsController {
 
     private final String ORDER_ID_REGEX = "^[0-9]+$";
     private final OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
-    private final PaymentModel paymentModel = new PaymentModel();
+    private final PaymentBO paymentBO = (PaymentBO) BOFactory.getInstance().getBO(BOFactory.BOTypy.PAYMENT);
     private final MaterialModel materialModel = new MaterialModel();
     private final ProductModel productModel = new ProductModel();
     private final CustomerModel customerModel = new CustomerModel();
@@ -81,7 +83,7 @@ public class ReportsController {
             }  else if (checkOrderIdHaving(Integer.parseInt(orderId))) {
                 new Alert(Alert.AlertType.ERROR, "Cannot find order ID").show();
             } else {
-                paymentModel.printOrderPaymentReceipt(Integer.parseInt(orderId));
+                paymentBO.printOrderPaymentReceipt(Integer.parseInt(orderId));
                 payReportIdField.clear();
             }
         } catch (Exception e) {
