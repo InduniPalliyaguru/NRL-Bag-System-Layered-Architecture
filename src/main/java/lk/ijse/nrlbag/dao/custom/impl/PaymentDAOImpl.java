@@ -1,8 +1,8 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.custom.PaymentDAO;
-import lk.ijse.nrlbag.dto.PaymentDTO;
 import lk.ijse.nrlbag.dao.CrudUtil;
+import lk.ijse.nrlbag.entity.Payment;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,64 +27,68 @@ public class PaymentDAOImpl implements PaymentDAO {
     }
 
     // get the all details in payment table
-    public List<PaymentDTO> getPayments() throws SQLException {
+    @Override
+    public List<Payment> get() throws SQLException {
         ResultSet rs = CrudUtil.execute("SELECT * FROM Payment");
 
-        List<PaymentDTO> paymentList = new ArrayList<>();
+        List<Payment> paymentList = new ArrayList<>();
 
         // get rows one by one and add into payment list
         while (rs.next()) {
-            PaymentDTO paymentDTO = new PaymentDTO(
+            Payment payment = new Payment(
                     rs.getInt("payment_id"),
-                    rs.getInt("orders_id"),
                     rs.getDouble("amount"),
                     rs.getString("payment_date"),
                     rs.getString("type"),
-                    rs.getString("status")
+                    rs.getString("status"),
+                    rs.getInt("orders_id")
             );
-            paymentList.add(paymentDTO);
+            paymentList.add(payment);
         }
         return paymentList;
 
     }
 
-    public PaymentDTO searchPayment(int id) throws SQLException {
+    @Override
+    public Payment searchData(int id) throws SQLException {
 
         // get the payments details from the database
         ResultSet rs = CrudUtil.execute("SELECT * FROM Payment WHERE payment_id=?",id);
 
         if (rs.next()) {
-            return new PaymentDTO(
+            return new Payment(
                     rs.getInt("payment_id"),
-                    rs.getInt("orders_id"),
                     rs.getDouble("amount"),
                     rs.getString("payment_date"),
                     rs.getString("type"),
-                    rs.getString("status")
+                    rs.getString("status"),
+                    rs.getInt("orders_id")
             );
         }
         return null;
 
     }
 
-    public boolean savePayment(PaymentDTO paymentDTO) throws SQLException {
+    @Override
+    public boolean saveData(Payment entity) throws SQLException {
 
         return CrudUtil.execute(
                 "INSERT INTO Payment (amount, payment_date, type, status, orders_id) VALUES (?,?,?,?,?)",
-                paymentDTO.getAmount(),
-                paymentDTO.getPayment_date(),
-                paymentDTO.getType(),
-                paymentDTO.getStatus(),
-                paymentDTO.getOrder_id()
+                entity.getAmount(),
+                entity.getPayment_date(),
+                entity.getType(),
+                entity.getStatus(),
+                entity.getOrder_id()
         );
 
     }
 
-    public double getTotalPaidAmount(PaymentDTO paymentDTO) throws SQLException {
+    @Override
+    public double getTotalPaidAmount(Payment entity) throws SQLException {
         ResultSet rsPaid = CrudUtil.execute(
 
                 "SELECT COALESCE(SUM(amount),0) AS paid FROM Payment WHERE orders_id = ?",
-                paymentDTO.getOrder_id()
+                entity.getOrder_id()
         );
 
         if (rsPaid.next()) {
@@ -94,24 +98,41 @@ public class PaymentDAOImpl implements PaymentDAO {
         return 0;
     }
 
-    public boolean updatePayment(PaymentDTO paymentDTO) throws SQLException {
+    @Override
+    public boolean update(Payment entity) throws SQLException {
         return CrudUtil.execute(
 
                     "UPDATE Payment SET amount=?, payment_date=?, type=?, status=?, orders_id=? WHERE payment_id=?",
-                    paymentDTO.getAmount(),
-                    paymentDTO.getPayment_date(),
-                    paymentDTO.getType(),
-                    paymentDTO.getStatus(),
-                    paymentDTO.getOrder_id(),
-                    paymentDTO.getId()
+                    entity.getAmount(),
+                    entity.getPayment_date(),
+                    entity.getType(),
+                    entity.getStatus(),
+                    entity.getOrder_id(),
+                    entity.getPayment_id()
             );
     }
 
-    public boolean deletePayment(int payID) throws SQLException {
+    @Override
+    public boolean deleteData(int payID) throws SQLException {
         return CrudUtil.execute(
                 "DELETE FROM Payment WHERE payment_id=?",
                 payID
         );
+    }
+
+    @Override
+    public String save(Payment entity) throws SQLException {
+        return "";
+    }
+
+    @Override
+    public boolean delete(String id) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public Payment search(String contact) throws SQLException {
+        return null;
     }
 
 }

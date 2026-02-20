@@ -1,37 +1,62 @@
 package lk.ijse.nrlbag.bo.custom.impl;
 
-import lk.ijse.nrlbag.bo.BOFactory;
-import lk.ijse.nrlbag.bo.custom.OrdersBO;
 import lk.ijse.nrlbag.bo.custom.PaymentBO;
 import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.OrdersDAO;
 import lk.ijse.nrlbag.dao.custom.PaymentDAO;
+import lk.ijse.nrlbag.dao.custom.QueryDAO;
 import lk.ijse.nrlbag.db.DBConnection;
-import lk.ijse.nrlbag.dto.OrderDTO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
+import lk.ijse.nrlbag.dto.tm.OrdersTM;
+import lk.ijse.nrlbag.entity.Payment;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PaymentBOImpl implements PaymentBO {
 
-    private final OrdersDAO ordersBO = (OrdersDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.ORDERS);
-    private final PaymentDAO paymentBO = (PaymentDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.PAYMENT);
+    private final OrdersDAO ordersDAO = (OrdersDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.ORDERS);
+    private final PaymentDAO paymentDAO = (PaymentDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.PAYMENT);
+    private final QueryDAO queryDAO = (QueryDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.QUERY);
 
     @Override
     public List<PaymentDTO> getPayments() throws SQLException {
-        return paymentBO.getPayments();
+//        int id, int order_id, double amount, String payment_date, String type, String status
+        List<Payment> payments = paymentDAO.get();
+        List<PaymentDTO> paymentDTOS = new ArrayList<>();
+
+        for (Payment pay : payments) {
+            PaymentDTO paymentDTO = new PaymentDTO(
+                    pay.getPayment_id(),
+                    pay.getOrder_id(),
+                    pay.getAmount(),
+                    pay.getPayment_date(),
+                    pay.getType(),
+                    pay.getStatus()
+            );
+            paymentDTOS.add(paymentDTO);
+        }
+        return paymentDTOS;
     }
 
     @Override
     public PaymentDTO searchPayment(int id) throws SQLException {
-        return paymentBO.searchPayment(id);
+        Payment pay = paymentDAO.searchData(id);
+        return new PaymentDTO(
+                pay.getPayment_id(),
+                pay.getOrder_id(),
+                pay.getAmount(),
+                pay.getPayment_date(),
+                pay.getType(),
+                pay.getStatus()
+        );
     }
 
     @Override
@@ -43,7 +68,14 @@ public class PaymentBOImpl implements PaymentBO {
             conn.setAutoCommit(false);
 
             // next save the payment in database in temporary
-            boolean paymentSaved = paymentBO.savePayment(paymentDTO);
+            boolean paymentSaved = paymentDAO.saveData(new Payment(
+                    paymentDTO.getId(),
+                    paymentDTO.getAmount(),
+                    paymentDTO.getPayment_date(),
+                    paymentDTO.getType(),
+                    paymentDTO.getStatus(),
+                    paymentDTO.getOrder_id()
+            ));
 
             if (!paymentSaved) {
                 conn.rollback();
@@ -52,12 +84,12 @@ public class PaymentBOImpl implements PaymentBO {
 
             // here get the total order cost from order table through orderModel
 
-            OrderDTO orderDetail = ordersBO.searchOrderByOrderID(paymentDTO.getOrder_id());
+            OrdersTM orderDetail = queryDAO.searchOrderByOrderID(paymentDTO.getOrder_id());
 
             double totalCost = orderDetail.getTotal_cost();
 
-
-            double totalPaid = paymentBO.getTotalPaidAmount(paymentDTO);
+            Payment payment = new Payment(paymentDTO.getId(), paymentDTO.getAmount(), paymentDTO.getPayment_date(), paymentDTO.getType(), paymentDTO.getStatus(), paymentDTO.getOrder_id());
+            double totalPaid = paymentDAO.getTotalPaidAmount(payment);
             if (totalPaid == 0) {
                 return false;
             }
@@ -71,7 +103,7 @@ public class PaymentBOImpl implements PaymentBO {
             }
 
             // update the order table
-            boolean orderUpdate = ordersBO.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
+            boolean orderUpdate = ordersDAO.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
 
             if (!orderUpdate) {
                 conn.rollback();
@@ -99,8 +131,8 @@ public class PaymentBOImpl implements PaymentBO {
             // in here start the transaction
             conn.setAutoCommit(false);
 
-
-            boolean paymentUpdate = paymentBO.updatePayment(paymentDTO);
+            Payment payment = new Payment(paymentDTO.getId(), paymentDTO.getAmount(), paymentDTO.getPayment_date(), paymentDTO.getType(), paymentDTO.getStatus(), paymentDTO.getOrder_id());
+            boolean paymentUpdate = paymentDAO.update(payment);
             if (!paymentUpdate) {
                 conn.rollback();
                 return false;
@@ -108,13 +140,13 @@ public class PaymentBOImpl implements PaymentBO {
 
             // here get the total order cost
 
-            OrderDTO orderDetail = ordersBO.searchOrderByOrderID(paymentDTO.getOrder_id());
+            OrdersTM orderDetail = queryDAO.searchOrderByOrderID(paymentDTO.getOrder_id());
 
             double totalCost = orderDetail.getTotal_cost();
 
             // here get the total paid amount
 
-            double totalPaid = paymentBO.getTotalPaidAmount(paymentDTO);
+            double totalPaid = paymentDAO.getTotalPaidAmount(payment);
             if (totalPaid == 0) {
                 return false;
             }
@@ -128,7 +160,7 @@ public class PaymentBOImpl implements PaymentBO {
             }
 
             // update the order table
-            boolean orderUpdate = ordersBO.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
+            boolean orderUpdate = ordersDAO.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
 
             if (!orderUpdate) {
                 conn.rollback();
@@ -154,7 +186,7 @@ public class PaymentBOImpl implements PaymentBO {
 
             // next delete the payment in database
 
-            boolean paymentUpdate = paymentBO.deletePayment(payID);
+            boolean paymentUpdate = paymentDAO.deleteData(payID);
             if (!paymentUpdate) {
                 conn.rollback();
                 return false;
@@ -162,7 +194,7 @@ public class PaymentBOImpl implements PaymentBO {
 
             // here get the total order cost
 
-            OrderDTO orderDetail = ordersBO.searchOrderByOrderID(orderID);
+            OrdersTM orderDetail = queryDAO.searchOrderByOrderID(orderID);
 
             double totalCost = orderDetail.getTotal_cost();
 
@@ -170,7 +202,7 @@ public class PaymentBOImpl implements PaymentBO {
             double remaining = totalCost;
 
             // update the order table
-            boolean orderUpdate = ordersBO.updateOrderRemainingPayment(conn, remaining, orderID);
+            boolean orderUpdate = ordersDAO.updateOrderRemainingPayment(conn, remaining, orderID);
 
             if (!orderUpdate) {
                 conn.rollback();

@@ -5,12 +5,14 @@ import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.MaterialDAO;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.MaterialDTO;
+import lk.ijse.nrlbag.entity.Material;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MaterialBOImpl implements MaterialBO {
@@ -19,27 +21,61 @@ public class MaterialBOImpl implements MaterialBO {
 
     @Override
     public MaterialDTO searchMaterial(int id) throws SQLException {
-        return materialDAO.searchMaterial(id);
+        Material material = materialDAO.searchData(id);
+
+        return new MaterialDTO(
+                material.getMaterial_id(),
+                material.getSupplier_id(),
+                material.getName(),
+                material.getUnit(),
+                material.getQty_available()
+        );
     }
 
     @Override
     public boolean saveMaterial(MaterialDTO materialDTO) throws SQLException {
-        return materialDAO.saveMaterial(materialDTO);
+        return materialDAO.saveData(new Material(
+                materialDTO.getMaterial_id(),
+                materialDTO.getMaterial_name(),
+                materialDTO.getUnit(),
+                materialDTO.getQtyAvailable(),
+                materialDTO.getSupplier_id()
+        ));
     }
 
     @Override
     public boolean updateMaterial(MaterialDTO materialDTO) throws SQLException {
-        return materialDAO.updateMaterial(materialDTO);
+        return materialDAO.update(new Material(
+                materialDTO.getMaterial_id(),
+                materialDTO.getMaterial_name(),
+                materialDTO.getUnit(),
+                materialDTO.getQtyAvailable(),
+                materialDTO.getSupplier_id()
+        ));
     }
 
     @Override
     public boolean deleteMaterial(int id) throws SQLException {
-        return materialDAO.deleteMaterial(id);
+        return materialDAO.deleteData(id);
     }
 
     @Override
     public List<MaterialDTO> getMaterial() throws SQLException {
-        return materialDAO.getMaterial();
+        List<Material> material = materialDAO.get();
+        List<MaterialDTO> materialDTOS = new ArrayList<>();
+
+        for (Material material1 : material) {
+            MaterialDTO materialDTO = new MaterialDTO(
+                    material1.getMaterial_id(),
+                    material1.getSupplier_id(),
+                    material1.getName(),
+                    material1.getUnit(),
+                    material1.getQty_available()
+            );
+
+            materialDTOS.add(materialDTO);
+        }
+        return materialDTOS;
     }
 
     @Override

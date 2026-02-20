@@ -1,54 +1,32 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.custom.MaterialUsedDAO;
-import lk.ijse.nrlbag.dto.MaterialUsedDTO;
 import lk.ijse.nrlbag.dao.CrudUtil;
+import lk.ijse.nrlbag.entity.Material_Used;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MaterialUsedDAOImpl implements MaterialUsedDAO {
 
-    public List<MaterialUsedDTO> getMaterialUsage() throws SQLException {
-        ResultSet rs = CrudUtil.execute(
-                "SELECT mu.orders_id, mu.material_id, mu.used_qty, m.name, m.unit " +
-                        "FROM Material m JOIN Material_Used mu ON m.material_id = mu.material_id;"
-        );
-
-        List<MaterialUsedDTO> materialUsedList = new ArrayList<>();
-
-        // get rows one by one and add into order list
-        while (rs.next()) {
-            MaterialUsedDTO usedList = new MaterialUsedDTO(
-                    rs.getInt("orders_id"),
-                    rs.getInt("material_id"),
-                    rs.getInt("used_qty"),
-                    rs.getString("name"),
-                    rs.getString("unit")
-            );
-            materialUsedList.add(usedList);
-        }
-        return materialUsedList;
-
-    }
-
-    public boolean saveMaterialUsed(MaterialUsedDTO materialUsedDTO) throws SQLException {
+    @Override
+    public boolean saveData(Material_Used entity) throws SQLException {
         return CrudUtil.execute(
                 "INSERT INTO Material_Used (orders_id, material_id, used_qty) VALUES (?,?,?)",
-                materialUsedDTO.getOrder_id(),
-                materialUsedDTO.getMaterial_id(),
-                materialUsedDTO.getQty_used()
+                entity.getOrder_id(),
+                entity.getMaterial_id(),
+                entity.getUsed_qty()
         );
     }
 
-    public MaterialUsedDTO searchMaterialUsage(int materialID) throws SQLException {
+    @Override
+    public Material_Used searchData(int materialID) throws SQLException {
 
         ResultSet rs = CrudUtil.execute("SELECT * FROM Material_Used WHERE material_id=?", materialID);
 
         if (rs.next()) {
-            return new MaterialUsedDTO(
+            return new Material_Used(
                     rs.getInt("orders_id"),
                     rs.getInt("material_id"),
                     rs.getDouble("used_qty")
@@ -57,6 +35,7 @@ public class MaterialUsedDAOImpl implements MaterialUsedDAO {
         return null;
     }
 
+    @Override
     public boolean searchMaterialUsageByOrderID(int orderID) throws SQLException {
 
         ResultSet rs = CrudUtil.execute("SELECT * FROM Material_Used WHERE orders_id=?", orderID);
@@ -64,16 +43,18 @@ public class MaterialUsedDAOImpl implements MaterialUsedDAO {
         return rs.next();
     }
 
-    public boolean updateMaterialUsage(MaterialUsedDTO dto) throws SQLException {
+    @Override
+    public boolean update(Material_Used entity) throws SQLException {
         return CrudUtil.execute(
 
                 "UPDATE Material_Used SET used_qty=? WHERE orders_id=? AND material_id=?",
-                dto.getQty_used(),
-                dto.getOrder_id(),
-                dto.getMaterial_id()
+                entity.getUsed_qty(),
+                entity.getOrder_id(),
+                entity.getMaterial_id()
         );
     }
 
+    @Override
     public boolean deleteMaterialUsage(int orderID, int materialID) throws SQLException {
         return CrudUtil.execute(
                 "DELETE FROM Material_Used WHERE orders_id=? AND material_id=?",
@@ -82,6 +63,7 @@ public class MaterialUsedDAOImpl implements MaterialUsedDAO {
         );
     }
 
+    @Override
     public double getOldUsedQty(int orderID, int materialID) throws SQLException {
         ResultSet rs = CrudUtil.execute(
                 "SELECT used_qty FROM Material_Used WHERE orders_id=? AND material_id=?",
@@ -91,6 +73,31 @@ public class MaterialUsedDAOImpl implements MaterialUsedDAO {
             return rs.getDouble("used_qty");
         }
         return 0;
+    }
+
+    @Override
+    public boolean delete(String id) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public Material_Used search(String contact) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public List<Material_Used> get() throws SQLException {
+        return List.of();
+    }
+
+    @Override
+    public boolean deleteData(int id) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public String save(Material_Used entity) throws SQLException {
+        return "";
     }
 
 }

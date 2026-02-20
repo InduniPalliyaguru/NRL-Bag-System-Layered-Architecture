@@ -1,20 +1,17 @@
 package lk.ijse.nrlbag.dao.custom;
 
-import lk.ijse.nrlbag.dao.SuperDAO;
+import lk.ijse.nrlbag.dao.CrudDAO;
 import lk.ijse.nrlbag.dto.UserDTO;
+import lk.ijse.nrlbag.entity.User;
 
 import java.sql.SQLException;
 
-public interface UserDAO extends SuperDAO {
+public interface UserDAO extends CrudDAO<User> {
 
-    public UserDTO validLogin(String name) throws SQLException;
+     UserDTO getUserDetails() throws SQLException;
 
-    public UserDTO getUserDetails() throws SQLException;
+     boolean updateLoginPassword(String password) throws SQLException;
 
-    public boolean updateUserDetails(UserDTO userDTO) throws SQLException;
-
-    public boolean updateLoginPassword(String password) throws SQLException;
-
-    public String getPasswordByEmail(String email) throws SQLException ;
+     String getPasswordByEmail(String email) throws SQLException ;
 
 }

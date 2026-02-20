@@ -2,8 +2,8 @@ package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.custom.MaterialDAO;
 import lk.ijse.nrlbag.db.DBConnection;
-import lk.ijse.nrlbag.dto.MaterialDTO;
 import lk.ijse.nrlbag.dao.CrudUtil;
+import lk.ijse.nrlbag.entity.Material;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +14,8 @@ import java.util.List;
 
 public class MaterialDAOImpl implements MaterialDAO {
 
-    public MaterialDTO searchMaterial(int id) throws SQLException {
+    @Override
+    public Material searchData(int id) throws SQLException {
         ResultSet rs = CrudUtil.execute("SELECT * FROM Material WHERE material_id=?", id);
 
         if (rs.next()) {
@@ -24,39 +25,43 @@ public class MaterialDAOImpl implements MaterialDAO {
             String unit = rs.getString("unit");
             double qty = rs.getDouble("qty_available");
 
-            return new MaterialDTO(materialId,supId,materialName,unit,qty);
+            return new Material(materialId, materialName, unit, qty, supId);
         }
         return null;
     }
 
     // pass values, to insert in the database
-    public boolean saveMaterial(MaterialDTO materialDTO) throws SQLException {
+    @Override
+    public boolean saveData(Material entity) throws SQLException {
         boolean result = CrudUtil.execute("INSERT INTO Material (name, unit, qty_available, supplier_id) VALUES (?,?,?,?)",
-                materialDTO.getMaterial_name(),
-                materialDTO.getUnit(),
-                materialDTO.getQtyAvailable(),
-                materialDTO.getSupplier_id()
+                entity.getName(),
+                entity.getUnit(),
+                entity.getQty_available(),
+                entity.getSupplier_id()
         );
         return result;
     }
 
-    public boolean updateMaterial(MaterialDTO materialDTO) throws SQLException {
+    @Override
+    public boolean update(Material entity) throws SQLException {
         boolean result = CrudUtil.execute("UPDATE Material SET name=?, unit=?, qty_available=?, supplier_id=? WHERE material_id=? ",
-                materialDTO.getMaterial_name(),
-                materialDTO.getUnit(),
-                materialDTO.getQtyAvailable(),
-                materialDTO.getSupplier_id(),
-                materialDTO.getMaterial_id()
+                entity.getName(),
+                entity.getUnit(),
+                entity.getQty_available(),
+                entity.getSupplier_id(),
+                entity.getMaterial_id()
         );
         return result;
     }
 
-    public boolean deleteMaterial(int id) throws SQLException {
+    @Override
+    public boolean deleteData(int id) throws SQLException {
         boolean result = CrudUtil.execute("DELETE FROM Material WHERE material_id=?",id);
 
         return result;
     }
 
+    @Override
     public int totalLowMaterialCount() throws SQLException {
 
         // in here get the number of material below 10 from Material table
@@ -72,27 +77,29 @@ public class MaterialDAOImpl implements MaterialDAO {
 
     }
 
-    public List<MaterialDTO> getMaterial() throws SQLException {
+    @Override
+    public List<Material> get() throws SQLException {
 
         // here, get the all the material details to the list using MaterialDTO
         ResultSet rs = CrudUtil.execute("SELECT * FROM Material ORDER BY material_id DESC");
 
-        List<MaterialDTO> materialList = new ArrayList<>();
+        List<Material> materialList = new ArrayList<>();
 
         while(rs.next()) {
-            MaterialDTO matDTO = new MaterialDTO(
+            Material material = new Material(
                     rs.getInt("material_id"),
-                    rs.getInt("supplier_id"),
                     rs.getString("name"),
                     rs.getString("unit"),
-                    rs.getDouble("qty_available")
+                    rs.getDouble("qty_available"),
+                    rs.getInt("supplier_id")
 
             );
-            materialList.add(matDTO);
+            materialList.add(material);
         }
         return materialList;
     }
 
+    @Override
     public boolean updateMaterialQtyAvailable(Connection conn, double newQty, int materialID) throws SQLException {
         boolean result = CrudUtil.execute(
                 conn,
@@ -103,12 +110,13 @@ public class MaterialDAOImpl implements MaterialDAO {
         return result;
     }
 
-    public List<MaterialDTO> searchMaterialByKeyword(String keyword) throws SQLException {
+    @Override
+    public List<Material> searchMaterialByKeyword(String keyword) throws SQLException {
 
         // here, get the all the material details to the list using MaterialDTO
         String sql = "SELECT * FROM Material WHERE material_id LIKE ? OR name LIKE ? LIMIT 10";
 
-        List<MaterialDTO> materialList = new ArrayList<>();
+        List<Material> materialList = new ArrayList<>();
 
         PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(sql);
 
@@ -117,18 +125,34 @@ public class MaterialDAOImpl implements MaterialDAO {
 
         ResultSet rs = ps.executeQuery();
 
+//        int material_id, String name, String unit, double qty_available, int supplier_id
         while(rs.next()) {
-            MaterialDTO matDTO = new MaterialDTO(
+            Material matDTO = new Material(
                     rs.getInt("material_id"),
-                    rs.getInt("supplier_id"),
                     rs.getString("name"),
                     rs.getString("unit"),
-                    rs.getDouble("qty_available")
+                    rs.getDouble("qty_available"),
+                    rs.getInt("supplier_id")
 
             );
             materialList.add(matDTO);
         }
         return materialList;
+    }
+
+    @Override
+    public String save(Material entity) throws SQLException {
+        return "";
+    }
+
+    @Override
+    public boolean delete(String id) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public Material search(String contact) throws SQLException {
+        return null;
     }
 
 }

@@ -1,65 +1,18 @@
 package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.custom.OrdersDAO;
-import lk.ijse.nrlbag.db.DBConnection;
-import lk.ijse.nrlbag.dto.OrderDTO;
 import lk.ijse.nrlbag.dao.CrudUtil;
+import lk.ijse.nrlbag.entity.Orders;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.view.JasperViewer;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class OrdersDAOImpl implements OrdersDAO {
 
-    // get the all details in orders table join with customer details also
-    public List<OrderDTO> getOrders() throws SQLException {
-
-        ResultSet rs = CrudUtil.execute("SELECT " +
-                " o.orders_id," +
-                " o.customer_id," +
-                " c.name," +
-                " c.contact," +
-                " o.order_date," +
-                " o.deadline," +
-                " o.status," +
-                " o.total_cost," +
-                " o.remaining_payment," +
-                " od.product_id," +
-                " od.quantity" +
-                " FROM Orders o" +
-                " JOIN Customer c ON o.customer_id = c.customer_id" +
-                " LEFT JOIN Order_Details od ON o.orders_id = od.orders_id;");
-
-        List<OrderDTO> orderList = new ArrayList<>();
-
-        // get rows one by one and add into order list
-        while (rs.next()) {
-            OrderDTO orderDTO = new OrderDTO(
-                    rs.getInt("orders_id"),
-                    rs.getInt("customer_id"),
-                    rs.getString("name"),
-                    rs.getString("contact"),
-                    rs.getString("order_date"),
-                    rs.getString("deadline"),
-                    rs.getString("status"),
-                    rs.getDouble("total_cost"),
-                    rs.getDouble(("remaining_payment")),
-                    rs.getInt("product_id"),
-                    rs.getInt("quantity")
-            );
-            orderList.add(orderDTO);
-        }
-        return orderList;
-
-    }
-
+    @Override
     public int totalOrderCount() throws SQLException {
 
         // in here get the number of orders from customer table
@@ -75,75 +28,32 @@ public class OrdersDAOImpl implements OrdersDAO {
 
     }
 
-    public OrderDTO searchOrderByOrderID(int id) throws SQLException {
-
-        // here, get details of the order and customer who place that order using a join query
-        ResultSet rs = CrudUtil.execute("SELECT c.name, c.contact,o.customer_id, o.orders_id, o.order_date, " +
-                "o.deadline, o.status, o.total_cost, o.remaining_payment FROM Orders o JOIN Customer c ON " +
-                "o.customer_id = c.customer_id WHERE orders_id=?;",id);
-
-        if(rs.next()) {
-            int orderId = rs.getInt("orders_id");
-            int cus_id = rs.getInt("customer_id");
-            String order_date = rs.getString("order_date");
-            String deadline = rs.getString("deadline");
-            String status = rs.getString("status");
-            double cost = rs.getDouble("total_cost");
-            double remain = rs.getDouble("remaining_payment");
-            String cusName = rs.getString("name");
-            String contact = rs.getString("contact");
-
-            return new OrderDTO(orderId,cus_id,cusName,contact,order_date,deadline,status,cost,remain);
-        }
-        return null;
-    }
-
-    public OrderDTO searchOrderByCustomerID(int id) throws SQLException {
-
-        // here, get details of the all orders and customer who place that orders using a join query
-        ResultSet rs = CrudUtil.execute("SELECT c.name, c.contact,o.customer_id, o.orders_id, o.order_date, " +
-                "o.deadline, o.status, o.total_cost, o.remaining_payment FROM Orders o JOIN Customer c ON " +
-                "o.customer_id = c.customer_id WHERE o.customer_id=?;",id);
-
-        if(rs.next()) {
-            int orderId = rs.getInt("orders_id");
-            int cus_id = rs.getInt("customer_id");
-            String order_date = rs.getString("order_date");
-            String deadline = rs.getString("deadline");
-            String status = rs.getString("status");
-            double cost = rs.getDouble("total_cost");
-            double remain = rs.getDouble("remaining_payment");
-            String cusName = rs.getString("name");
-            String contact = rs.getString("contact");
-
-            return new OrderDTO(orderId,cus_id,cusName,contact,order_date,deadline,status,cost,remain);
-        }
-        return null;
-    }
-
-    public boolean updateOrder(OrderDTO orderDto) throws SQLException {
+    @Override
+    public boolean update(Orders entity) throws SQLException {
 
         // pass the query for update the database
         boolean result = CrudUtil.execute("UPDATE Orders SET customer_id=?, order_date=?, deadline=?, status=?, total_cost=?, remaining_payment=? WHERE orders_id=?;",
-                orderDto.getCustomer_id(),
-                orderDto.getOrder_date(),
-                orderDto.getDeadline(),
-                orderDto.getStatus(),
-                orderDto.getTotal_cost(),
-                orderDto.getTotal_cost(),
-                orderDto.getId()
+                entity.getCustomer_id(),
+                entity.getOrder_date(),
+                entity.getDeadline(),
+                entity.getStatus(),
+                entity.getTotal_cost(),
+                entity.getTotal_cost(),
+                entity.getOrders_id()
         );
         return result;
 
     }
 
-    public boolean deleteOrder(int id) throws SQLException {
+    @Override
+    public boolean deleteData(int id) throws SQLException {
 
         boolean result = CrudUtil.execute("DELETE FROM Orders WHERE orders_id=?",id);
         return result;
 
     }
 
+    @Override
     public int completeOrderCount() throws SQLException{
 
         // in here get the number of orders from customer table
@@ -159,6 +69,7 @@ public class OrdersDAOImpl implements OrdersDAO {
 
     }
 
+    @Override
     public int pendingOrderCount() throws SQLException{
 
         // in here get the number of orders from customer table
@@ -174,6 +85,7 @@ public class OrdersDAOImpl implements OrdersDAO {
 
     }
 
+    @Override
     public int processingOrderCount() throws SQLException{
 
         // in here get the number of orders from customer table
@@ -189,6 +101,7 @@ public class OrdersDAOImpl implements OrdersDAO {
 
     }
 
+    @Override
     public int cancelledOrderCount() throws SQLException{
 
         // in here get the number of orders from customer table
@@ -204,6 +117,7 @@ public class OrdersDAOImpl implements OrdersDAO {
 
     }
 
+    @Override
     public int getOrderByMonths(int month) throws SQLException {
         ResultSet rs = CrudUtil.execute("SELECT COUNT(*) FROM Orders WHERE MONTH(order_date)=?",month);
 
@@ -213,6 +127,7 @@ public class OrdersDAOImpl implements OrdersDAO {
         return 0;
     }
 
+    @Override
     public ResultSet getMonthlyIncome() throws SQLException {
 
         ResultSet resultSet = CrudUtil.execute("SELECT MONTH(payment_date) AS month, SUM(amount) AS income " +
@@ -222,19 +137,7 @@ public class OrdersDAOImpl implements OrdersDAO {
         return resultSet;
     }
 
-//    public ResultSet getOrderCost(Connection conn, int id) throws SQLException {
-//
-//        // here get the total order cost
-//        ResultSet orderTotal = CrudUtil.execute(
-//                conn,
-//                "SELECT total_cost FROM Orders WHERE orders_id = ?",
-//                id
-//        );
-//
-//        return orderTotal;
-//
-//    }
-
+    @Override
     public boolean updateOrderRemainingPayment(Connection conn, double remaining, int id) throws SQLException {
 
         // here get the total order cost
@@ -249,16 +152,7 @@ public class OrdersDAOImpl implements OrdersDAO {
 
     }
 
-//    public List<Integer> getAllOrdersID() throws SQLException {
-//        ResultSet rs = CrudUtil.execute("SELECT orders_id FROM Orders");
-//        List<Integer> orderIdList = new ArrayList<>();
-//        while (rs.next()) {
-//            int id = rs.getInt("orders_id");
-//            orderIdList.add(id);
-//        }
-//        return orderIdList;
-//    }
-
+    @Override
     public int getOverdueOrderCount() throws SQLException {
         ResultSet rs = CrudUtil.execute("SELECT COUNT(*) FROM Orders WHERE deadline < CURDATE() AND status NOT IN ('Completed','Cancelled')");
 
@@ -268,16 +162,48 @@ public class OrdersDAOImpl implements OrdersDAO {
         return 0;
     }
 
-    public int saveOrder(OrderDTO orderDto) throws SQLException {
+    @Override
+    public int saveOrder(Orders entity) throws SQLException {
 
         return CrudUtil.executeAndReturnGeneratedKey("INSERT INTO Orders (customer_id, order_date, deadline, status, total_cost, remaining_payment) VALUES (?,?,?,?,?,?)",
-                orderDto.getCustomer_id(),
-                orderDto.getOrder_date(),
-                orderDto.getDeadline(),
-                orderDto.getStatus(),
-                orderDto.getTotal_cost(),
-                orderDto.getTotal_cost()
+                entity.getCustomer_id(),
+                entity.getOrder_date(),
+                entity.getDeadline(),
+                entity.getStatus(),
+                entity.getTotal_cost(),
+                entity.getTotal_cost()
         );
     }
+
+    @Override
+    public boolean delete(String id) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public Orders search(String contact) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public List<Orders> get() throws SQLException {
+        return List.of();
+    }
+
+    @Override
+    public boolean saveData(Orders entity) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public Orders searchData(int id) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public String save(Orders entity) throws SQLException {
+        return "";
+    }
+
 
 }

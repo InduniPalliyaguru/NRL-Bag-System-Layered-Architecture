@@ -4,6 +4,7 @@ import lk.ijse.nrlbag.bo.custom.UserBO;
 import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.UserDAO;
 import lk.ijse.nrlbag.dto.UserDTO;
+import lk.ijse.nrlbag.entity.User;
 
 import java.sql.SQLException;
 
@@ -23,12 +24,13 @@ public class UserBOImpl implements UserBO {
 
     @Override
     public UserDTO validLogin(String name) throws SQLException {
-        return userDAO.validLogin(name);
+        User user = userDAO.search(name);
+        return new UserDTO(user.getUserName(), user.getUser_password());
     }
 
     @Override
     public boolean updateUserDetails(UserDTO userDTO) throws SQLException {
-        return userDAO.updateUserDetails(userDTO);
+        return userDAO.update(new User(userDTO.getUserName(), userDTO.getEmail(), userDTO.getName(), userDTO.getRole()));
     }
 
     @Override

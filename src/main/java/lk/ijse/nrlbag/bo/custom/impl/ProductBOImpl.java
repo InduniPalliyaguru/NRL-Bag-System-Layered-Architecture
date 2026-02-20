@@ -5,12 +5,14 @@ import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.ProductDAO;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.ProductDTO;
+import lk.ijse.nrlbag.entity.Product;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductBOImpl implements ProductBO {
@@ -19,27 +21,51 @@ public class ProductBOImpl implements ProductBO {
 
     @Override
     public List<ProductDTO> getProductTable() throws SQLException {
-        return productDAO.getProductTable();
+
+        List<Product> products = productDAO.get();
+        List<ProductDTO> productDTOS = new ArrayList<>();
+
+        for (Product pro : products) {
+            ProductDTO productDTO = new ProductDTO(
+                    pro.getProduct_id(),
+                    pro.getName(),
+                    pro.getSize(),
+                    pro.getBasic_price()
+            );
+            productDTOS.add(productDTO);
+        }
+        return productDTOS;
     }
 
     @Override
     public ProductDTO searchProduct(int id) throws SQLException {
-        return productDAO.searchProduct(id);
+        Product pro = productDAO.searchData(id);
+        return new ProductDTO(
+                pro.getProduct_id(),
+                pro.getName(),
+                pro.getSize(),
+                pro.getBasic_price()
+        );
     }
 
     @Override
     public boolean saveProduct(ProductDTO productDTO) throws SQLException {
-        return productDAO.saveProduct(productDTO);
+        return productDAO.saveData(new Product(productDTO.getName(), productDTO.getSize(), productDTO.getBasePrice()));
     }
 
     @Override
     public boolean updateProduct(ProductDTO productDTO) throws SQLException {
-        return productDAO.updateProduct(productDTO);
+        return productDAO.update(new Product(
+                productDTO.getProductId(),
+                productDTO.getName(),
+                productDTO.getSize(),
+                productDTO.getBasePrice()
+        ));
     }
 
     @Override
     public boolean deleteProduct(int id) throws SQLException {
-        return productDAO.deleteProduct(id);
+        return productDAO.deleteData(id);
     }
 
     @Override

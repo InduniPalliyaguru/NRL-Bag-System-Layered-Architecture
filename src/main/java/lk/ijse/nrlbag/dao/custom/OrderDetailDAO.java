@@ -1,18 +1,15 @@
 package lk.ijse.nrlbag.dao.custom;
 
-import lk.ijse.nrlbag.dao.SuperDAO;
+import lk.ijse.nrlbag.dao.CrudDAO;
 import lk.ijse.nrlbag.dto.OderDetailsDTO;
+import lk.ijse.nrlbag.entity.Order_Details;
 
 import java.sql.SQLException;
 
-public interface OrderDetailDAO extends SuperDAO {
+public interface OrderDetailDAO extends CrudDAO<Order_Details> {
 
-    public boolean saveOrderDetails(OderDetailsDTO orderDTO, int orderID) throws SQLException;
+     boolean saveOrderDetails(OderDetailsDTO orderDTO, int orderID) throws SQLException;
 
-    public OderDetailsDTO searchProduct(int id) throws SQLException;
-
-    public boolean updateOrderDetails(OderDetailsDTO orderDTO) throws SQLException;
-
-    public boolean deleteOrderDetails(int oderID, int proID) throws SQLException;
+     boolean deleteOrderDetails(int oderID, int proID) throws SQLException;
 
 }
