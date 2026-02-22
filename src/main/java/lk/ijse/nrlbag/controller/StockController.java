@@ -16,9 +16,11 @@ import javafx.stage.Stage;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.MaterialBO;
 import lk.ijse.nrlbag.dto.MaterialDTO;
+import lk.ijse.nrlbag.dto.tm.MaterialTM;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -37,21 +39,21 @@ public class StockController implements Initializable {
     @FXML
     private TextField searchField;
     @FXML
-    private TableView<MaterialDTO> tblMaterial;
+    private TableView<MaterialTM> tblMaterial;
     @FXML
-    private TableColumn<MaterialDTO, Integer> colId;
+    private TableColumn<MaterialTM, Integer> colId;
     @FXML
-    private TableColumn<MaterialDTO, String> colName;
+    private TableColumn<MaterialTM, String> colName;
     @FXML
-    private TableColumn<MaterialDTO, Integer> colQty;
+    private TableColumn<MaterialTM, Integer> colQty;
     @FXML
-    private TableColumn<MaterialDTO, String> colUnit;
+    private TableColumn<MaterialTM, String> colUnit;
     @FXML
-    private TableColumn<MaterialDTO, Integer> colSupId;
+    private TableColumn<MaterialTM, Integer> colSupId;
 
     final static MaterialBO materialBO = (MaterialBO) BOFactory.getInstance().getBO(BOFactory.BOType.MATERIAL);
-    private final ObservableList<MaterialDTO> masterMaterialList = FXCollections.observableArrayList();
-    private FilteredList<MaterialDTO> filteredMaterialList;
+    private final ObservableList<MaterialTM> masterMaterialList = FXCollections.observableArrayList();
+    private FilteredList<MaterialTM> filteredMaterialList;
 
     private final String MATERIAL_ID_REGEX = "^[0-9]+$";
 
@@ -134,15 +136,24 @@ public class StockController implements Initializable {
         try {
 
             List<MaterialDTO> matDTO  =  materialBO.getMaterial();
+            List<MaterialTM> materialTMS = new ArrayList<>();
+
+            for (MaterialDTO mat : matDTO) {
+                MaterialTM materialTM = new MaterialTM(
+                        mat.getMaterial_id(), mat.getSupplier_id(), mat.getMaterial_name(),
+                        mat.getUnit(), mat.getQtyAvailable()
+                );
+                materialTMS.add(materialTM);
+            }
 
             masterMaterialList.clear();
-            masterMaterialList.addAll(matDTO);
+            masterMaterialList.addAll(materialTMS);
 
             // create filtered list once
             filteredMaterialList = new FilteredList<>(masterMaterialList, p -> true);
 
             // allow sorting also
-            SortedList<MaterialDTO> sortedList = new SortedList<>(filteredMaterialList);
+            SortedList<MaterialTM> sortedList = new SortedList<>(filteredMaterialList);
             sortedList.comparatorProperty().bind(tblMaterial.comparatorProperty());
 
             // set to table
@@ -158,7 +169,7 @@ public class StockController implements Initializable {
         tblMaterial.setRowFactory( tv -> new TableRow<>() {
             @Override
             // this method is called for every row in the table
-            protected  void updateItem(MaterialDTO item, boolean empty) {
+            protected  void updateItem(MaterialTM item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // check row is empty or item is null
@@ -223,7 +234,7 @@ public class StockController implements Initializable {
         tblMaterial.setRowFactory( tv -> new TableRow<>() {
             @Override
             // this method is called for every row in the table
-            protected  void updateItem(MaterialDTO item, boolean empty) {
+            protected  void updateItem(MaterialTM item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // check row is empty or item is null

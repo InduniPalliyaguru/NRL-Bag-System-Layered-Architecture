@@ -1,24 +1,22 @@
 package lk.ijse.nrlbag.dto.tm;
 
-public class SupplierTM {
+public class CustomerTM {
 
     private int id;
     private String name;
     private String address;
     private String contact;
-    private int materialId;
-    private String materialName;
+    private String date;
 
-    public SupplierTM() {
+    public CustomerTM() {
     }
 
-    public SupplierTM(int id, String name, String address, String contact, int materialId, String materialName) {
+    public CustomerTM(int id, String name, String address, String contact, String date) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.contact = contact;
-        this.materialId = materialId;
-        this.materialName = materialName;
+        this.date = date;
     }
 
     public int getId() {
@@ -53,19 +51,11 @@ public class SupplierTM {
         this.contact = contact;
     }
 
-    public int getMaterialId() {
-        return materialId;
+    public String getDate() {
+        return date;
     }
 
-    public void setMaterialId(int materialId) {
-        this.materialId = materialId;
-    }
-
-    public String getMaterialName() {
-        return materialName;
-    }
-
-    public void setMaterialName(String materialName) {
-        this.materialName = materialName;
+    public void setDate(String date) {
+        this.date = date;
     }
 }

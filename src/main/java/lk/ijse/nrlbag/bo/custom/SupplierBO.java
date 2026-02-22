@@ -8,14 +8,14 @@ import java.util.List;
 public interface SupplierBO extends SuperBO{
 
     // get the all details in supplier table join with material details also
-    public List<SupplierDTO> getSuppliers() throws SQLException;
+     List<SupplierDTO> getSuppliers() throws SQLException;
 
-    public String saveSupplier(SupplierDTO supplierDTO) throws SQLException;
+     String saveSupplier(SupplierDTO supplierDTO) throws SQLException;
 
-    public SupplierDTO searchSupplier(int id) throws SQLException;
+     SupplierDTO searchSupplier(int id) throws SQLException;
 
-    public boolean updateSupplier(SupplierDTO supplierDTO) throws SQLException;
+     boolean updateSupplier(SupplierDTO supplierDTO) throws SQLException;
 
-    public boolean deleteSupplier(int id) throws SQLException;
+     boolean deleteSupplier(int id) throws SQLException;
 
 }

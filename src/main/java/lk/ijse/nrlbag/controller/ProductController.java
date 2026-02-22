@@ -11,8 +11,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.ProductBO;
 import lk.ijse.nrlbag.dto.ProductDTO;
+import lk.ijse.nrlbag.dto.tm.ProductTM;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -20,15 +22,15 @@ import java.util.ResourceBundle;
 public class ProductController implements Initializable {
 
     @FXML
-    private TableView<ProductDTO> tblProduct;
+    private TableView<ProductTM> tblProduct;
     @FXML
-    private TableColumn<ProductDTO, Integer> colId;
+    private TableColumn<ProductTM, Integer> colId;
     @FXML
-    private TableColumn<ProductDTO, String> colName;
+    private TableColumn<ProductTM, String> colName;
     @FXML
-    private TableColumn<ProductDTO, String> colSize;
+    private TableColumn<ProductTM, String> colSize;
     @FXML
-    private TableColumn<ProductDTO, Double> colPrice;
+    private TableColumn<ProductTM, Double> colPrice;
     @FXML
     private TextField searchField;
     @FXML
@@ -42,8 +44,8 @@ public class ProductController implements Initializable {
 
     private final ProductBO productBO = (ProductBO) BOFactory.getInstance().getBO(BOFactory.BOType.PRODUCT);
 
-    private final ObservableList<ProductDTO> masterProductList = FXCollections.observableArrayList();
-    private FilteredList<ProductDTO> filteredProductList;
+    private final ObservableList<ProductTM> masterProductList = FXCollections.observableArrayList();
+    private FilteredList<ProductTM> filteredProductList;
 
     private final String PRODUCT_ID_REGEX = "^[0-9]+$";
     private final String PRODUCT_NAME_REGEX = "^(?!\\s*$).{3,}$";
@@ -243,15 +245,23 @@ public class ProductController implements Initializable {
         try {
 
             List<ProductDTO> proDTO =  productBO.getProductTable();
+            List<ProductTM> productTMS = new ArrayList<>();
+
+            for (ProductDTO pro : proDTO) {
+                ProductTM productTM = new ProductTM(
+                        pro.getProductId(), pro.getName(), pro.getSize(), pro.getBasePrice()
+                );
+                productTMS.add(productTM);
+            }
 
             masterProductList.clear();
-            masterProductList.addAll(proDTO);
+            masterProductList.addAll(productTMS);
 
             // create filtered list one
             filteredProductList = new FilteredList<>(masterProductList, p -> true);
 
             // allow sorting also
-            SortedList<ProductDTO> sortedList = new SortedList<>(filteredProductList);
+            SortedList<ProductTM> sortedList = new SortedList<>(filteredProductList);
             sortedList.comparatorProperty().bind(tblProduct.comparatorProperty());
 
             tblProduct.setItems(sortedList);
@@ -266,7 +276,7 @@ public class ProductController implements Initializable {
         tblProduct.setRowFactory( tv -> new TableRow<>() {
             @Override
             // this method is called for every row in the table
-            protected  void updateItem(ProductDTO item, boolean empty) {
+            protected  void updateItem(ProductTM item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // check row is empty or item is null

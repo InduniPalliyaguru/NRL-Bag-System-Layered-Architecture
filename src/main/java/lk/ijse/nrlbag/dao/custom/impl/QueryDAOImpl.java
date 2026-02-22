@@ -2,10 +2,7 @@ package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.CrudUtil;
 import lk.ijse.nrlbag.dao.custom.QueryDAO;
-import lk.ijse.nrlbag.dto.tm.MaterialUsedTM;
-import lk.ijse.nrlbag.dto.tm.OrderDetailsTM;
-import lk.ijse.nrlbag.dto.tm.OrdersTM;
-import lk.ijse.nrlbag.dto.tm.SupplierTM;
+import lk.ijse.nrlbag.dto.CustomDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,17 +12,17 @@ import java.util.List;
 public class QueryDAOImpl implements QueryDAO {
 
     @Override
-    public List<MaterialUsedTM> getMaterialUsage() throws SQLException {
+    public List<CustomDTO> getMaterialUsage() throws SQLException {
         ResultSet rs = CrudUtil.execute(
                 "SELECT mu.orders_id, mu.material_id, mu.used_qty, m.name, m.unit " +
                         "FROM Material m JOIN Material_Used mu ON m.material_id = mu.material_id;"
         );
 
-        List<MaterialUsedTM> materialUsedList = new ArrayList<>();
+        List<CustomDTO> materialUsedList = new ArrayList<>();
 
         // get rows one by one and add into order list
         while (rs.next()) {
-            MaterialUsedTM usedList = new MaterialUsedTM(
+            CustomDTO usedList = new CustomDTO(
                     rs.getInt("orders_id"),
                     rs.getInt("material_id"),
                     rs.getDouble("used_qty"),
@@ -38,7 +35,7 @@ public class QueryDAOImpl implements QueryDAO {
     }
 
     @Override
-    public OrderDetailsTM searchProduct(int id) throws SQLException {
+    public CustomDTO searchProduct(int id) throws SQLException {
         // here, get details of the product
         ResultSet rs = CrudUtil.execute("SELECT o.product_id, o.quantity, o.unit_price, p.name FROM Order_Details o " +
                 "JOIN Product p on o.product_id = p.product_id WHERE o.product_id=?;",id);
@@ -49,13 +46,13 @@ public class QueryDAOImpl implements QueryDAO {
             int qty = rs.getInt("quantity");
             double price = rs.getDouble("unit_price");
 
-            return new OrderDetailsTM(productId, qty, price, name);
+            return new CustomDTO(productId, qty, price, name);
         }
         return null;
     }
 
     @Override
-    public List<OrdersTM> getOrders() throws SQLException {
+    public List<CustomDTO> getOrders() throws SQLException {
         ResultSet rs = CrudUtil.execute("SELECT " +
                 " o.orders_id," +
                 " o.customer_id," +
@@ -72,11 +69,11 @@ public class QueryDAOImpl implements QueryDAO {
                 " JOIN Customer c ON o.customer_id = c.customer_id" +
                 " LEFT JOIN Order_Details od ON o.orders_id = od.orders_id;");
 
-        List<OrdersTM> orderList = new ArrayList<>();
+        List<CustomDTO> orderList = new ArrayList<>();
 
         // get rows one by one and add into order list
         while (rs.next()) {
-            OrdersTM ordersTM = new OrdersTM(
+            CustomDTO orders = new CustomDTO(
                     rs.getInt("orders_id"),
                     rs.getInt("customer_id"),
                     rs.getString("name"),
@@ -89,13 +86,13 @@ public class QueryDAOImpl implements QueryDAO {
                     rs.getInt("product_id"),
                     rs.getInt("quantity")
             );
-            orderList.add(ordersTM);
+            orderList.add(orders);
         }
         return orderList;
     }
 
     @Override
-    public OrdersTM searchOrderByOrderID(int id) throws SQLException {
+    public CustomDTO searchOrderByOrderID(int id) throws SQLException {
 
         // here, get details of the order and customer who place that order using a join query
         ResultSet rs = CrudUtil.execute("SELECT c.name, c.contact,o.customer_id, o.orders_id, o.order_date, " +
@@ -113,13 +110,13 @@ public class QueryDAOImpl implements QueryDAO {
             String cusName = rs.getString("name");
             String contact = rs.getString("contact");
 
-            return new OrdersTM(orderId,cus_id,cusName,contact,order_date,deadline,status,cost,remain);
+            return new CustomDTO(orderId,cus_id,cusName,contact,order_date,deadline,status,cost,remain);
         }
         return null;
     }
 
     @Override
-    public OrdersTM searchOrderByCustomerID(int id) throws SQLException {
+    public CustomDTO searchOrderByCustomerID(int id) throws SQLException {
         // here, get details of the all orders and customer who place that orders using a join query
         ResultSet rs = CrudUtil.execute("SELECT c.name, c.contact,o.customer_id, o.orders_id, o.order_date, " +
                 "o.deadline, o.status, o.total_cost, o.remaining_payment FROM Orders o JOIN Customer c ON " +
@@ -136,21 +133,21 @@ public class QueryDAOImpl implements QueryDAO {
             String cusName = rs.getString("name");
             String contact = rs.getString("contact");
 
-            return new OrdersTM(orderId,cus_id,cusName,contact,order_date,deadline,status,cost,remain);
+            return new CustomDTO(orderId,cus_id,cusName,contact,order_date,deadline,status,cost,remain);
         }
         return null;
     }
 
     @Override
-    public List<SupplierTM> getSuppliers() throws SQLException {
+    public List<CustomDTO> getSuppliers() throws SQLException {
         ResultSet rs = CrudUtil.execute("SELECT m.material_id, m.name,m.supplier_id, s.supplier_name, s.address, s.contact FROM " +
                 "Material m JOIN Supplier s on m.supplier_id = s.supplier_id");
 
-        List<SupplierTM> supplierList = new ArrayList<>();
+        List<CustomDTO> supplierList = new ArrayList<>();
 
         // get rows one by one and add into supplier list
         while (rs.next()) {
-            SupplierTM supplierTM = new SupplierTM(
+            CustomDTO supplierTM = new CustomDTO(
                     rs.getInt("supplier_id"),
                     rs.getString("supplier_name"),
                     rs.getString("address"),

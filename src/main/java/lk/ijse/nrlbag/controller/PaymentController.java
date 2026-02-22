@@ -14,28 +14,30 @@ import javafx.stage.Stage;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.PaymentBO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
+import lk.ijse.nrlbag.dto.tm.PaymentTM;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class PaymentController implements Initializable {
 
     @FXML
-    private TableView<PaymentDTO> tblPayment;
+    private TableView<PaymentTM> tblPayment;
     @FXML
-    private TableColumn<PaymentDTO, Integer> colPayId;
+    private TableColumn<PaymentTM, Integer> colPayId;
     @FXML
-    private TableColumn<PaymentDTO, Integer> colOrderId;
+    private TableColumn<PaymentTM, Integer> colOrderId;
     @FXML
-    private TableColumn<PaymentDTO, String> colDate;
+    private TableColumn<PaymentTM, String> colDate;
     @FXML
-    private TableColumn<PaymentDTO, Double> colAmount;
+    private TableColumn<PaymentTM, Double> colAmount;
     @FXML
-    private TableColumn<PaymentDTO, String> colType;
+    private TableColumn<PaymentTM, String> colType;
     @FXML
-    private TableColumn<PaymentDTO, String> colStatus;
+    private TableColumn<PaymentTM, String> colStatus;
     @FXML
     private TextField searchField;
     @FXML
@@ -124,13 +126,18 @@ public class PaymentController implements Initializable {
         try {
 
             List<PaymentDTO> paymentDTO = paymentBO.getPayments();
+            List<PaymentTM> paymentTMS = new ArrayList<>();
 
             // TableView always requires and ObservableList it automatically update that details
-            ObservableList<PaymentDTO> obList = FXCollections.observableArrayList();
+            ObservableList<PaymentTM> obList = FXCollections.observableArrayList();
 
             // after that we set one by one from paymentList in to the observable list
             for (PaymentDTO payDTO : paymentDTO) {
-                obList.add(payDTO);
+                PaymentTM paymentTM = new PaymentTM(
+                        payDTO.getId(), payDTO.getOrder_id(), payDTO.getAmount(),
+                        payDTO.getPayment_date(), payDTO.getType(), payDTO.getStatus()
+                );
+                obList.add(paymentTM);
             }
 
             // then set that list to the table
@@ -148,7 +155,7 @@ public class PaymentController implements Initializable {
         tblPayment.setRowFactory( tv -> new TableRow<>() {
             @Override
             // this method is called for every row in the table
-            protected  void updateItem(PaymentDTO item, boolean empty) {
+            protected  void updateItem(PaymentTM item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // check row is empty or item is null

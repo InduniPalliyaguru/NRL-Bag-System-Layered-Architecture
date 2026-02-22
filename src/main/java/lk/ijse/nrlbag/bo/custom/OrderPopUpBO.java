@@ -1,46 +1,45 @@
 package lk.ijse.nrlbag.bo.custom;
 
-import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.*;
 import net.sf.jasperreports.engine.JRException;
 
-import java.sql.Connection;
+
 import java.sql.SQLException;
 import java.util.List;
 
 public interface OrderPopUpBO extends SuperBO{
 
-    public OrderDTO searchOrderByOrderID(int id) throws SQLException;
+     OrderDTO searchOrderByOrderID(int id) throws SQLException;
 
-    public OderDetailsDTO searchProduct(int id) throws SQLException;
+     OderDetailsDTO searchProduct(int id) throws SQLException;
 
-    public boolean updateOrder(OrderDTO orderDto) throws SQLException;
+     boolean updateOrder(OrderDTO orderDto) throws SQLException;
 
-    public boolean updateOrderDetails(OderDetailsDTO orderDTO) throws SQLException;
+     boolean updateOrderDetails(OderDetailsDTO orderDTO) throws SQLException;
 
-    public boolean deleteOrderDetails(int oderID, int proID) throws SQLException;
+     boolean deleteOrderDetails(int oderID, int proID) throws SQLException;
 
-    public boolean deleteOrder(int id) throws SQLException;
+     boolean deleteOrder(int id) throws SQLException;
 
-    public boolean saveMaterialUsage(MaterialUsedDTO materialUsedDTO, Double availableQty) throws SQLException;
+     boolean saveMaterialUsage(MaterialUsedDTO materialUsedDTO, Double availableQty) throws SQLException;
 
-    public MaterialUsedDTO searchMaterialUsage(int materialID) throws SQLException;
+     MaterialUsedDTO searchMaterialUsage(int materialID) throws SQLException;
 
-    public MaterialDTO searchMaterial(int id) throws SQLException;
+     MaterialDTO searchMaterial(int id) throws SQLException;
 
-    public boolean searchMaterialUsageByOrderID(int orderID) throws SQLException;
+     boolean searchMaterialUsageByOrderID(int orderID) throws SQLException;
 
-    public boolean updateMaterialUsage(MaterialUsedDTO dto) throws SQLException;
+     boolean updateMaterialUsage(MaterialUsedDTO dto) throws SQLException;
 
-    public boolean deleteMaterialUsage(int orderID, int materialID) throws SQLException;
+     boolean deleteMaterialUsage(int orderID, int materialID) throws SQLException;
 
-    public ProductDTO searchProducts(int id) throws SQLException;
+     ProductDTO searchProducts(int id) throws SQLException;
 
-    public List<MaterialUsedDTO> getMaterialUsage() throws SQLException;
+     List<MaterialUsedDTO> getMaterialUsage() throws SQLException;
 
-    public List<MaterialDTO> searchMaterialByKeyword(String keyword) throws SQLException;
+     List<MaterialDTO> searchMaterialByKeyword(String keyword) throws SQLException;
 
-    public boolean saveOrderAndOrderID(OrderDTO orderDto) throws Exception;
+     boolean saveOrderAndOrderID(OrderDTO orderDto) throws Exception;
 
-    public void printOrderConfirmation(int orderID) throws SQLException, JRException;
+     void printOrderConfirmation(int orderID) throws SQLException, JRException;
 }

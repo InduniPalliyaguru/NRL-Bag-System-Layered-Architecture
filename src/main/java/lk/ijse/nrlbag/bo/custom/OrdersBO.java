@@ -8,18 +8,18 @@ import java.util.List;
 public interface OrdersBO extends SuperBO{
 
     // get the all details in orders table join with customer details also
-    public List<OrderDTO> getOrders() throws SQLException;
+     List<OrderDTO> getOrders() throws SQLException;
 
-    public OrderDTO searchOrderByOrderID(int id) throws SQLException;
+     OrderDTO searchOrderByOrderID(int id) throws SQLException;
 
-    public OrderDTO searchOrderByCustomerID(int id) throws SQLException;
+     OrderDTO searchOrderByCustomerID(int id) throws SQLException;
 
-    public int completeOrderCount() throws SQLException;
+     int completeOrderCount() throws SQLException;
 
-    public int pendingOrderCount() throws SQLException;
+     int pendingOrderCount() throws SQLException;
 
-    public int processingOrderCount() throws SQLException;
+     int processingOrderCount() throws SQLException;
 
-    public int cancelledOrderCount() throws SQLException;
+     int cancelledOrderCount() throws SQLException;
 
 }

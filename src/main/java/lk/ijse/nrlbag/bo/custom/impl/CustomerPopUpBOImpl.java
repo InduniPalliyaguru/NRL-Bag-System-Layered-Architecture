@@ -7,7 +7,6 @@ import lk.ijse.nrlbag.dto.CustomerDTO;
 import lk.ijse.nrlbag.entity.Customer;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class CustomerPopUpBOImpl implements CustomerPopUpBO {
 

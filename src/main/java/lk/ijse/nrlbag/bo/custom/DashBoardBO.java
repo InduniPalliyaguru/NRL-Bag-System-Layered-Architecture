@@ -7,20 +7,20 @@ import java.sql.SQLException;
 
 public interface DashBoardBO extends SuperBO{
 
-    public int totalCustomerCount() throws SQLException;
+     int totalCustomerCount() throws SQLException;
 
-    public int totalOrderCount() throws SQLException;
+     int totalOrderCount() throws SQLException;
 
-    public int totalLowMaterialCount() throws SQLException;
+     int totalLowMaterialCount() throws SQLException;
 
-    public int totalPendingPaymentsCount() throws SQLException;
+     int totalPendingPaymentsCount() throws SQLException;
 
-    public int getOverdueOrderCount() throws SQLException;
+     int getOverdueOrderCount() throws SQLException;
 
-    public int getOrderByMonths(int month) throws SQLException;
+     int getOrderByMonths(int month) throws SQLException;
 
-    public ResultSet getMonthlyIncome() throws SQLException;
+     ResultSet getMonthlyIncome() throws SQLException;
 
-    public UserDTO getUserDetails() throws SQLException;
+     UserDTO getUserDetails() throws SQLException;
 
 }

@@ -4,8 +4,8 @@ import lk.ijse.nrlbag.bo.custom.SupplierBO;
 import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.QueryDAO;
 import lk.ijse.nrlbag.dao.custom.SupplierDAO;
+import lk.ijse.nrlbag.dto.CustomDTO;
 import lk.ijse.nrlbag.dto.SupplierDTO;
-import lk.ijse.nrlbag.dto.tm.SupplierTM;
 import lk.ijse.nrlbag.entity.Supplier;
 
 import java.sql.SQLException;
@@ -19,10 +19,10 @@ public class SupplierBOImpl implements SupplierBO {
 
     @Override
     public List<SupplierDTO> getSuppliers() throws SQLException {
-        List<SupplierTM> supplierTM = queryDAO.getSuppliers();
+        List<CustomDTO> supplierTM = queryDAO.getSuppliers();
         List<SupplierDTO> supplierDTOS = new ArrayList<>();
 
-        for (SupplierTM sup : supplierTM) {
+        for (CustomDTO sup : supplierTM) {
             SupplierDTO supplierDTO = new SupplierDTO(
                     sup.getId(),
                     sup.getName(),

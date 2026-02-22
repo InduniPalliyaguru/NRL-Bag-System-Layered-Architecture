@@ -95,13 +95,6 @@ public class OrderPopupController implements Initializable {
     private double oldUsedQty = 0;
     private boolean isUpdateMode = false;
 
-//    private final OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
-//    private final ProductDAOImpl productDAOImpl = new ProductDAOImpl();
-//    private final OrderDetailDAOImpl orderDetailDAOImpl = new OrderDetailDAOImpl();
-//    private final MaterialUsedDAOImpl materialUsedDAOImpl = new MaterialUsedDAOImpl();
-//    private final MaterialDAOImpl materialDAOImpl = new MaterialDAOImpl();
-//    private final MaterialUsedModel materialUsedModel = new MaterialUsedModel();
-
     private final OrderPopUpBO orderPopUpBO = (OrderPopUpBO) BOFactory.getInstance().getBO(BOFactory.BOType.ORDER_POP);
     private final ContextMenu materialSuggestion = new ContextMenu();
 

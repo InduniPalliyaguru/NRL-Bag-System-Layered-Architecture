@@ -5,9 +5,6 @@ import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.*;
 import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.*;
-import lk.ijse.nrlbag.dto.tm.MaterialUsedTM;
-import lk.ijse.nrlbag.dto.tm.OrderDetailsTM;
-import lk.ijse.nrlbag.dto.tm.OrdersTM;
 import lk.ijse.nrlbag.entity.*;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
@@ -33,7 +30,7 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
     public OrderDTO searchOrderByOrderID(int id) throws SQLException {
 
 
-        OrdersTM tm = queryDAO.searchOrderByOrderID(id);
+        CustomDTO tm = queryDAO.searchOrderByOrderID(id);
 
         return new OrderDTO(
                 tm.getId(),
@@ -54,13 +51,13 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
     @Override
     public OderDetailsDTO searchProduct(int id) throws SQLException {
 
-        OrderDetailsTM orderDetailsTM = queryDAO.searchProduct(id);
+        CustomDTO orderDetails = queryDAO.searchProduct(id);
 
         return new OderDetailsDTO(
-                orderDetailsTM.getProduct_id(),
-                orderDetailsTM.getQuantity(),
-                orderDetailsTM.getUnit_price(),
-                orderDetailsTM.getName()
+                orderDetails.getProduct_id(),
+                orderDetails.getQuantity(),
+                orderDetails.getUnit_price(),
+                orderDetails.getName()
         );
     }
 
@@ -289,10 +286,10 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
 
     @Override
     public List<MaterialUsedDTO> getMaterialUsage() throws SQLException {
-        List<MaterialUsedTM> materialUsedTM = queryDAO.getMaterialUsage();
+        List<CustomDTO> materialUsedTM = queryDAO.getMaterialUsage();
         List<MaterialUsedDTO> materialUsedDTOS = new ArrayList<>();
 
-        for (MaterialUsedTM material : materialUsedTM) {
+        for (CustomDTO material : materialUsedTM) {
             MaterialUsedDTO materialUsedDTO = new MaterialUsedDTO(
                     material.getOrder_id(),
                     material.getMaterial_id(),

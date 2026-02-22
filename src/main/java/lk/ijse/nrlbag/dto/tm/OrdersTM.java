@@ -20,35 +20,6 @@ public class OrdersTM {
     public OrdersTM() {
     }
 
-    public OrdersTM(int id, int customer_id, String name, String customerContact, String order_date, String deadline, String status, double total_cost, double remaining_payment) {
-        this.id = id;
-        this.customer_id = customer_id;
-        this.name = name;
-        this.customerContact = customerContact;
-        this.order_date = order_date;
-        this.deadline = deadline;
-        this.status = status;
-        this.total_cost = total_cost;
-        this.remaining_payment = remaining_payment;
-    }
-
-    public OrdersTM(int id, int customer_id, String order_date, String deadline, String status, double total_cost) {
-        this.id = id;
-        this.customer_id = customer_id;
-        this.order_date = order_date;
-        this.deadline = deadline;
-        this.status = status;
-        this.total_cost = total_cost;
-    }
-
-    public OrdersTM(int customer_id, String order_date, String deadline, String status, double total_cost) {
-        this.customer_id = customer_id;
-        this.order_date = order_date;
-        this.deadline = deadline;
-        this.status = status;
-        this.total_cost = total_cost;
-    }
-
     public OrdersTM(int id, int customer_id, String name, String customerContact, String order_date, String deadline, String status, double total_cost, double remaining_payment, int productId, int quantity) {
         this.id = id;
         this.customer_id = customer_id;
@@ -61,15 +32,6 @@ public class OrdersTM {
         this.remaining_payment = remaining_payment;
         this.productId = productId;
         this.quantity = quantity;
-    }
-
-    public OrdersTM(int customer_id, String order_date, String deadline, String status, double total_cost, OderDetailsDTO orderDetails) {
-        this.customer_id = customer_id;
-        this.order_date = order_date;
-        this.deadline = deadline;
-        this.status = status;
-        this.total_cost = total_cost;
-        this.orderDetails = orderDetails;
     }
 
     public int getId() {

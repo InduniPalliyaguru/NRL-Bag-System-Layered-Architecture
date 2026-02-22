@@ -16,9 +16,11 @@ import javafx.stage.Stage;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.CustomerBO;
 import lk.ijse.nrlbag.dto.CustomerDTO;
+import lk.ijse.nrlbag.dto.tm.CustomerTM;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -38,23 +40,23 @@ public class CustomerController implements Initializable {
     @FXML
     private TextField searchField;
     @FXML
-    private TableView<CustomerDTO> tblCustomer;
+    private TableView<CustomerTM> tblCustomer;
     @FXML
-    private TableColumn<CustomerDTO, Integer> colId;
+    private TableColumn<CustomerTM, Integer> colId;
     @FXML
-    private TableColumn<CustomerDTO, String> colName;
+    private TableColumn<CustomerTM, String> colName;
     @FXML
-    private TableColumn<CustomerDTO, String> colAddress;
+    private TableColumn<CustomerTM, String> colAddress;
     @FXML
-    private TableColumn<CustomerDTO, String> colContact;
+    private TableColumn<CustomerTM, String> colContact;
     @FXML
-    private TableColumn<CustomerDTO, String> colCreateDate;
+    private TableColumn<CustomerTM, String> colCreateDate;
 
     private final String CUSTOMER_CONTACT_REGEX = "^[0-9]{10}$";
 
     private final CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOType.CUSTOMER);
-    private final ObservableList<CustomerDTO> customerList = FXCollections.observableArrayList();
-    private FilteredList<CustomerDTO> filteredCustomerList;
+    private final ObservableList<CustomerTM> customerList = FXCollections.observableArrayList();
+    private FilteredList<CustomerTM> filteredCustomerList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -125,15 +127,27 @@ public class CustomerController implements Initializable {
         try {
 
             List<CustomerDTO> cusDTO =  customerBO.getCustomer();
+            List<CustomerTM> cusTM = new ArrayList<>();
+
+            for (CustomerDTO cus : cusDTO) {
+                CustomerTM customerTM = new CustomerTM(
+                        cus.getId(),
+                        cus.getName(),
+                        cus.getAddress(),
+                        cus.getContact(),
+                        cus.getDate());
+
+                cusTM.add(customerTM);
+            }
 
             customerList.clear();
-            customerList.addAll(cusDTO);
+            customerList.addAll(cusTM);
 
             // create filtered list once
             filteredCustomerList = new FilteredList<>(customerList, p -> true);
 
             // allow sorting also
-            SortedList<CustomerDTO> sortedList = new SortedList<>(filteredCustomerList);
+            SortedList<CustomerTM> sortedList = new SortedList<>(filteredCustomerList);
             sortedList.comparatorProperty().bind(tblCustomer.comparatorProperty());
 
             tblCustomer.setItems(sortedList);
@@ -158,7 +172,7 @@ public class CustomerController implements Initializable {
         tblCustomer.setRowFactory( tv -> new TableRow<>() {
             @Override
             // this method is called for every row in the table
-            protected  void updateItem(CustomerDTO item, boolean empty) {
+            protected  void updateItem(CustomerTM item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // check row is empty or item is null
@@ -196,7 +210,6 @@ public class CustomerController implements Initializable {
             loadCustomerTable();
 
         } catch (IOException e) {
-            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }

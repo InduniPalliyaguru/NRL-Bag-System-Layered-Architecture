@@ -1,27 +1,24 @@
 package lk.ijse.nrlbag.bo.custom;
 
-import lk.ijse.nrlbag.db.DBConnection;
-import lk.ijse.nrlbag.dto.OrderDTO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 import net.sf.jasperreports.engine.JRException;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 public interface PaymentBO extends SuperBO{
 
     // get the all details in payment table
-    public List<PaymentDTO> getPayments() throws SQLException;
+     List<PaymentDTO> getPayments() throws SQLException;
 
-    public PaymentDTO searchPayment(int id) throws SQLException;
+     PaymentDTO searchPayment(int id) throws SQLException;
 
-    public boolean savePaymentWithOrderUpdate(PaymentDTO paymentDTO) throws SQLException, JRException;
+     boolean savePaymentWithOrderUpdate(PaymentDTO paymentDTO) throws SQLException, JRException;
 
-    public boolean updatePaymentWithOrderUpdate(PaymentDTO paymentDTO) throws SQLException;
+     boolean updatePaymentWithOrderUpdate(PaymentDTO paymentDTO) throws SQLException;
 
-    public boolean deletePaymentWithOrderUpdate(int payID, int orderID) throws SQLException;
+     boolean deletePaymentWithOrderUpdate(int payID, int orderID) throws SQLException;
 
-    public void printOrderPaymentReceipt(int orderID) throws SQLException, JRException;
+     void printOrderPaymentReceipt(int orderID) throws SQLException, JRException;
 
 }

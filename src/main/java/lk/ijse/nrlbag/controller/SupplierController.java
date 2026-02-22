@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.SupplierBO;
 import lk.ijse.nrlbag.dto.SupplierDTO;
+import lk.ijse.nrlbag.dto.tm.SupplierTM;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,19 +26,19 @@ import java.util.ResourceBundle;
 public class SupplierController implements Initializable {
 
     @FXML
-    private TableView<SupplierDTO> tblSupplier;
+    private TableView<SupplierTM> tblSupplier;
     @FXML
-    private TableColumn<SupplierDTO, Integer> colSupId;
+    private TableColumn<SupplierTM, Integer> colSupId;
     @FXML
-    private TableColumn<SupplierDTO, String> colSupName;
+    private TableColumn<SupplierTM, String> colSupName;
     @FXML
-    private TableColumn<SupplierDTO, String> colAddress;
+    private TableColumn<SupplierTM, String> colAddress;
     @FXML
-    private TableColumn<SupplierDTO, String> colContact;
+    private TableColumn<SupplierTM, String> colContact;
     @FXML
-    private TableColumn<SupplierDTO, Integer> colMaterialId;
+    private TableColumn<SupplierTM, Integer> colMaterialId;
     @FXML
-    private TableColumn<SupplierDTO, String> colMaterialName;
+    private TableColumn<SupplierTM, String> colMaterialName;
     @FXML
     private TextField searchField;
     @FXML
@@ -85,11 +86,15 @@ public class SupplierController implements Initializable {
             List<SupplierDTO> supplierList = supplierBO.getSuppliers();
 
             // TableView always requires and ObservableList it automatically update that details
-            ObservableList<SupplierDTO> obList = FXCollections.observableArrayList();
+            ObservableList<SupplierTM> obList = FXCollections.observableArrayList();
 
             // after that we set one by one from supplierList in to the observable list
             for (SupplierDTO supplierDTO : supplierList) {
-                obList.add(supplierDTO);
+                SupplierTM supplierTM = new SupplierTM(
+                        supplierDTO.getId(), supplierDTO.getName(), supplierDTO.getAddress(),
+                        supplierDTO.getContact(), supplierDTO.getMaterialId(), supplierDTO.getMaterialName()
+                );
+                obList.add(supplierTM);
             }
             // then set that list to the table
             tblSupplier.setItems(obList);
@@ -157,7 +162,7 @@ public class SupplierController implements Initializable {
         tblSupplier.setRowFactory( tv -> new TableRow<>() {
             @Override
             // this method is called for every row in the table
-            protected  void updateItem(SupplierDTO item, boolean empty) {
+            protected  void updateItem(SupplierTM item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // check row is empty or item is null

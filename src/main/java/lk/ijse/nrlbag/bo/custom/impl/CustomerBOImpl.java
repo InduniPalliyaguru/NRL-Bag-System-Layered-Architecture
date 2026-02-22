@@ -1,6 +1,5 @@
 package lk.ijse.nrlbag.bo.custom.impl;
 
-import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.CustomerBO;
 import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.CustomerDAO;

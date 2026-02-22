@@ -6,8 +6,8 @@ import lk.ijse.nrlbag.dao.custom.OrdersDAO;
 import lk.ijse.nrlbag.dao.custom.PaymentDAO;
 import lk.ijse.nrlbag.dao.custom.QueryDAO;
 import lk.ijse.nrlbag.db.DBConnection;
+import lk.ijse.nrlbag.dto.CustomDTO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
-import lk.ijse.nrlbag.dto.tm.OrdersTM;
 import lk.ijse.nrlbag.entity.Payment;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
@@ -84,7 +84,7 @@ public class PaymentBOImpl implements PaymentBO {
 
             // here get the total order cost from order table through orderModel
 
-            OrdersTM orderDetail = queryDAO.searchOrderByOrderID(paymentDTO.getOrder_id());
+            CustomDTO orderDetail = queryDAO.searchOrderByOrderID(paymentDTO.getOrder_id());
 
             double totalCost = orderDetail.getTotal_cost();
 
@@ -140,7 +140,7 @@ public class PaymentBOImpl implements PaymentBO {
 
             // here get the total order cost
 
-            OrdersTM orderDetail = queryDAO.searchOrderByOrderID(paymentDTO.getOrder_id());
+            CustomDTO orderDetail = queryDAO.searchOrderByOrderID(paymentDTO.getOrder_id());
 
             double totalCost = orderDetail.getTotal_cost();
 
@@ -194,7 +194,7 @@ public class PaymentBOImpl implements PaymentBO {
 
             // here get the total order cost
 
-            OrdersTM orderDetail = queryDAO.searchOrderByOrderID(orderID);
+            CustomDTO orderDetail = queryDAO.searchOrderByOrderID(orderID);
 
             double totalCost = orderDetail.getTotal_cost();
 

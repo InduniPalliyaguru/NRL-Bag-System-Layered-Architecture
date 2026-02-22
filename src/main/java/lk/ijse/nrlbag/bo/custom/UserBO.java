@@ -6,13 +6,13 @@ import java.sql.SQLException;
 
 public interface UserBO extends SuperBO{
 
-    public UserDTO getUserDetails() throws SQLException;
+     UserDTO getUserDetails() throws SQLException;
 
-    public boolean updateLoginPassword(String password) throws SQLException;
+     boolean updateLoginPassword(String password) throws SQLException;
 
-    public UserDTO validLogin(String name) throws SQLException;
+     UserDTO validLogin(String name) throws SQLException;
 
-    public boolean updateUserDetails(UserDTO userDTO) throws SQLException;
+     boolean updateUserDetails(UserDTO userDTO) throws SQLException;
 
-    public String getPasswordByEmail(String email) throws SQLException ;
+     String getPasswordByEmail(String email) throws SQLException ;
 }

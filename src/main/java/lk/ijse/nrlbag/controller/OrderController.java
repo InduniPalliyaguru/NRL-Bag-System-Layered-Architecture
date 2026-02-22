@@ -16,39 +16,41 @@ import javafx.stage.Stage;
 import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.OrdersBO;
 import lk.ijse.nrlbag.dto.OrderDTO;
+import lk.ijse.nrlbag.dto.tm.OrdersTM;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class OrderController implements Initializable {
 
     @FXML
-    private TableView<OrderDTO> tblOrder;
+    private TableView<OrdersTM> tblOrder;
     @FXML
-    private TableColumn<OrderDTO, Integer> colOrderId;
+    private TableColumn<OrdersTM, Integer> colOrderId;
     @FXML
-    private TableColumn<OrderDTO, Integer> colCusId;
+    private TableColumn<OrdersTM, Integer> colCusId;
     @FXML
-    private TableColumn<OrderDTO, String> colCusName;
+    private TableColumn<OrdersTM, String> colCusName;
     @FXML
-    private TableColumn<OrderDTO, String> colContact;
+    private TableColumn<OrdersTM, String> colContact;
     @FXML
-    private TableColumn<OrderDTO, String> colOrderDate;
+    private TableColumn<OrdersTM, String> colOrderDate;
     @FXML
-    private TableColumn<OrderDTO, String> colDeadline;
+    private TableColumn<OrdersTM, String> colDeadline;
     @FXML
-    private TableColumn<OrderDTO, String> colStatus;
+    private TableColumn<OrdersTM, String> colStatus;
     @FXML
-    private TableColumn<OrderDTO, Double> colTotal;
+    private TableColumn<OrdersTM, Double> colTotal;
     @FXML
-    private TableColumn<OrderDTO, Double> colRemain;
+    private TableColumn<OrdersTM, Double> colRemain;
     @FXML
-    private TableColumn<OrderDTO, Integer> colProductID;
+    private TableColumn<OrdersTM, Integer> colProductID;
     @FXML
-    private TableColumn<OrderDTO, Integer> colQty;
+    private TableColumn<OrdersTM, Integer> colQty;
     @FXML
     private ComboBox<String> comboStatus;
     @FXML
@@ -152,13 +154,20 @@ public class OrderController implements Initializable {
         try {
 
             List<OrderDTO> orderDTO = ordersBO.getOrders();
+            List<OrdersTM> ordersTMS = new ArrayList<>();
 
             // TableView always requires and ObservableList it automatically update that details
-            ObservableList<OrderDTO> obList = FXCollections.observableArrayList();
+            ObservableList<OrdersTM> obList = FXCollections.observableArrayList();
 
             // after that we set one by one from oderList in to the observable list
             for (OrderDTO ordDTO : orderDTO) {
-                obList.add(ordDTO);
+                OrdersTM ordersTM = new OrdersTM(
+                        ordDTO.getId(), ordDTO.getCustomer_id(), ordDTO.getName(),
+                        ordDTO.getCustomerContact(), ordDTO.getOrder_date(), ordDTO.getDeadline(),
+                        ordDTO.getStatus(), ordDTO.getTotal_cost(), ordDTO.getRemaining_payment(),
+                        ordDTO.getProductId(), ordDTO.getQuantity()
+                );
+                obList.add(ordersTM);
             }
 
             // then set that list to the table
@@ -262,7 +271,7 @@ public class OrderController implements Initializable {
         tblOrder.setRowFactory( tv -> new TableRow<>() {
             @Override
             // this method is called for every row in the table
-            protected void updateItem(OrderDTO item, boolean empty) {
+            protected void updateItem(OrdersTM item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // check row is empty or item is null
@@ -290,7 +299,7 @@ public class OrderController implements Initializable {
         tblOrder.setRowFactory( tv -> new TableRow<>() {
             @Override
             // this method is called for every row in the table
-            protected void updateItem(OrderDTO item, boolean empty) {
+            protected void updateItem(OrdersTM item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // check row is empty or item is null
@@ -408,7 +417,7 @@ public class OrderController implements Initializable {
         tblOrder.setRowFactory( tv -> new TableRow<>() {
             @Override
             // this method is called for every row in the table
-            protected void updateItem(OrderDTO item, boolean empty) {
+            protected void updateItem(OrdersTM item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // check row is empty or item is null

@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface CustomerBO extends SuperBO{
 
-    public CustomerDTO searchCustomer(String contact) throws SQLException;
+     CustomerDTO searchCustomer(String contact) throws SQLException;
 
-    public List<CustomerDTO> getCustomer() throws SQLException;
+     List<CustomerDTO> getCustomer() throws SQLException;
 
-    public void printCustomerList() throws SQLException, JRException;
+     void printCustomerList() throws SQLException, JRException;
 
 }
