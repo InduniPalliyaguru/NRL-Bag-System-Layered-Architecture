@@ -220,17 +220,7 @@ public class PaymentBOImpl implements PaymentBO {
 
     @Override
     public void printOrderPaymentReceipt(int orderID) throws SQLException, JRException {
-        Connection conn = DBConnection.getInstance().getConnection();
 
-        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/orderPaymentReciept.jrxml");
-
-        JasperReport jr = JasperCompileManager.compileReport(reportObj);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("ORDER_ID", orderID);
-
-        JasperPrint jp = JasperFillManager.fillReport(jr, params, conn);
-
-        JasperViewer.viewReport(jp, false);
+        paymentDAO.printOrderPaymentReceipt(orderID);
     }
 }

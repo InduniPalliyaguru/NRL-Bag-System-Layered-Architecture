@@ -2,12 +2,19 @@ package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.custom.PaymentDAO;
 import lk.ijse.nrlbag.dao.CrudUtil;
+import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.entity.Payment;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.view.JasperViewer;
 
+import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PaymentDAOImpl implements PaymentDAO {
 
@@ -133,6 +140,22 @@ public class PaymentDAOImpl implements PaymentDAO {
     @Override
     public Payment search(String contact) throws SQLException {
         return null;
+    }
+
+    @Override
+    public void printOrderPaymentReceipt(int orderID) throws SQLException, JRException {
+        Connection conn = DBConnection.getInstance().getConnection();
+
+        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/orderPaymentReciept.jrxml");
+
+        JasperReport jr = JasperCompileManager.compileReport(reportObj);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ORDER_ID", orderID);
+
+        JasperPrint jp = JasperFillManager.fillReport(jr, params, conn);
+
+        JasperViewer.viewReport(jp, false);
     }
 
 }

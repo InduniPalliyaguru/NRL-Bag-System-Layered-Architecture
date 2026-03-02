@@ -80,27 +80,11 @@ public class MaterialBOImpl implements MaterialBO {
 
     @Override
     public void printMaterialStockReport() throws SQLException, JRException {
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/materialStockReport.jrxml");
-
-        JasperReport jr = JasperCompileManager.compileReport(reportObj);
-
-        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
-
-        JasperViewer.viewReport(jp, false);
+        materialDAO.printMaterialStockReport();
     }
 
     @Override
     public void printLowMaterialStockReport() throws SQLException, JRException {
-        Connection conn = DBConnection.getInstance().getConnection();
-
-        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/lowStockMaterial.jrxml");
-
-        JasperReport jr = JasperCompileManager.compileReport(reportObj);
-
-        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
-
-        JasperViewer.viewReport(jp, false);
+        materialDAO.printLowMaterialStockReport();
     }
 }

@@ -2,13 +2,18 @@ package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.custom.OrdersDAO;
 import lk.ijse.nrlbag.dao.CrudUtil;
+import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.entity.Orders;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.view.JasperViewer;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrdersDAOImpl implements OrdersDAO {
 
@@ -203,6 +208,22 @@ public class OrdersDAOImpl implements OrdersDAO {
     @Override
     public String save(Orders entity) throws SQLException {
         return "";
+    }
+
+    @Override
+    public void printOrderConfirmation(int orderID) throws SQLException, JRException {
+        Connection conn = DBConnection.getInstance().getConnection();
+
+        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/orderConfirmation.jrxml");
+
+        JasperReport jr = JasperCompileManager.compileReport(reportObj);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ORDER_ID", orderID);
+
+        JasperPrint jp = JasperFillManager.fillReport(jr, params, conn);
+
+        JasperViewer.viewReport(jp, false);
     }
 
 

@@ -367,17 +367,7 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
 
     @Override
     public void printOrderConfirmation(int orderID) throws SQLException, JRException {
-        Connection conn = DBConnection.getInstance().getConnection();
 
-        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/orderConfirmation.jrxml");
-
-        JasperReport jr = JasperCompileManager.compileReport(reportObj);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("ORDER_ID", orderID);
-
-        JasperPrint jp = JasperFillManager.fillReport(jr, params, conn);
-
-        JasperViewer.viewReport(jp, false);
+        ordersDAO.printOrderConfirmation(orderID);
     }
 }
