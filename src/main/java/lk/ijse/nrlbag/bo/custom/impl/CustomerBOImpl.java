@@ -52,15 +52,32 @@ public class CustomerBOImpl implements CustomerBO {
 
     @Override
     public void printCustomerList() throws SQLException, JRException {
-        Connection conn = DBConnection.getInstance().getConnection();
+//        Connection conn = DBConnection.getInstance().getConnection();
+//
+//        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/customerList.jrxml");
+//
+//        JasperReport jr = JasperCompileManager.compileReport(reportObj);
+//
+//        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
+//
+//        JasperViewer.viewReport(jp, false);
 
-        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/customerList.jrxml");
+        customerDAO.printCustomerList();
+    }
 
-        JasperReport jr = JasperCompileManager.compileReport(reportObj);
+    @Override
+    public String saveCustomer(CustomerDTO customerDTO) throws SQLException {
+        return customerDAO.save(new Customer(customerDTO.getName(), customerDTO.getAddress(), customerDTO.getContact()));
+    }
 
-        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
+    @Override
+    public boolean updateCustomer(CustomerDTO customerDTO) throws SQLException {
+        return customerDAO.update(new Customer(customerDTO.getId(), customerDTO.getName(), customerDTO.getAddress(), customerDTO.getContact()));
+    }
 
-        JasperViewer.viewReport(jp, false);
+    @Override
+    public boolean deleteCustomer(String id) throws SQLException {
+        return customerDAO.delete(id);
     }
 
 }

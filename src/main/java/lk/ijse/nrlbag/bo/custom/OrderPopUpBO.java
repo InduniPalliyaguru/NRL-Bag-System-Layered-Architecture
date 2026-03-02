@@ -42,4 +42,5 @@ public interface OrderPopUpBO extends SuperBO{
      boolean saveOrderAndOrderID(OrderDTO orderDto) throws Exception;
 
      void printOrderConfirmation(int orderID) throws SQLException, JRException;
+
 }

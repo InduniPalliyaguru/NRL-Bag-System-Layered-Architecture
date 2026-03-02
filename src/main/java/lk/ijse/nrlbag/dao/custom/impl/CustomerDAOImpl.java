@@ -2,8 +2,13 @@ package lk.ijse.nrlbag.dao.custom.impl;
 
 import lk.ijse.nrlbag.dao.custom.CustomerDAO;
 import lk.ijse.nrlbag.dao.CrudUtil;
+import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.entity.Customer;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.view.JasperViewer;
 
+import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -112,5 +117,20 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public boolean deleteData(int id) throws SQLException {
         return false;
+    }
+
+    @Override
+    public void printCustomerList() throws SQLException, JRException {
+
+        Connection conn = DBConnection.getInstance().getConnection();
+
+        InputStream reportObj = getClass().getResourceAsStream("/lk/ijse/nrlbag/reports/customerList.jrxml");
+
+        JasperReport jr = JasperCompileManager.compileReport(reportObj);
+
+        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
+
+        JasperViewer.viewReport(jp, false);
+
     }
 }

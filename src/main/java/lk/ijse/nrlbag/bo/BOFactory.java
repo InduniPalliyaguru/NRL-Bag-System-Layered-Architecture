@@ -16,15 +16,13 @@ public class BOFactory {
     }
 
     public enum BOType {
-        CUSTOMER , CUSTOMER_POP, USER, DASHBOARD, ORDERS, ORDER_POP, PAYMENT, PRODUCT, MATERIAL, SUPPLIER
+        CUSTOMER , USER, DASHBOARD, ORDERS, ORDER_POP, PAYMENT, PRODUCT, MATERIAL, SUPPLIER
     }
 
     public SuperBO getBO(BOType boType) {
         switch(boType) {
             case CUSTOMER:
                 return new CustomerBOImpl();
-            case CUSTOMER_POP:
-                return new CustomerPopUpBOImpl();
             case USER:
                 return new UserBOImpl();
             case DASHBOARD:

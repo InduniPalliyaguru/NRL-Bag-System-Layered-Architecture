@@ -14,4 +14,11 @@ public interface CustomerBO extends SuperBO{
 
      void printCustomerList() throws SQLException, JRException;
 
+    String saveCustomer(CustomerDTO customerDTO) throws SQLException;
+
+    boolean updateCustomer(CustomerDTO customerDTO) throws SQLException;
+
+    boolean deleteCustomer(String id) throws SQLException;
+
+
 }
