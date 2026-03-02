@@ -37,7 +37,7 @@ public class OrdersDAOImpl implements OrdersDAO {
     public boolean update(Orders entity) throws SQLException {
 
         // pass the query for update the database
-        boolean result = CrudUtil.execute("UPDATE Orders SET customer_id=?, order_date=?, deadline=?, status=?, total_cost=?, remaining_payment=? WHERE orders_id=?;",
+        return CrudUtil.execute("UPDATE Orders SET customer_id=?, order_date=?, deadline=?, status=?, total_cost=?, remaining_payment=? WHERE orders_id=?;",
                 entity.getCustomer_id(),
                 entity.getOrder_date(),
                 entity.getDeadline(),
@@ -46,15 +46,13 @@ public class OrdersDAOImpl implements OrdersDAO {
                 entity.getTotal_cost(),
                 entity.getOrders_id()
         );
-        return result;
 
     }
 
     @Override
     public boolean deleteData(int id) throws SQLException {
 
-        boolean result = CrudUtil.execute("DELETE FROM Orders WHERE orders_id=?",id);
-        return result;
+        return CrudUtil.execute("DELETE FROM Orders WHERE orders_id=?",id);
 
     }
 
@@ -135,25 +133,22 @@ public class OrdersDAOImpl implements OrdersDAO {
     @Override
     public ResultSet getMonthlyIncome() throws SQLException {
 
-        ResultSet resultSet = CrudUtil.execute("SELECT MONTH(payment_date) AS month, SUM(amount) AS income " +
+        return CrudUtil.execute("SELECT MONTH(payment_date) AS month, SUM(amount) AS income " +
                 "FROM Payment WHERE status IN ('Partial','Completed') " +
                 "GROUP BY MONTH(payment_date)");
 
-        return resultSet;
     }
 
     @Override
     public boolean updateOrderRemainingPayment(Connection conn, double remaining, int id) throws SQLException {
 
         // here get the total order cost
-        boolean orderUpdate = CrudUtil.execute(
+        return CrudUtil.execute(
                 conn,
                 "UPDATE Orders SET remaining_payment = ? WHERE orders_id = ?",
                 remaining,
                 id
         );
-
-        return orderUpdate;
 
     }
 

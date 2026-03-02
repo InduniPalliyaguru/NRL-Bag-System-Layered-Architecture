@@ -36,32 +36,29 @@ public class MaterialDAOImpl implements MaterialDAO {
     // pass values, to insert in the database
     @Override
     public boolean saveData(Material entity) throws SQLException {
-        boolean result = CrudUtil.execute("INSERT INTO Material (name, unit, qty_available, supplier_id) VALUES (?,?,?,?)",
+        return CrudUtil.execute("INSERT INTO Material (name, unit, qty_available, supplier_id) VALUES (?,?,?,?)",
                 entity.getName(),
                 entity.getUnit(),
                 entity.getQty_available(),
                 entity.getSupplier_id()
         );
-        return result;
     }
 
     @Override
     public boolean update(Material entity) throws SQLException {
-        boolean result = CrudUtil.execute("UPDATE Material SET name=?, unit=?, qty_available=?, supplier_id=? WHERE material_id=? ",
+        return CrudUtil.execute("UPDATE Material SET name=?, unit=?, qty_available=?, supplier_id=? WHERE material_id=? ",
                 entity.getName(),
                 entity.getUnit(),
                 entity.getQty_available(),
                 entity.getSupplier_id(),
                 entity.getMaterial_id()
         );
-        return result;
     }
 
     @Override
     public boolean deleteData(int id) throws SQLException {
-        boolean result = CrudUtil.execute("DELETE FROM Material WHERE material_id=?",id);
+        return CrudUtil.execute("DELETE FROM Material WHERE material_id=?",id);
 
-        return result;
     }
 
     @Override
@@ -104,13 +101,12 @@ public class MaterialDAOImpl implements MaterialDAO {
 
     @Override
     public boolean updateMaterialQtyAvailable(Connection conn, double newQty, int materialID) throws SQLException {
-        boolean result = CrudUtil.execute(
+        return CrudUtil.execute(
                 conn,
                 "UPDATE Material SET qty_available=? WHERE material_id=? ",
                 newQty,
                 materialID
         );
-        return result;
     }
 
     @Override

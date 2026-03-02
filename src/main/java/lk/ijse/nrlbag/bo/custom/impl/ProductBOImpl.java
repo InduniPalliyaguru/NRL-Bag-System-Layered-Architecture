@@ -3,14 +3,10 @@ package lk.ijse.nrlbag.bo.custom.impl;
 import lk.ijse.nrlbag.bo.custom.ProductBO;
 import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.ProductDAO;
-import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.ProductDTO;
 import lk.ijse.nrlbag.entity.Product;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.view.JasperViewer;
 
-import java.io.InputStream;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

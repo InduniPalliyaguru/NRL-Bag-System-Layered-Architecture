@@ -54,31 +54,27 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public boolean saveData(Product entity) throws SQLException {
-        boolean result = CrudUtil.execute("INSERT INTO Product (name, size, basic_price) VALUES (?,?,?)",
+        return CrudUtil.execute("INSERT INTO Product (name, size, basic_price) VALUES (?,?,?)",
                 entity.getName(),
                 entity.getSize(),
                 entity.getBasic_price()
         );
-
-        return result;
     }
 
     @Override
     public boolean update(Product entity) throws SQLException {
-        boolean result = CrudUtil.execute("UPDATE Product SET name=?, size=?, basic_price=? WHERE product_id=?",
+        return CrudUtil.execute("UPDATE Product SET name=?, size=?, basic_price=? WHERE product_id=?",
                 entity.getName(),
                 entity.getSize(),
                 entity.getBasic_price(),
                 entity.getProduct_id()
         );
-        return result;
     }
 
     @Override
     public boolean deleteData(int id) throws SQLException {
-        boolean result = CrudUtil.execute("DELETE FROM Product WHERE product_id=?",id);
+        return CrudUtil.execute("DELETE FROM Product WHERE product_id=?",id);
 
-        return result;
     }
 
     @Override

@@ -10,15 +10,11 @@ import lk.ijse.nrlbag.dto.CustomDTO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 import lk.ijse.nrlbag.entity.Payment;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.view.JasperViewer;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PaymentBOImpl implements PaymentBO {
 
@@ -88,8 +84,10 @@ public class PaymentBOImpl implements PaymentBO {
 
             double totalCost = orderDetail.getTotal_cost();
 
-            Payment payment = new Payment(paymentDTO.getId(), paymentDTO.getAmount(), paymentDTO.getPayment_date(), paymentDTO.getType(), paymentDTO.getStatus(), paymentDTO.getOrder_id());
-            double totalPaid = paymentDAO.getTotalPaidAmount(payment);
+            double totalPaid = paymentDAO.getTotalPaidAmount(new Payment(paymentDTO.getId(),
+                    paymentDTO.getAmount(), paymentDTO.getPayment_date(), paymentDTO.getType(),
+                    paymentDTO.getStatus(), paymentDTO.getOrder_id()));
+
             if (totalPaid == 0) {
                 return false;
             }
@@ -196,10 +194,8 @@ public class PaymentBOImpl implements PaymentBO {
 
             CustomDTO orderDetail = queryDAO.searchOrderByOrderID(orderID);
 
-            double totalCost = orderDetail.getTotal_cost();
-
             // when payment is deleted , the remaining is equal to totalCost
-            double remaining = totalCost;
+            double remaining = orderDetail.getTotal_cost();
 
             // update the order table
             boolean orderUpdate = ordersDAO.updateOrderRemainingPayment(conn, remaining, orderID);

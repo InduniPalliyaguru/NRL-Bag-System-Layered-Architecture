@@ -31,7 +31,7 @@ public class CustomerPopUpController {
     @FXML
     private TextField contactField;
 
-    private final CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOType.CUSTOMER);;
+    private final CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOType.CUSTOMER);
 
     private final String CUSTOMER_ID_REGEX = "^[0-9]+$";
     private final String CUSTOMER_NAME_REGEX = "^[A-Za-z]{3,}\\s[A-Za-z]{3,}$";
@@ -68,7 +68,7 @@ public class CustomerPopUpController {
                 if (!result.isEmpty()) {
 
                     new Alert(Alert.AlertType.ERROR, result + "\nTry again!").show();
-                    return;
+
                 } else {
                     new Alert(Alert.AlertType.INFORMATION, "Customer saved successfully!").show();
                     clearFieldsSaved();

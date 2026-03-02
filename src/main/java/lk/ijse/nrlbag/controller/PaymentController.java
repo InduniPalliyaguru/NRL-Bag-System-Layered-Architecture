@@ -18,7 +18,6 @@ import lk.ijse.nrlbag.dto.tm.PaymentTM;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -126,7 +125,6 @@ public class PaymentController implements Initializable {
         try {
 
             List<PaymentDTO> paymentDTO = paymentBO.getPayments();
-            List<PaymentTM> paymentTMS = new ArrayList<>();
 
             // TableView always requires and ObservableList it automatically update that details
             ObservableList<PaymentTM> obList = FXCollections.observableArrayList();

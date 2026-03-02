@@ -27,7 +27,7 @@ public class OrderDetailDAOImpl implements OrderDetailDAO {
     public boolean update(Order_Details entity) throws SQLException {
 
         // pass the query for update the database
-        boolean result = CrudUtil.execute("UPDATE Order_Details SET orders_id=?, product_id=?, quantity=?, unit_price=? WHERE orders_id=? AND product_id=?",
+        return CrudUtil.execute("UPDATE Order_Details SET orders_id=?, product_id=?, quantity=?, unit_price=? WHERE orders_id=? AND product_id=?",
                 entity.getOrders_id(),
                 entity.getProduct_id(),
                 entity.getQuantity(),
@@ -35,15 +35,13 @@ public class OrderDetailDAOImpl implements OrderDetailDAO {
                 entity.getOrders_id(),
                 entity.getProduct_id()
         );
-        return result;
 
     }
 
     @Override
     public boolean deleteOrderDetails(int oderID, int proID) throws SQLException {
 
-        boolean result = CrudUtil.execute("DELETE FROM Order_Details WHERE orders_id=? AND product_id=?", oderID, proID);
-        return result;
+        return CrudUtil.execute("DELETE FROM Order_Details WHERE orders_id=? AND product_id=?", oderID, proID);
 
     }
 

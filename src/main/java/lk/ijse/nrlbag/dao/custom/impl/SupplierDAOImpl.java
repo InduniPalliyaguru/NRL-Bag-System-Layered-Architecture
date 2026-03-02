@@ -53,20 +53,18 @@ public class SupplierDAOImpl implements SupplierDAO {
     @Override
     public boolean update(Supplier entity) throws SQLException {
 
-        boolean result = CrudUtil.execute("UPDATE Supplier SET supplier_name=?, address=?, contact=? WHERE supplier_id=?",
+        return CrudUtil.execute("UPDATE Supplier SET supplier_name=?, address=?, contact=? WHERE supplier_id=?",
                 entity.getSupplier_name(),
                 entity.getAddress(),
                 entity.getContact(),
                 entity.getSupplier_id()
         );
-        return result;
     }
 
     @Override
     public boolean deleteData(int id) throws SQLException {
 
-        boolean result = CrudUtil.execute("DELETE FROM Supplier WHERE Supplier_id=?",id);
-        return result;
+        return CrudUtil.execute("DELETE FROM Supplier WHERE Supplier_id=?",id);
 
     }
 

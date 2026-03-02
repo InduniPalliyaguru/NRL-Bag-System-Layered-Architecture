@@ -99,8 +99,7 @@ public class PaymentDAOImpl implements PaymentDAO {
         );
 
         if (rsPaid.next()) {
-            double totalPaid = rsPaid.getDouble("paid");
-            return totalPaid;
+            return rsPaid.getDouble("paid");
         }
         return 0;
     }

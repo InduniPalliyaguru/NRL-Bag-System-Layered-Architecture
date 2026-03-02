@@ -3,14 +3,9 @@ package lk.ijse.nrlbag.bo.custom.impl;
 import lk.ijse.nrlbag.bo.custom.MaterialBO;
 import lk.ijse.nrlbag.dao.DAOFactory;
 import lk.ijse.nrlbag.dao.custom.MaterialDAO;
-import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.MaterialDTO;
 import lk.ijse.nrlbag.entity.Material;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.view.JasperViewer;
-
-import java.io.InputStream;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +57,7 @@ public class MaterialBOImpl implements MaterialBO {
     @Override
     public List<MaterialDTO> getMaterial() throws SQLException {
         List<Material> material = materialDAO.get();
-        List<MaterialDTO> materialDTOS = new ArrayList<>();
+        ArrayList<MaterialDTO> materialDTOS = new ArrayList<>();
 
         for (Material material1 : material) {
             MaterialDTO materialDTO = new MaterialDTO(

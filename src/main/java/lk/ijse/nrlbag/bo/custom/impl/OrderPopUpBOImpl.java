@@ -7,15 +7,11 @@ import lk.ijse.nrlbag.db.DBConnection;
 import lk.ijse.nrlbag.dto.*;
 import lk.ijse.nrlbag.entity.*;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.view.JasperViewer;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class OrderPopUpBOImpl implements OrderPopUpBO {
 
@@ -240,12 +236,6 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
             double newStock = currentStock + oldUsedQty;
 
             // then update the material used
-//            boolean isDeleted = CrudUtil.execute(
-//                    conn,
-//                    "DELETE FROM Material_Used WHERE orders_id=? AND material_id=?",
-//                    orderID,
-//                    materialID
-//            );
 
             boolean isDeleted = materialUsedDAO.deleteMaterialUsage(orderID, materialID);
             if (!isDeleted) {

@@ -23,8 +23,6 @@ public class LoginController {
     private TextField usernameField;
     @FXML
     private PasswordField passwordField;
-    @FXML
-    private TextField emailField;
 
 
     @FXML

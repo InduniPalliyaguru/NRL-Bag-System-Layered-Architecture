@@ -21,7 +21,6 @@ import lk.ijse.nrlbag.dto.tm.OrdersTM;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -154,7 +153,6 @@ public class OrderController implements Initializable {
         try {
 
             List<OrderDTO> orderDTO = ordersBO.getOrders();
-            List<OrdersTM> ordersTMS = new ArrayList<>();
 
             // TableView always requires and ObservableList it automatically update that details
             ObservableList<OrdersTM> obList = FXCollections.observableArrayList();

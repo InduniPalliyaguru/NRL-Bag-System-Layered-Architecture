@@ -11,7 +11,6 @@ import lk.ijse.nrlbag.bo.BOFactory;
 import lk.ijse.nrlbag.bo.custom.OrderPopUpBO;
 import lk.ijse.nrlbag.dto.*;
 import lk.ijse.nrlbag.dto.tm.MaterialUsedTM;
-import lk.ijse.nrlbag.model.*;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -273,8 +272,6 @@ public class OrderPopupController implements Initializable {
                 // if valid then create a orderDTO object including that details
                 OrderDTO orderDto = new OrderDTO(Integer.parseInt(id), orderDate, deadline, status, Double.parseDouble(cost), orderDetailsDTO);
 
-                // Change later to Business layer
-                OrderModel orderModel = new OrderModel();
                 boolean result = orderPopUpBO.saveOrderAndOrderID(orderDto);
 
                 if (result) {

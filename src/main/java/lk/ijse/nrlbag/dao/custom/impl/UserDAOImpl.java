@@ -54,11 +54,10 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateLoginPassword(String password) throws SQLException{
-        boolean result = CrudUtil.execute("UPDATE User SET user_password=? WHERE userName=?",
+        return CrudUtil.execute("UPDATE User SET user_password=? WHERE userName=?",
                 password,
                 "induni");
 
-        return result;
     }
 
     @Override
