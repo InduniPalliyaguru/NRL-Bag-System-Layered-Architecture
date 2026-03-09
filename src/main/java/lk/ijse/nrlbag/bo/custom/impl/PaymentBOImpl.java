@@ -101,7 +101,7 @@ public class PaymentBOImpl implements PaymentBO {
             }
 
             // update the order table
-            boolean orderUpdate = ordersDAO.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
+            boolean orderUpdate = ordersDAO.updateOrderRemainingPayment( remaining, paymentDTO.getOrder_id());
 
             if (!orderUpdate) {
                 conn.rollback();
@@ -158,7 +158,7 @@ public class PaymentBOImpl implements PaymentBO {
             }
 
             // update the order table
-            boolean orderUpdate = ordersDAO.updateOrderRemainingPayment(conn, remaining, paymentDTO.getOrder_id());
+            boolean orderUpdate = ordersDAO.updateOrderRemainingPayment(remaining, paymentDTO.getOrder_id());
 
             if (!orderUpdate) {
                 conn.rollback();
@@ -198,7 +198,7 @@ public class PaymentBOImpl implements PaymentBO {
             double remaining = orderDetail.getTotal_cost();
 
             // update the order table
-            boolean orderUpdate = ordersDAO.updateOrderRemainingPayment(conn, remaining, orderID);
+            boolean orderUpdate = ordersDAO.updateOrderRemainingPayment(remaining, orderID);
 
             if (!orderUpdate) {
                 conn.rollback();

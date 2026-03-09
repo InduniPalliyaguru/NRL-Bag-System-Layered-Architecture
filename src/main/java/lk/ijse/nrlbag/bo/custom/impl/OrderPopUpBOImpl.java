@@ -108,7 +108,7 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
                 return false;
             }
             // in here send qty available for database update
-            boolean isUpdated = materialDAO.updateMaterialQtyAvailable(conn, availableQty, materialUsedDTO.getMaterial_id());
+            boolean isUpdated = materialDAO.updateMaterialQtyAvailable(availableQty, materialUsedDTO.getMaterial_id());
 
             if (!isUpdated) {
                 conn.rollback();
@@ -193,7 +193,6 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
             }
 
             boolean isStockUpdated = materialDAO.updateMaterialQtyAvailable(
-                    conn,
                     newStock,
                     dto.getMaterial_id()
             );
@@ -244,7 +243,7 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
             }
 
             boolean isStockUpdated = materialDAO.updateMaterialQtyAvailable(
-                    conn,
+
                     newStock,
                     materialID
             );

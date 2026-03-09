@@ -140,11 +140,11 @@ public class OrdersDAOImpl implements OrdersDAO {
     }
 
     @Override
-    public boolean updateOrderRemainingPayment(Connection conn, double remaining, int id) throws SQLException {
+    public boolean updateOrderRemainingPayment( double remaining, int id) throws SQLException {
 
         // here get the total order cost
         return CrudUtil.execute(
-                conn,
+
                 "UPDATE Orders SET remaining_payment = ? WHERE orders_id = ?",
                 remaining,
                 id

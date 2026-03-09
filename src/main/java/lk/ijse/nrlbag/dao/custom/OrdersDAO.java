@@ -24,7 +24,7 @@ public interface OrdersDAO extends CrudDAO<Orders> {
 
      ResultSet getMonthlyIncome() throws SQLException;
 
-     boolean updateOrderRemainingPayment(Connection conn, double remaining, int id) throws SQLException;
+     boolean updateOrderRemainingPayment(double remaining, int id) throws SQLException;
 
      int getOverdueOrderCount() throws SQLException;
 

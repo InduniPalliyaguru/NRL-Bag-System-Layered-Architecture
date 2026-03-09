@@ -12,7 +12,7 @@ public interface MaterialDAO extends CrudDAO<Material> {
 
      int totalLowMaterialCount() throws SQLException;
 
-     boolean updateMaterialQtyAvailable(Connection conn, double newQty, int materialID) throws SQLException;
+     boolean updateMaterialQtyAvailable(double newQty, int materialID) throws SQLException;
 
      List<Material> searchMaterialByKeyword(String keyword) throws SQLException;
 

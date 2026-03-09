@@ -55,19 +55,4 @@ public class CrudUtil {
 
     }
 
-    public static <T> T execute(Connection conn, String sql, Object... obj) throws SQLException {
-
-        PreparedStatement ptsm = conn.prepareStatement(sql);
-
-        for (int i = 0; i<obj.length; i++) {
-            ptsm.setObject(i + 1, obj[i]);
-        }
-
-        if (sql.startsWith("select") || sql.startsWith("SELECT")) {
-            return (T) ptsm.executeQuery();
-        } else {
-            return (T) (Boolean) (ptsm.executeUpdate()>0);
-        }
-
-    }
 }

@@ -100,9 +100,9 @@ public class MaterialDAOImpl implements MaterialDAO {
     }
 
     @Override
-    public boolean updateMaterialQtyAvailable(Connection conn, double newQty, int materialID) throws SQLException {
+    public boolean updateMaterialQtyAvailable(double newQty, int materialID) throws SQLException {
         return CrudUtil.execute(
-                conn,
+
                 "UPDATE Material SET qty_available=? WHERE material_id=? ",
                 newQty,
                 materialID
