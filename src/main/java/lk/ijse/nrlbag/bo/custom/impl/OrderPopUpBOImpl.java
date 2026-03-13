@@ -27,9 +27,9 @@ public class OrderPopUpBOImpl implements OrderPopUpBO {
 
 
         CustomDTO tm = queryDAO.searchOrderByOrderID(id);
-
+        System.out.println(tm.getOrder_id());
         return new OrderDTO(
-                tm.getId(),
+                tm.getOrder_id(),
                 tm.getCustomer_id(),
                 tm.getName(),
                 tm.getCustomerContact(),

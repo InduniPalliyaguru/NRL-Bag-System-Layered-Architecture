@@ -110,6 +110,7 @@ public class QueryDAOImpl implements QueryDAO {
             String cusName = rs.getString("name");
             String contact = rs.getString("contact");
 
+            System.out.println(orderId);
             return new CustomDTO(orderId,cus_id,cusName,contact,order_date,deadline,status,cost,remain);
         }
         return null;

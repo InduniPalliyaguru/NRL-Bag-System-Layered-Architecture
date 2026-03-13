@@ -207,6 +207,7 @@ public class OrderPopupController implements Initializable {
 
                 // orderDTO is not null then assign their values into the text fields
                 if (orderDto != null) {
+                    System.out.println((orderDto.getId()));
                     orderIdField1.setText(String.valueOf(orderDto.getId()));
                     idField1.setText(String.valueOf(orderDto.getCustomer_id()));
                     orderDateField1.setText(orderDto.getOrder_date());
