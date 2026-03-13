@@ -1,6 +1,5 @@
 package lk.ijse.nrlbag.bo;
 
-import lk.ijse.nrlbag.bo.custom.SuperBO;
 import lk.ijse.nrlbag.bo.custom.impl.*;
 
 public class BOFactory {

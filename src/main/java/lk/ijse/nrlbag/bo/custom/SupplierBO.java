@@ -1,11 +1,12 @@
 package lk.ijse.nrlbag.bo.custom;
 
+import lk.ijse.nrlbag.bo.SuperBO;
 import lk.ijse.nrlbag.dto.SupplierDTO;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface SupplierBO extends SuperBO{
+public interface SupplierBO extends SuperBO {
 
     // get the all details in supplier table join with material details also
      List<SupplierDTO> getSuppliers() throws SQLException;

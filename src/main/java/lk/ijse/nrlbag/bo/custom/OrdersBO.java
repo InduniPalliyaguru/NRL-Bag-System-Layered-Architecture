@@ -1,11 +1,12 @@
 package lk.ijse.nrlbag.bo.custom;
 
+import lk.ijse.nrlbag.bo.SuperBO;
 import lk.ijse.nrlbag.dto.OrderDTO;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface OrdersBO extends SuperBO{
+public interface OrdersBO extends SuperBO {
 
     // get the all details in orders table join with customer details also
      List<OrderDTO> getOrders() throws SQLException;

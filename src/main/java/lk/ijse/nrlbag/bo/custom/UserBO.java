@@ -1,10 +1,11 @@
 package lk.ijse.nrlbag.bo.custom;
 
+import lk.ijse.nrlbag.bo.SuperBO;
 import lk.ijse.nrlbag.dto.UserDTO;
 
 import java.sql.SQLException;
 
-public interface UserBO extends SuperBO{
+public interface UserBO extends SuperBO {
 
      UserDTO getUserDetails() throws SQLException;
 

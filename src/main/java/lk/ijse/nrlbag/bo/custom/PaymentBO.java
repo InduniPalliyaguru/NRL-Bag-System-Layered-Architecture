@@ -1,12 +1,13 @@
 package lk.ijse.nrlbag.bo.custom;
 
+import lk.ijse.nrlbag.bo.SuperBO;
 import lk.ijse.nrlbag.dto.PaymentDTO;
 import net.sf.jasperreports.engine.JRException;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface PaymentBO extends SuperBO{
+public interface PaymentBO extends SuperBO {
 
     // get the all details in payment table
      List<PaymentDTO> getPayments() throws SQLException;

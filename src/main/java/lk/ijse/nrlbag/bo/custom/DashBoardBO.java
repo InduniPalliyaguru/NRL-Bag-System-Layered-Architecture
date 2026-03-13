@@ -1,11 +1,12 @@
 package lk.ijse.nrlbag.bo.custom;
 
+import lk.ijse.nrlbag.bo.SuperBO;
 import lk.ijse.nrlbag.dto.UserDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public interface DashBoardBO extends SuperBO{
+public interface DashBoardBO extends SuperBO {
 
      int totalCustomerCount() throws SQLException;
 

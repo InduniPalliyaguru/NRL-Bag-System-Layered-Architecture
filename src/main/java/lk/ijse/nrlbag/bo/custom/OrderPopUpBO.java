@@ -1,5 +1,6 @@
 package lk.ijse.nrlbag.bo.custom;
 
+import lk.ijse.nrlbag.bo.SuperBO;
 import lk.ijse.nrlbag.dto.*;
 import net.sf.jasperreports.engine.JRException;
 
@@ -7,7 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface OrderPopUpBO extends SuperBO{
+public interface OrderPopUpBO extends SuperBO {
 
      OrderDTO searchOrderByOrderID(int id) throws SQLException;
 

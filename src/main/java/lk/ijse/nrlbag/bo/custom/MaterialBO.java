@@ -1,11 +1,12 @@
 package lk.ijse.nrlbag.bo.custom;
 
+import lk.ijse.nrlbag.bo.SuperBO;
 import lk.ijse.nrlbag.dto.MaterialDTO;
 import net.sf.jasperreports.engine.*;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface MaterialBO extends SuperBO{
+public interface MaterialBO extends SuperBO {
 
      MaterialDTO searchMaterial(int id) throws SQLException;
 
